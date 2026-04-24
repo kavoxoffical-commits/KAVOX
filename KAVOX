@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAVOX – Elite Career Craft</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #C9A84C;
+            --gold-light: #E8C97A;
+            --gold-dark: #A07830;
+            --navy: #0D2159;
+            --navy-deep: #060D2A;
+            --navy-mid: #1a3578;
+            --ivory: #F7F3EA;
+            --ivory-dark: #EDE5D0;
+            --text-dark: #1a1a2e;
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--ivory);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* تحسين الخلفية وتأثير الـ Grain */
+        .bg-grain {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/natural-paper.png');
+            opacity: 0.05; pointer-events: none; z-index: 50;
+        }
+
+        /* الهيدر المحسن */
+        header {
+            padding: 1.5rem 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(247, 243, 234, 0.9);
+            backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 100;
+            border-bottom: 1px solid var(--ivory-dark);
+        }
+
+        .logo {
+            font-family: 'Cinzel', serif;
+            font-weight: 900; font-size: 1.8rem;
+            color: var(--navy); letter-spacing: 2px;
+            text-decoration: none;
+        }
+
+        .logo span { color: var(--gold); }
+
+        /* منطقة الـ Hero المتجاوبة */
+        .hero {
+            min-height: 80vh;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            text-align: center; padding: 2rem;
+            background: radial-gradient(circle at center, #ffffff 0%, var(--ivory) 100%);
+        }
+
+        .hero h1 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2rem, 5vw, 4rem);
+            color: var(--navy-deep); margin-bottom: 1rem;
+        }
+
+        .hero p {
+            max-width: 600px; font-size: 1.1rem;
+            color: var(--text-dark); opacity: 0.8;
+            margin-bottom: 2rem;
+        }
+
+        /* الأزرار الملكية */
+        .btn-royal {
+            padding: 1rem 2.5rem;
+            background: var(--navy); color: var(--gold-light);
+            font-family: 'Cinzel', serif; font-weight: 700;
+            border: 1px solid var(--gold);
+            cursor: pointer; transition: var(--transition);
+            text-transform: uppercase; letter-spacing: 1px;
+            position: relative; overflow: hidden;
+        }
+
+        .btn-royal:hover {
+            background: var(--gold); color: var(--navy-deep);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(160, 120, 48, 0.2);
+        }
+
+        /* تنسيق نموذج بناء السيرة الذاتية (Wizard) */
+        .container { max-width: 900px; margin: 3rem auto; padding: 0 1.5rem; }
+
+        .wizard-card {
+            background: white; padding: 2.5rem;
+            border-top: 4px solid var(--gold);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+        }
+
+        .input-group { margin-bottom: 1.5rem; }
+        .input-group label {
+            display: block; font-family: 'Cinzel', serif;
+            margin-bottom: 0.5rem; color: var(--navy); font-size: 0.9rem;
+        }
+
+        input, textarea {
+            width: 100%; padding: 1rem;
+            border: 1px solid var(--ivory-dark);
+            font-family: 'Montserrat', sans-serif;
+            background: #fafafa; transition: var(--transition);
+        }
+
+        input:focus { border-color: var(--gold); outline: none; background: white; }
+
+        /* منطقة النتيجة النهائية (CV Document) */
+        .cv-doc {
+            background: white; padding: 4rem; margin-top: 3rem;
+            box-shadow: 0 30px 60px rgba(13, 33, 89, 0.1);
+            border: 1px solid var(--ivory-dark);
+            position: relative; max-width: 800px; margin-left: auto; margin-right: auto;
+        }
+
+        .cv-header {
+            text-align: center; border-bottom: 2px solid var(--gold);
+            padding-bottom: 2rem; margin-bottom: 2rem;
+        }
+
+        .cv-name {
+            font-family: 'Cinzel', serif; font-size: 2.5rem;
+            color: var(--navy-deep); text-transform: uppercase;
+        }
+
+        .cv-sec-title {
+            font-family: 'Cinzel', serif; color: var(--gold-dark);
+            border-bottom: 1px solid var(--ivory-dark);
+            margin: 1.5rem 0 1rem; padding-bottom: 5px;
+            font-size: 1.2rem; letter-spacing: 1px;
+        }
+
+        @media (max-width: 768px) {
+            .cv-doc { padding: 2rem 1rem; }
+            header { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grain"></div>
+
+    <header>
+        <a href="#" class="logo">KAVOX<span>.</span></a>
+        <nav>
+            </nav>
+    </header>
+
+    <main>
+        <section class="hero" id="hero">
+            <h1>Engineered for Excellence</h1>
+            <p>Transform your professional identity with AI-driven precision and elite architectural design.</p>
+            <button class="btn-royal" onclick="startBuild()">Build Your Legacy</button>
+        </section>
+
+        <section class="container" id="page-create" style="display:none;">
+            <div class="wizard-card" id="wizard">
+                <h2 style="font-family:'Cinzel'; margin-bottom: 2rem; color: var(--navy);">Professional Details</h2>
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" id="in-name" placeholder="Enter your name">
+                </div>
+                <div class="input-group">
+                    <label>Professional Title</label>
+                    <input type="text" id="in-title" placeholder="e.g. Senior Brand Architect">
+                </div>
+                <div class="input-group">
+                    <label>Experience Highlights</label>
+                    <textarea id="in-exp" rows="5" placeholder="List your key achievements..."></textarea>
+                </div>
+                <button class="btn-royal" id="gen-btn" onclick="generateCV()">Generate Masterpiece</button>
+            </div>
+
+            <div id="cv-result" style="display:none;">
+                <div class="cv-doc" id="printable-cv">
+                    <div class="cv-header">
+                        <div class="cv-name" id="out-name">NAME</div>
+                        <div id="out-title" style="color: var(--navy); font-weight: 600;">TITLE</div>
+                    </div>
+                    <div class="cv-sec-title">Professional Summary</div>
+                    <div id="out-summary">Summary will appear here...</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function startBuild() {
+            document.getElementById('hero').style.display = 'none';
+            document.getElementById('page-create').style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        function generateCV() {
+            // منطق بسيط لعرض البيانات كبداية
+            const name = document.getElementById('in-name').value;
+            const title = document.getElementById('in-title').value;
+
+            document.getElementById('out-name').textContent = name || "YOUR NAME";
+            document.getElementById('out-title').textContent = title || "PROFESSIONAL TITLE";
+            
+            document.getElementById('cv-result').style.display = 'block';
+            window.scrollTo({
+                top: document.getElementById('cv-result').offsetTop - 100,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+</body>
+</html>
