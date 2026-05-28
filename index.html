@@ -6050,7 +6050,7 @@ RULES:
   for (let i = 0; i < API_PROVIDERS.length; i++) {
     const provider = API_PROVIDERS[(currentProviderIndex + i) % API_PROVIDERS.length];
     try {
-      updateLoadingStatus(`Crafting your ${tier.toUpperCase()} CV via ${provider.name}…`, 20 + (i * 25));
+      updateLoadingStatus(`Crafting your ${tier.toUpperCase()} CV with KAVOX AI…`, 20 + (i * 25));
       const rawText = await callProvider(provider, prompt);
       if (!rawText) throw new Error('EMPTY');
 
