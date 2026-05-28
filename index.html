@@ -2086,15 +2086,68 @@
     .cv-result-wrapper { padding: 28px 20px; }
   }
 
-  /* ── RESPONSIVE ── */
+  /* ── RESPONSIVE MOBILE ── */
   @media (max-width: 640px) {
-    nav { padding: 14px 20px; }
-    .nav-links { gap: 18px; }
-    .path-cards { flex-direction: column; align-items: center; }
+
+    /* NAVBAR */
+    nav {
+      padding: 10px 16px;
+      flex-wrap: nowrap;
+    }
+    .nav-logo-emblem { width: 38px; height: 38px; }
+    .nav-logo-emblem svg { width: 18px; height: 18px; }
+    .nav-logo-name { font-size: 1rem; }
+    .nav-logo-sub { display: none; }
+    .nav-links {
+      gap: 12px;
+      flex-wrap: nowrap;
+    }
+    .nav-links a {
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+    }
+    .nav-admin-link { display: none; }
+
+    /* HERO */
+    #page-hero { padding-top: 80px; min-height: 100svh; }
+    .hero-heading {
+      font-size: clamp(1.8rem, 8vw, 2.6rem);
+      padding: 0 12px;
+      word-break: break-word;
+    }
+    .hero-sub {
+      font-size: clamp(0.6rem, 2.5vw, 0.75rem);
+      padding: 0 16px;
+      letter-spacing: 0.12em;
+    }
+    .hero-cta { font-size: 0.7rem; padding: 14px 28px; }
+
+    /* PATH CARDS */
+    .path-cards { flex-direction: column; align-items: center; gap: 24px; }
+    .path-cards-wrapper { flex-direction: column; align-items: center; gap: 24px; }
+    .path-connector { display: none; }
+    .path-card { max-width: 100%; width: 100%; padding: 0 16px; }
+    .coin { width: 220px; height: 220px; }
+
+    /* FORM */
     .about-values { grid-template-columns: 1fr; }
     .field-row { grid-template-columns: 1fr; }
-    .site-footer { flex-direction: column; gap: 12px; text-align: center; }
+
+    /* PRICING */
     .pricing-cards { flex-direction: column; align-items: center; }
+
+    /* FOOTER */
+    .site-footer { flex-direction: column; gap: 12px; text-align: center; }
+
+    /* CV RESULT */
+    .cv-result-wrapper { padding: 20px 12px; }
+  }
+
+  @media (max-width: 380px) {
+    .hero-heading { font-size: 1.6rem; }
+    .nav-links a { font-size: 0.52rem; }
+    .coin { width: 180px; height: 180px; }
   }
 </style>
 </head>
@@ -6079,6 +6132,9 @@ RULES:
       window._cvName = name;
       window._cvData = cvData;
 
+      // Save to Supabase (non-blocking)
+      saveCVToSupabase(name, email, tier, cvLang, cvHTML);
+
       renderResult(cvHTML, tier);
       showPage('result');
       return;
@@ -6428,7 +6484,7 @@ function removePhoto(event) {
 
 // Default Supabase credentials (hardcoded)
 const _DEFAULT_SB_URL = 'https://ecgkwuvnceoghtlugpxm.supabase.co';
-const _DEFAULT_SB_KEY = 'sb_publishable_MsOGWTR-V_jiGp10o_zmEQ_hd4K0POw';
+const _DEFAULT_SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVjZ2t3dXZuY2VvZ2h0bHVncHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg0ODAyMjAsImV4cCI6MjA2NDA1NjIyMH0.FzZSIsI';
 
 // Load saved config from localStorage (falls back to hardcoded defaults)
 function getAdminConfig() {
@@ -6481,6 +6537,17 @@ async function saveOrderToSupabase(orderData) {
     await _sb.from('kavox_orders').insert([orderData]);
   } catch(e) {
     console.warn('Supabase save failed:', e);
+  }
+}
+
+// ── SAVE CV TO SUPABASE ──────────────────────────────────────────
+async function saveCVToSupabase(name, email, tier, language, cvHTML) {
+  if (!_sb) { initSupabase(); await new Promise(r => setTimeout(r, 800)); }
+  if (!_sb) return;
+  try {
+    await _sb.from('cvs').insert([{ name, email, tier, language, cv_html: cvHTML }]);
+  } catch(e) {
+    console.warn('Supabase CV save failed:', e);
   }
 }
 
