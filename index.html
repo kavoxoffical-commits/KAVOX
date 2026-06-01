@@ -181,6 +181,55 @@
   .nav-links a:hover { color: var(--gold); }
   .nav-admin-link { opacity: 0.3 !important; font-size: 0.6rem !important; letter-spacing: 0.15em !important; }
 
+  /* ── FREE TRIAL BANNER ── */
+  #free-trial-banner {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 200;
+    background: linear-gradient(90deg, #0d1b2e 0%, #1a2e4a 50%, #0d1b2e 100%);
+    border-bottom: 1px solid rgba(201,168,76,0.4);
+    padding: 8px 16px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 2px 20px rgba(201,168,76,0.1);
+  }
+  #free-trial-banner span {
+    font-family: 'Cinzel', serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  #free-trial-banner em {
+    font-family: 'EB Garamond', serif;
+    font-size: 0.9rem;
+    color: rgba(240,230,208,0.85);
+    font-style: normal;
+    letter-spacing: 0.05em;
+  }
+  #free-trial-banner .banner-close {
+    position: absolute;
+    right: 14px;
+    background: none;
+    border: none;
+    color: rgba(201,168,76,0.4);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: color 0.2s;
+    line-height: 1;
+    padding: 2px 6px;
+  }
+  #free-trial-banner .banner-close:hover { color: var(--gold); }
+  body.banner-active nav { top: 37px; }
+  @media (max-width: 640px) {
+    #free-trial-banner span { font-size: 0.58rem; letter-spacing: 0.1em; }
+    #free-trial-banner em { font-size: 0.78rem; }
+    body.banner-active nav { top: 40px; }
+  }
+
   /* ── GOLD DIVIDER ── */
   .gold-line {
     width: 100%;
@@ -2091,20 +2140,27 @@
 
     /* NAVBAR */
     nav {
-      padding: 10px 16px;
+      padding: 10px 14px;
       flex-wrap: nowrap;
+      gap: 8px;
     }
-    .nav-logo-emblem { width: 38px; height: 38px; }
-    .nav-logo-emblem svg { width: 18px; height: 18px; }
-    .nav-logo-name { font-size: 1rem; }
+    .nav-logo img { height: 36px; }
+    .nav-logo-emblem { width: 36px; height: 36px; }
+    .nav-logo-emblem svg { width: 16px; height: 16px; }
+    .nav-logo-name { font-size: 0.95rem; }
     .nav-logo-sub { display: none; }
     .nav-links {
-      gap: 12px;
+      gap: 10px;
       flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 2px;
     }
+    .nav-links::-webkit-scrollbar { display: none; }
     .nav-links a {
       font-size: 0.58rem;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
       white-space: nowrap;
     }
     .nav-admin-link { display: none; }
@@ -2156,17 +2212,28 @@
 <!-- ░░ GLOBAL GOLDEN DUST CANVAS ░░ -->
 <canvas id="dust-canvas"></canvas>
 
+<!-- ░░ FREE TRIAL BANNER ░░ -->
+<div id="free-trial-banner">
+  <span>✦ Limited Time ✦</span>
+  <em>All premium features available free for a limited period</em>
+  <button class="banner-close" onclick="closeBanner()" title="Close">✕</button>
+</div>
+
 <!-- ░░ NAVIGATION ░░ -->
 <nav>
   <a class="nav-logo" onclick="showPage('hero')">
-    <img src="logo.png" alt="" style="max-width: 250px; display: block; margin: 0 auto;" onerror="this.style.display='none'">
+    <img src="logo.png" alt="KAVOX" style="height:48px;width:auto;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="nav-logo-text" style="display:none;">
+      <span class="nav-logo-name">KAVOX</span>
+      <span class="nav-logo-sub">The Art of Professional CVs</span>
+    </div>
   </a>
   <ul class="nav-links">
     <li><a onclick="showPage('hero')">Home</a></li>
     <li><a onclick="showPage('templates')">Templates</a></li>
     <li><a onclick="showPage('pricing')">Pricing</a></li>
     <li><a onclick="showPage('about')">About Us</a></li>
-    <li><a onclick="showPage('admin')" class="nav-admin-link" title="Admin">⚙</a></li>
+
   </ul>
 </nav>
 
@@ -4663,7 +4730,7 @@
         <div style="font-family:'Cinzel',serif;font-size:0.9rem;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(201,168,76,0.25);">Privacy Policy</div>
         <div style="font-family:'EB Garamond',serif;font-size:0.97rem;color:var(--text-muted);line-height:1.85;display:flex;flex-direction:column;gap:10px;">
           <p><strong style="color:var(--white);">1. Data Collection.</strong> KAVOX does not store your personal information on any server. All data you enter (name, experience, achievements) is processed locally in your browser session and is discarded when you close or refresh the page.</p>
-          <p><strong style="color:var(--white);">2. AI Processing.</strong> Your CV data is sent to third-party AI providers (Google Gemini, OpenRouter, Groq) solely for the purpose of generating your CV. These providers have their own privacy policies governing data handling.</p>
+          <p><strong style="color:var(--white);">2. AI Processing.</strong> Your CV data is transmitted to third-party AI infrastructure providers solely for the purpose of generating your CV. These providers operate under strict data processing agreements and their own privacy policies governing data handling.</p>
           <p><strong style="color:var(--white);">3. Cookies.</strong> KAVOX does not use tracking cookies or third-party analytics. No personal data is collected for advertising purposes.</p>
           <p><strong style="color:var(--white);">4. Third-Party Links.</strong> Our service may reference third-party services. We are not responsible for the privacy practices of these external services.</p>
           <p><strong style="color:var(--white);">5. Children's Privacy.</strong> KAVOX is not intended for use by individuals under the age of 16. We do not knowingly collect data from minors.</p>
@@ -4866,6 +4933,24 @@
 
 <!-- ░░ SCRIPTS ░░ -->
 <script>
+// ── FREE TRIAL BANNER ──────────────────────────────────────────────
+function closeBanner() {
+  const banner = document.getElementById('free-trial-banner');
+  if (banner) {
+    banner.style.transition = 'opacity 0.3s, transform 0.3s';
+    banner.style.opacity = '0';
+    banner.style.transform = 'translateY(-100%)';
+    setTimeout(() => {
+      banner.style.display = 'none';
+      document.body.classList.remove('banner-active');
+    }, 300);
+  }
+}
+// Activate banner offset on load
+document.addEventListener('DOMContentLoaded', function() {
+  document.body.classList.add('banner-active');
+});
+
 // ── CONFIG ──────────────────────────────────────────────────────────
 // ── MULTI-API ROTATION SYSTEM (via Netlify serverless function) ────
 // All API keys are stored securely on the server — never exposed here.
