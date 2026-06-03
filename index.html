@@ -10,23 +10,23 @@
 <meta name="keywords" content="CV builder, resume maker, AI CV, professional resume, ATS resume, Arabic CV, multilingual resume, online CV generator, KAVOX">
 <meta name="robots" content="index, follow">
 <meta name="author" content="KAVOX">
-<link rel="canonical" href="https://kavox.netlify.app/">
+<link rel="canonical" href="https://kavox-zeta.vercel.app/">
 
 <!-- ── Open Graph (Facebook / LinkedIn) ── -->
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://kavox.netlify.app/">
+<meta property="og:url" content="https://kavox-zeta.vercel.app/">
 <meta property="og:title" content="KAVOX – AI-Powered Professional CV Builder">
 <meta property="og:description" content="Create a stunning, ATS-optimised CV in seconds. 20+ premium templates, 25 languages. Pro from $5.">
-<meta property="og:image" content="https://kavox.netlify.app/og-image.jpg">
+<meta property="og:image" content="https://kavox-zeta.vercel.app/og-image.jpg">
 <meta property="og:locale" content="en_US">
 <meta property="og:site_name" content="KAVOX">
 
 <!-- ── Twitter Card ── -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://kavox.netlify.app/">
+<meta name="twitter:url" content="https://kavox-zeta.vercel.app/">
 <meta name="twitter:title" content="KAVOX – AI-Powered Professional CV Builder">
 <meta name="twitter:description" content="Create a stunning, ATS-optimised CV in seconds. 20+ premium templates, 25 languages. Pro from $5.">
-<meta name="twitter:image" content="https://kavox.netlify.app/og-image.jpg">
+<meta name="twitter:image" content="https://kavox-zeta.vercel.app/og-image.jpg">
 
 <!-- ── Structured Data (Schema.org) ── -->
 <script type="application/ld+json">
@@ -34,7 +34,7 @@
   "@context": "https://schema.org",
   "@type": "WebApplication",
   "name": "KAVOX",
-  "url": "https://kavox.netlify.app/",
+  "url": "https://kavox-zeta.vercel.app/",
   "description": "AI-powered professional CV builder with 20+ premium templates and support for 25 languages.",
   "applicationCategory": "BusinessApplication",
   "operatingSystem": "Any",
@@ -5240,7 +5240,7 @@ const CV_SYSTEM_PROMPT = `You are an expert Frontend Engineer and UI/UX Designer
 // ── CALL ONE PROVIDER (via Netlify serverless function) ───────────
 // API keys are stored securely as environment variables on the server.
 async function callProvider(provider, prompt) {
-  const response = await fetch('/.netlify/functions/ai', {
+  const response = await fetch('/api/ai', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
