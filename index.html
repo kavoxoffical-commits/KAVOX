@@ -47,6 +47,9 @@
 }
 </script>
 
+<!-- ── Vercel Analytics ── -->
+<script defer src="/_vercel/insights/script.js"></script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Cinzel:wght@400;600;700&family=EB+Garamond:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -2183,8 +2186,13 @@
     .path-cards { flex-direction: column; align-items: center; gap: 24px; }
     .path-cards-wrapper { flex-direction: column; align-items: center; gap: 24px; }
     .path-connector { display: none; }
-    .path-card { max-width: 100%; width: 100%; padding: 0 16px; }
-    .coin { width: 220px; height: 220px; }
+    .path-card { max-width: 100%; width: 100%; padding: 0 16px; align-items: center; }
+    .coin { width: 200px; height: 200px; padding: 20px; }
+    .coin-icon svg { width: 44px; height: 44px; }
+    .coin-title { font-size: 0.76rem; }
+    .coin-sub { font-size: 0.82rem; }
+    .path-frame { max-width: 100%; }
+    .path-frame-border { display: none; }
 
     /* FORM */
     .about-values { grid-template-columns: 1fr; }
@@ -2205,7 +2213,166 @@
     .nav-links a { font-size: 0.52rem; }
     .coin { width: 180px; height: 180px; }
   }
-</style>
+
+  /* ── OPTIONAL SECTIONS (Projects, Work Exp, Skills Categories) ── */
+  .optional-section {
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.25s;
+  }
+  .optional-section:focus-within { border-color: rgba(201,168,76,0.5); }
+
+  .optional-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: rgba(17,34,64,0.6);
+    cursor: pointer;
+    user-select: none;
+    gap: 12px;
+  }
+  .optional-section-header:hover { background: rgba(17,34,64,0.9); }
+
+  .optional-section-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+  }
+  .optional-section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    color: rgba(201,168,76,0.7);
+    text-transform: uppercase;
+  }
+  .optional-badge {
+    font-family: 'EB Garamond', serif;
+    font-size: 0.72rem;
+    color: rgba(201,168,76,0.45);
+    letter-spacing: 0.05em;
+    font-style: italic;
+  }
+  .optional-toggle-icon {
+    color: rgba(201,168,76,0.5);
+    font-size: 0.9rem;
+    transition: transform 0.25s;
+    flex-shrink: 0;
+  }
+  .optional-section.open .optional-toggle-icon { transform: rotate(180deg); }
+
+  .optional-section-body {
+    display: none;
+    padding: 16px 18px 18px;
+    background: rgba(13,27,46,0.4);
+    border-top: 1px solid rgba(201,168,76,0.12);
+  }
+  .optional-section.open .optional-section-body { display: flex; flex-direction: column; gap: 14px; }
+
+  /* Work experience entry */
+  .work-entry {
+    background: rgba(17,34,64,0.5);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 6px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    animation: fadeIn 0.25s ease both;
+  }
+  .work-entry-remove {
+    position: absolute;
+    top: 10px; right: 12px;
+    background: none;
+    border: none;
+    color: rgba(201,168,76,0.25);
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 3px;
+    transition: color 0.2s;
+  }
+  .work-entry-remove:hover { color: rgba(201,168,76,0.7); }
+
+  /* Project entry */
+  .project-entry {
+    background: rgba(17,34,64,0.5);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 6px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    animation: fadeIn 0.25s ease both;
+  }
+  .project-entry-remove {
+    position: absolute;
+    top: 10px; right: 12px;
+    background: none;
+    border: none;
+    color: rgba(201,168,76,0.25);
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 3px;
+    transition: color 0.2s;
+  }
+  .project-entry-remove:hover { color: rgba(201,168,76,0.7); }
+
+  .add-entry-btn {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.6);
+    background: transparent;
+    border: 1px dashed rgba(201,168,76,0.25);
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: all 0.25s;
+    width: 100%;
+    margin-top: 4px;
+  }
+  .add-entry-btn:hover {
+    border-color: rgba(201,168,76,0.6);
+    color: var(--gold);
+    background: rgba(201,168,76,0.04);
+  }
+
+  /* Skill category pills */
+  .skill-cats-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .skill-cat-pill {
+    font-family: 'EB Garamond', serif;
+    font-size: 0.88rem;
+    color: rgba(240,230,208,0.7);
+    background: rgba(17,34,64,0.6);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 50px;
+    padding: 6px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .skill-cat-pill:hover { border-color: rgba(201,168,76,0.5); }
+  .skill-cat-pill.selected {
+    background: rgba(201,168,76,0.15);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
 </head>
 <body>
 
@@ -2444,6 +2611,72 @@
         <label>Key Skills <span style="color:rgba(201,168,76,0.45);font-size:0.75em;letter-spacing:0.1em;">(Technical &amp; Soft)</span></label>
         <input id="f-skills" type="text" placeholder="e.g. Python, Project Management, Leadership, Data Analysis" />
         <div style="font-family:'EB Garamond',serif;font-size:0.82rem;color:rgba(240,230,208,0.35);margin-top:5px;">Separate with commas — highlighted in your CV.</div>
+      </div>
+
+      <!-- ══ OPTIONAL SECTIONS ══════════════════════════════════════ -->
+
+      <!-- Optional: Multiple Work Experiences -->
+      <div class="optional-section" id="opt-work">
+        <div class="optional-section-header" onclick="toggleOptional('opt-work')">
+          <div class="optional-section-label">
+            <span class="optional-section-title">💼 Work Experience</span>
+            <span class="optional-badge">(Optional — add specific jobs)</span>
+          </div>
+          <span class="optional-toggle-icon">▼</span>
+        </div>
+        <div class="optional-section-body">
+          <div style="font-family:'EB Garamond',serif;font-size:0.88rem;color:rgba(240,230,208,0.5);margin-bottom:4px;">
+            Add your specific work history. Leave empty and the AI will generate realistic positions from your achievements above.
+          </div>
+          <div id="work-entries-container"></div>
+          <button type="button" class="add-entry-btn" onclick="addWorkEntry()">+ Add Position</button>
+        </div>
+      </div>
+
+      <!-- Optional: Projects -->
+      <div class="optional-section" id="opt-projects">
+        <div class="optional-section-header" onclick="toggleOptional('opt-projects')">
+          <div class="optional-section-label">
+            <span class="optional-section-title">🚀 Projects</span>
+            <span class="optional-badge">(Optional — portfolios, startups, side projects)</span>
+          </div>
+          <span class="optional-toggle-icon">▼</span>
+        </div>
+        <div class="optional-section-body">
+          <div style="font-family:'EB Garamond',serif;font-size:0.88rem;color:rgba(240,230,208,0.5);margin-bottom:4px;">
+            Highlight personal or professional projects — great for developers, designers, and entrepreneurs.
+          </div>
+          <div id="project-entries-container"></div>
+          <button type="button" class="add-entry-btn" onclick="addProjectEntry()">+ Add Project</button>
+        </div>
+      </div>
+
+      <!-- Optional: Skills Categories -->
+      <div class="optional-section" id="opt-skill-cats">
+        <div class="optional-section-header" onclick="toggleOptional('opt-skill-cats')">
+          <div class="optional-section-label">
+            <span class="optional-section-title">⚡ Skills Categories</span>
+            <span class="optional-badge">(Optional — organise by category)</span>
+          </div>
+          <span class="optional-toggle-icon">▼</span>
+        </div>
+        <div class="optional-section-body">
+          <div style="font-family:'EB Garamond',serif;font-size:0.88rem;color:rgba(240,230,208,0.5);margin-bottom:8px;">
+            Select skill categories to include. The AI will add relevant skills under each.
+          </div>
+          <div class="skill-cats-grid" id="skill-cats-grid">
+            <span class="skill-cat-pill" onclick="toggleSkillCat(this)" data-cat="Technical Skills">💻 Technical</span>
+            <span class="skill-cat-pill" onclick="toggleSkillCat(this)" data-cat="Leadership">👑 Leadership</span>
+            <span class="skill-cat-pill" onclick="toggleSkillCat(this)" data-cat="Communication">🗣 Communication</span>
+            <span class="skill-cat-pill" onclick="toggleSkillCat(this)" data-cat="Data & Analytics">📊 Data & Analytics</span>
+            <span class="skill-cat-pill" onclick="toggleSkillCat(this)" data-cat="Project Management">📋 Project Management</span>
+            <span class="skill-cat-pill" onclick="toggleSkillCat(this)" data-cat="Design & Creative">🎨 Design & Creative</span>
+            <span class="skill-cat-pill" onclick="toggleSkillCat(this)" data-cat="Sales & Marketing">📈 Sales & Marketing</span>
+            <span class="skill-cat-pill" onclick="toggleSkillCat(this)" data-cat="Finance & Accounting">💰 Finance</span>
+            <span class="skill-cat-pill" onclick="toggleSkillCat(this)" data-cat="Research & Analysis">🔬 Research</span>
+            <span class="skill-cat-pill" onclick="toggleSkillCat(this)" data-cat="Languages">🌐 Languages</span>
+          </div>
+        </div>
       </div>
 
       <!-- Links: Royal & Elite only -->
@@ -5356,6 +5589,16 @@ function buildCVFromTemplate(templateName, data, tier) {
       </div>`).join('');
   }
 
+  function projectsList(projects, titleColor='#0d1b2e', metaColor='#777', textColor='#1a1a1a') {
+    if (!projects || !projects.length) return '';
+    return projects.map(p => `
+      <div class="kv-job">
+        <div class="kv-job-title" style="color:${titleColor};">${p.name||''}</div>
+        <div class="kv-job-meta" style="color:${metaColor};">${p.tech||''}${p.year ? sep+p.year : ''}</div>
+        ${p.desc ? `<ul><li style="color:${textColor};">${p.desc}</li></ul>` : ''}
+      </div>`).join('');
+  }
+
   function sectionLabel(label, color='#c9a84c', borderColor='#c9a84c') {
     return `<div class="kv-section-label" style="color:${color};border-bottom-color:${borderColor};">${label}</div>`;
   }
@@ -5402,6 +5645,7 @@ function buildCVFromTemplate(templateName, data, tier) {
         <p class="kv-summary" style="color:#333;">${d.summary||''}</p>
         ${sectionLabel(d.labels?.experience||'Experience','#c9a84c')}
         ${expItems(d.experience)}
+        ${d.projects?.length ? sectionLabel('Projects','#c9a84c')+projectsList(d.projects) : ''}
         ${sectionLabel(d.labels?.education||'Education','#c9a84c')}
         ${eduList(d.education)}
         ${extrasBlock}
@@ -5917,6 +6161,130 @@ function buildCVFromTemplate(templateName, data, tier) {
 }
 
 
+// ── OPTIONAL SECTIONS ────────────────────────────────────────────
+function toggleOptional(id) {
+  const sec = document.getElementById(id);
+  sec.classList.toggle('open');
+}
+
+// Work Entries
+let _workEntryCount = 0;
+function addWorkEntry() {
+  const n = ++_workEntryCount;
+  const container = document.getElementById('work-entries-container');
+  const div = document.createElement('div');
+  div.className = 'work-entry';
+  div.id = 'work-entry-' + n;
+  div.innerHTML = `
+    <button type="button" class="work-entry-remove" onclick="removeEntry('work-entry-${n}')" title="Remove">✕</button>
+    <div class="field-row">
+      <div class="field-group">
+        <label>Job Title</label>
+        <input type="text" class="we-title" placeholder="e.g. Senior Manager" />
+      </div>
+      <div class="field-group">
+        <label>Company</label>
+        <input type="text" class="we-company" placeholder="e.g. Aramco" />
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field-group">
+        <label>Start Year</label>
+        <input type="text" class="we-start" placeholder="e.g. 2020" />
+      </div>
+      <div class="field-group">
+        <label>End Year</label>
+        <input type="text" class="we-end" placeholder="e.g. 2023 or Present" />
+      </div>
+    </div>
+    <div class="field-group">
+      <label>Key Responsibilities / Achievements</label>
+      <textarea class="we-desc" placeholder="Describe what you did and achieved in this role..." style="min-height:80px;"></textarea>
+    </div>
+  `;
+  container.appendChild(div);
+}
+
+// Project Entries
+let _projectEntryCount = 0;
+function addProjectEntry() {
+  const n = ++_projectEntryCount;
+  const container = document.getElementById('project-entries-container');
+  const div = document.createElement('div');
+  div.className = 'project-entry';
+  div.id = 'project-entry-' + n;
+  div.innerHTML = `
+    <button type="button" class="project-entry-remove" onclick="removeEntry('project-entry-${n}')" title="Remove">✕</button>
+    <div class="field-row">
+      <div class="field-group">
+        <label>Project Name</label>
+        <input type="text" class="pe-name" placeholder="e.g. KAVOX CV Builder" />
+      </div>
+      <div class="field-group">
+        <label>Year / Period</label>
+        <input type="text" class="pe-year" placeholder="e.g. 2024 or 2023–2024" />
+      </div>
+    </div>
+    <div class="field-group">
+      <label>Technologies / Tools Used</label>
+      <input type="text" class="pe-tech" placeholder="e.g. React, Node.js, Supabase" />
+    </div>
+    <div class="field-group">
+      <label>Description & Impact</label>
+      <textarea class="pe-desc" placeholder="What did you build and what impact did it have?" style="min-height:70px;"></textarea>
+    </div>
+  `;
+  container.appendChild(div);
+}
+
+function removeEntry(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(-6px)';
+  el.style.transition = 'all 0.2s ease';
+  setTimeout(() => el.remove(), 200);
+}
+
+// Skill Categories Toggle
+function toggleSkillCat(pill) {
+  pill.classList.toggle('selected');
+}
+
+// Collect optional data
+function collectOptionalData() {
+  // Work entries
+  const workEntries = [];
+  document.querySelectorAll('.work-entry').forEach(entry => {
+    const title   = entry.querySelector('.we-title')?.value.trim();
+    const company = entry.querySelector('.we-company')?.value.trim();
+    const start   = entry.querySelector('.we-start')?.value.trim();
+    const end     = entry.querySelector('.we-end')?.value.trim();
+    const desc    = entry.querySelector('.we-desc')?.value.trim();
+    if (title || company) {
+      workEntries.push({ title, company, dates: [start, end].filter(Boolean).join(' - '), desc });
+    }
+  });
+
+  // Project entries
+  const projectEntries = [];
+  document.querySelectorAll('.project-entry').forEach(entry => {
+    const name = entry.querySelector('.pe-name')?.value.trim();
+    const year = entry.querySelector('.pe-year')?.value.trim();
+    const tech = entry.querySelector('.pe-tech')?.value.trim();
+    const desc = entry.querySelector('.pe-desc')?.value.trim();
+    if (name) {
+      projectEntries.push({ name, year, tech, desc });
+    }
+  });
+
+  // Skill categories
+  const skillCats = [...document.querySelectorAll('.skill-cat-pill.selected')]
+    .map(p => p.getAttribute('data-cat'));
+
+  return { workEntries, projectEntries, skillCats };
+}
+
 async function generateCV(tier) {
   const name      = document.getElementById('f-name').value.trim() || 'Professional';
   const email     = document.getElementById('f-email').value.trim() || '';
@@ -5931,6 +6299,9 @@ async function generateCV(tier) {
   const linkedin  = document.getElementById('f-linkedin')?.value.trim() || '';
   const portfolio = document.getElementById('f-portfolio')?.value.trim() || '';
   const template  = document.getElementById('f-template').value || 'Professional';
+
+  // ── COLLECT OPTIONAL SECTIONS ─────────────────────────────────
+  const optData = collectOptionalData();
 
   // ── AUTO-DETECT LANGUAGE FROM NAME & INPUTS ───────────────────
   function detectLang(text) {
@@ -6124,6 +6495,21 @@ async function generateCV(tier) {
     ? `- User-provided skills: ${skillsRaw} — INCLUDE these in the skills array, add complementary ones if needed`
     : '- Generate 5-6 relevant skills based on industry and title';
 
+  // Build optional sections for prompt
+  const workEntriesStr = optData.workEntries.length > 0
+    ? '\n- Specific Work History (USE THESE EXACTLY, do not invent others):\n' +
+      optData.workEntries.map((w,i) => `  ${i+1}. ${w.title||''}${w.company ? ' @ '+w.company : ''}${w.dates ? ' ('+w.dates+')' : ''}${w.desc ? ': '+w.desc : ''}`).join('\n')
+    : '';
+
+  const projectsStr = optData.projectEntries.length > 0
+    ? '\n- Projects to include in CV:\n' +
+      optData.projectEntries.map((p,i) => `  ${i+1}. ${p.name}${p.year ? ' ('+p.year+')' : ''}${p.tech ? ' — Tech: '+p.tech : ''}${p.desc ? ': '+p.desc : ''}`).join('\n')
+    : '';
+
+  const skillCatsStr = optData.skillCats.length > 0
+    ? `\n- Skill Categories requested: ${optData.skillCats.join(', ')} — organise skills under these categories`
+    : '';
+
   // Build links for the prompt
   const linksInfo = [linkedin ? `LinkedIn: ${linkedin}` : '', portfolio ? `Portfolio/GitHub: ${portfolio}` : ''].filter(Boolean).join(', ');
 
@@ -6147,7 +6533,7 @@ CANDIDATE:
 - Skills provided by user: ${skillsRaw || 'None — generate from industry/title'}
 - Professional links: ${linksInfo || 'None'}
 - Languages spoken: ${translatedLangs.join(', ') || 'Not specified'}
-- Path: ${pathLabel}
+- Path: ${pathLabel}${workEntriesStr}${projectsStr}${skillCatsStr}
 
 LANGUAGE: ${langInstruction}
 TONE: ${tierTone}
@@ -6169,17 +6555,20 @@ Return this exact JSON structure:
   "skills": ["Skill 1","Skill 2","Skill 3","Skill 4","Skill 5","Skill 6"]
   ${linksJsonField}
   ,"languages": ${JSON.stringify(translatedLangs.length ? translatedLangs : ['English (Native)'])}
+  ${optData.projectEntries.length > 0 ? ',"projects": [{"name":"Project Name","year":"2024","tech":"Tools used","desc":"What you built and achieved"}]' : ''}
   ${tierExtraFields}
   ,"rtl": ${lc.rtl}
 }
 
 RULES:
-- experience: generate 2-3 relevant positions based on the info provided
+- experience: ${optData.workEntries.length > 0 ? 'USE THE EXACT work history provided above — do NOT invent other positions' : 'generate 2-3 relevant positions based on the info provided'}
 - skills: ${skillsRaw ? 'include all user-provided skills first, then add complementary ones to reach 6 total. Write in the CV language.' : 'generate 5-6 relevant skills based on industry and title — write in the CV language'}
 - bullets: ${tier==='pro'?'2-3 bullets per job':'3-4 quantified bullets per job with numbers/percentages'}
 - dates: always write in format "YYYY - YYYY" or "YYYY - Present"
 - If exp is "Fresh Graduate / No Experience": create 1 entry as internship or academic project, do NOT invent fake work history
 - languages array: use exactly the languages provided, keep the level text as-is
+- ${optData.projectEntries.length > 0 ? 'projects: include EXACTLY the projects provided, write descriptions professionally in the CV language' : 'projects: omit this field if not provided'}
+- ${optData.skillCats.length > 0 ? 'skill categories: organise skills under the requested categories in the summary or a separate section' : ''}
 - Return ONLY the JSON object, nothing else`;
 
   showPage('confirm');
