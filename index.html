@@ -5307,14 +5307,15 @@ const CV_SYSTEM_PROMPT = `You are an expert Frontend Engineer and UI/UX Designer
 
 // ── CALL ONE PROVIDER (via Netlify serverless function) ───────────
 // API keys are stored securely as environment variables on the server.
-async function callProvider(provider, prompt) {
+async function callProvider(provider, prompt, userData) {
   const response = await fetch('/api/ai', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       provider: provider.providerKey,
       systemPrompt: CV_SYSTEM_PROMPT,
-      prompt
+      prompt,
+      userData: userData || null
     })
   });
   if (response.status === 429 || response.status === 403) throw new Error('LIMIT');
@@ -6348,7 +6349,7 @@ RULES:
     const provider = API_PROVIDERS[(currentProviderIndex + i) % API_PROVIDERS.length];
     try {
       updateLoadingStatus(`Crafting your ${tier.toUpperCase()} CV with KAVOX AI…`, 20 + (i * 25));
-      const rawText = await callProvider(provider, prompt);
+      const rawText = await callProvider(provider, prompt, { name, email, language: cvLang, tier });
       if (!rawText) throw new Error('EMPTY');
 
       currentProviderIndex = (currentProviderIndex + i + 1) % API_PROVIDERS.length;
