@@ -1,0 +1,31 @@
+// api/config.js
+// KAVOX — Secure config endpoint. Returns Supabase credentials from env vars.
+
+export default async function handler(req, res) {
+
+  // ── CORS ───────────────────────────────────────────────────────
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-internal-token');
+
+  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  // ── TOKEN CHECK ────────────────────────────────────────────────
+  const token = req.headers['x-internal-token'];
+  if (token !== 'kavox-internal-2024') {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  // ── RETURN ENV VARS ────────────────────────────────────────────
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    return res.status(500).json({ error: 'Supabase env vars not configured' });
+  }
+
+  return res.status(200).json({ supabaseUrl, supabaseKey });
+}
