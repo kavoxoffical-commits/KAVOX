@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>KAVOX – AI-Powered Professional CV Builder | 25 Languages</title>
 
+<!-- ── Favicon ── -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%23000'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='serif' font-size='28' font-weight='bold' fill='%23C9A84C'>K</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%23000'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='serif' font-size='28' font-weight='bold' fill='%23C9A84C'>K</text></svg>">
+
 <!-- ── SEO META ── -->
 <meta name="description" content="Create a stunning, ATS-optimised professional CV in seconds with KAVOX AI. 20+ premium templates, 25 languages supported. Pro from $5, Elite from $19.">
 <meta name="keywords" content="CV builder, resume maker, AI CV, professional resume, ATS resume, Arabic CV, multilingual resume, online CV generator, KAVOX">
@@ -4839,166 +4843,6 @@
 </div>
 
 
-<!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
-<!-- PAGE: ADMIN DASHBOARD                 -->
-<!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
-<div id="page-admin" class="page" style="display:none;">
-  <div style="max-width:1100px;margin:0 auto;padding:100px 40px 60px;width:100%;z-index:10;position:relative;">
-
-    <!-- Header -->
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:40px;flex-wrap:wrap;gap:16px;">
-      <div>
-        <div style="font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.35em;color:rgba(201,168,76,0.55);text-transform:uppercase;margin-bottom:6px;">Control Panel</div>
-        <h1 style="font-family:'Cinzel',serif;font-size:1.8rem;font-weight:700;color:var(--gold);">KAVOX Dashboard</h1>
-      </div>
-      <div style="display:flex;gap:12px;align-items:center;">
-        <div id="admin-online-badge" style="display:flex;align-items:center;gap:6px;background:rgba(0,200,100,0.1);border:1px solid rgba(0,200,100,0.3);border-radius:20px;padding:6px 14px;">
-          <div style="width:7px;height:7px;border-radius:50%;background:#00c864;animation:pulse-green 2s ease infinite;"></div>
-          <span style="font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.15em;color:rgba(0,200,100,0.9);">LIVE</span>
-        </div>
-        <button onclick="showPage('hero')" class="btn-secondary" style="padding:10px 24px;font-size:0.68rem;">← Back to Site</button>
-        <button onclick="adminLogout()" style="font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.15em;background:rgba(229,115,115,0.1);border:1px solid rgba(229,115,115,0.3);color:#e57373;padding:10px 20px;border-radius:50px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(229,115,115,0.2)'" onmouseout="this.style.background='rgba(229,115,115,0.1)'">Logout</button>
-      </div>
-    </div>
-
-    <!-- Stats Cards -->
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:40px;">
-      <div class="admin-stat-card" id="stat-total-orders">
-        <div class="stat-icon">📄</div>
-        <div class="stat-value" id="val-total-orders">—</div>
-        <div class="stat-label">Total Orders</div>
-      </div>
-      <div class="admin-stat-card" id="stat-revenue">
-        <div class="stat-icon">💰</div>
-        <div class="stat-value" id="val-revenue">—</div>
-        <div class="stat-label">Total Revenue</div>
-      </div>
-      <div class="admin-stat-card">
-        <div class="stat-icon">✦</div>
-        <div class="stat-value" id="val-pro-count">—</div>
-        <div class="stat-label">Pro Orders</div>
-      </div>
-      <div class="admin-stat-card" style="border-color:rgba(201,168,76,0.45);">
-        <div class="stat-icon">♛</div>
-        <div class="stat-value" id="val-royal-count">—</div>
-        <div class="stat-label">Royal Orders</div>
-      </div>
-      <div class="admin-stat-card" style="border-color:rgba(201,168,76,0.6);box-shadow:0 0 20px rgba(201,168,76,0.08);">
-        <div class="stat-icon">◈</div>
-        <div class="stat-value" id="val-elite-count">—</div>
-        <div class="stat-label">Elite Orders</div>
-      </div>
-      <div class="admin-stat-card">
-        <div class="stat-icon">📅</div>
-        <div class="stat-value" id="val-today">—</div>
-        <div class="stat-label">Today</div>
-      </div>
-    </div>
-
-    <!-- Revenue Chart placeholder -->
-    <div style="background:linear-gradient(160deg,#112240,#0d1b2e);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:24px 28px;margin-bottom:32px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
-        <div style="font-family:'Cinzel',serif;font-size:0.82rem;letter-spacing:0.15em;color:var(--gold);">Revenue — Last 7 Days</div>
-        <div id="admin-refresh-btn" onclick="loadAdminData()" style="font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.15em;color:rgba(201,168,76,0.6);cursor:pointer;padding:6px 14px;border:1px solid rgba(201,168,76,0.2);border-radius:20px;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.5)'" onmouseout="this.style.borderColor='rgba(201,168,76,0.2)'">↻ Refresh</div>
-      </div>
-      <div id="admin-chart" style="display:flex;align-items:flex-end;gap:8px;height:80px;padding:0 4px;">
-        <!-- bars injected by JS -->
-      </div>
-    </div>
-
-    <!-- Orders Table -->
-    <div style="background:linear-gradient(160deg,#112240,#0d1b2e);border:1px solid rgba(201,168,76,0.2);border-radius:10px;overflow:hidden;margin-bottom:32px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid rgba(201,168,76,0.15);flex-wrap:wrap;gap:12px;">
-        <div style="font-family:'Cinzel',serif;font-size:0.82rem;letter-spacing:0.15em;color:var(--gold);">Recent Orders</div>
-        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-          <input id="admin-search" type="text" placeholder="Search name or email…" oninput="filterAdminOrders()" style="background:rgba(13,27,46,0.8);border:1px solid rgba(201,168,76,0.25);border-radius:4px;padding:8px 14px;color:var(--white);font-family:'EB Garamond',serif;font-size:0.9rem;outline:none;width:220px;" />
-          <select id="admin-filter-tier" onchange="filterAdminOrders()" style="background:rgba(13,27,46,0.8);border:1px solid rgba(201,168,76,0.25);border-radius:4px;padding:8px 14px;color:var(--gold);font-family:'Cinzel',serif;font-size:0.68rem;outline:none;cursor:pointer;letter-spacing:0.1em;-webkit-appearance:none;">
-            <option value="">All Tiers</option>
-            <option value="pro">Pro</option>
-            <option value="royal">Royal</option>
-            <option value="elite">Elite</option>
-          </select>
-        </div>
-      </div>
-      <div style="overflow-x:auto;">
-        <table style="width:100%;border-collapse:collapse;">
-          <thead>
-            <tr style="background:rgba(201,168,76,0.06);">
-              <th class="admin-th">#</th>
-              <th class="admin-th">Name</th>
-              <th class="admin-th">Email</th>
-              <th class="admin-th">Tier</th>
-              <th class="admin-th">Template</th>
-              <th class="admin-th">Amount</th>
-              <th class="admin-th">Status</th>
-              <th class="admin-th">Date</th>
-            </tr>
-          </thead>
-          <tbody id="admin-orders-body">
-            <tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text-muted);font-family:'EB Garamond',serif;">Loading orders…</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div style="padding:14px 24px;border-top:1px solid rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-        <div id="admin-pagination-info" style="font-family:'EB Garamond',serif;font-size:0.85rem;color:var(--text-muted);"></div>
-        <div style="display:flex;gap:8px;">
-          <button id="btn-prev-page" onclick="adminChangePage(-1)" class="admin-page-btn">← Prev</button>
-          <button id="btn-next-page" onclick="adminChangePage(1)" class="admin-page-btn">Next →</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Supabase Config Panel -->
-    <div style="background:linear-gradient(160deg,#112240,#0d1b2e);border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:24px 28px;">
-      <div style="font-family:'Cinzel',serif;font-size:0.82rem;letter-spacing:0.15em;color:rgba(201,168,76,0.7);margin-bottom:16px;">⚙ Database Configuration</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-        <div>
-          <label style="font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.2em;color:rgba(201,168,76,0.5);text-transform:uppercase;display:block;margin-bottom:6px;">Supabase URL</label>
-          <input id="cfg-supabase-url" type="text" placeholder="https://xxx.supabase.co" style="width:100%;background:rgba(13,27,46,0.8);border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:10px 14px;color:var(--white);font-family:'EB Garamond',serif;font-size:0.9rem;outline:none;" />
-        </div>
-        <div>
-          <label style="font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.2em;color:rgba(201,168,76,0.5);text-transform:uppercase;display:block;margin-bottom:6px;">Supabase Anon Key</label>
-          <input id="cfg-supabase-key" type="password" placeholder="eyJ…" style="width:100%;background:rgba(13,27,46,0.8);border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:10px 14px;color:var(--white);font-family:'EB Garamond',serif;font-size:0.9rem;outline:none;" />
-        </div>
-        <div>
-          <label style="font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.2em;color:rgba(201,168,76,0.5);text-transform:uppercase;display:block;margin-bottom:6px;">Stripe Publishable Key</label>
-          <input id="cfg-stripe-key" type="text" placeholder="pk_live_…" style="width:100%;background:rgba(13,27,46,0.8);border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:10px 14px;color:var(--white);font-family:'EB Garamond',serif;font-size:0.9rem;outline:none;" />
-        </div>
-        <div>
-          <label style="font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.2em;color:rgba(201,168,76,0.5);text-transform:uppercase;display:block;margin-bottom:6px;">Admin Password</label>
-          <input id="cfg-admin-pass" type="password" placeholder="Change admin password" style="width:100%;background:rgba(13,27,46,0.8);border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:10px 14px;color:var(--white);font-family:'EB Garamond',serif;font-size:0.9rem;outline:none;" />
-        </div>
-      </div>
-      <button onclick="saveAdminConfig()" class="btn-secondary" style="padding:10px 28px;font-size:0.72rem;">Save Configuration</button>
-      <span id="cfg-save-msg" style="font-family:'EB Garamond',serif;font-size:0.85rem;color:#4caf50;margin-left:14px;display:none;">✓ Saved</span>
-    </div>
-
-  </div>
-  <footer class="site-footer">
-    <span class="footer-logo">KAVOX</span>
-    <ul class="footer-links"><li><a onclick="showPage('legal')">Legal</a></li></ul>
-  </footer>
-</div>
-
-<!-- ░░ Admin Login Modal ░░ -->
-<div id="modal-admin-login" class="modal-overlay" onclick="if(event.target===this)this.classList.remove('open')">
-  <div class="modal-box" style="max-width:400px;">
-    <button class="modal-close" onclick="document.getElementById('modal-admin-login').classList.remove('open')">✕</button>
-    <div class="modal-emblem">🔐</div>
-    <div style="font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.3em;color:rgba(201,168,76,0.6);text-transform:uppercase;">Admin Access</div>
-    <div class="modal-title">Dashboard Login</div>
-    <div style="width:100%;">
-      <input id="admin-login-pass" type="password" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')attemptAdminLogin()"
-        style="width:100%;background:rgba(13,27,46,0.8);border:1px solid rgba(201,168,76,0.25);border-radius:4px;padding:14px 18px;color:var(--white);font-family:'EB Garamond',serif;font-size:1rem;outline:none;margin-bottom:8px;" />
-      <div id="admin-login-error" style="color:#e57373;font-size:0.82rem;font-family:'EB Garamond',serif;display:none;margin-bottom:4px;">⚠ Incorrect password</div>
-    </div>
-    <div class="modal-actions">
-      <button class="modal-btn-confirm" onclick="attemptAdminLogin()">Access Dashboard</button>
-      <button class="modal-btn-cancel" onclick="document.getElementById('modal-admin-login').classList.remove('open')">Cancel</button>
-    </div>
-  </div>
-</div>
-
 <!-- ░░ SCRIPTS ░░ -->
 <script>
 // ── FREE TRIAL BANNER ──────────────────────────────────────────────
@@ -5029,18 +4873,10 @@ const API_PROVIDERS = [
 ];
 let currentProviderIndex = 0;
 
-// ── ADMIN STATE (declared early for showPage guard) ──────────────
-let _adminLoggedIn = false;
-
 // ── PAGE NAVIGATION ──────────────────────────────────────────────
-const pages = ['hero','path','form','pricing','confirm','result','templates','about','tpl-picker','legal','admin'];
+const pages = ['hero','path','form','pricing','confirm','result','templates','about','tpl-picker','legal'];
 
 function showPage(id) {
-  // Admin protection
-  if (id === 'admin' && !_adminLoggedIn) {
-    openAdminLogin();
-    return;
-  }
   pages.forEach(p => {
     const el = document.getElementById('page-' + p);
     if (el) el.classList.remove('active');
@@ -6377,9 +6213,6 @@ RULES:
       window._cvName = name;
       window._cvData = cvData;
 
-      // Save to Supabase (non-blocking)
-  
-
       renderResult(cvHTML, tier);
       showPage('result');
       return;
@@ -6725,310 +6558,33 @@ function removePhoto(event) {
   document.getElementById('photo-preview-state').style.display = 'none';
 }
 
-// ── SUPABASE + STRIPE INTEGRATION ────────────────────────────────
-
-// Default Supabase credentials (hardcoded)
-const _DEFAULT_SB_URL = 'https://ecgkwuvnceoghtlugpxm.supabase.co';
-const _DEFAULT_SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVjZ2t3dXZuY2VvZ2h0bHVncHhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg0ODAyMjAsImV4cCI6MjA2NDA1NjIyMH0.FzZSIsI';
-
-// Load saved config from localStorage (falls back to hardcoded defaults)
-function getAdminConfig() {
-  return {
-    supabaseUrl:  localStorage.getItem('kv_sb_url')   || _DEFAULT_SB_URL,
-    supabaseKey:  localStorage.getItem('kv_sb_key')   || _DEFAULT_SB_KEY,
-    stripeKey:    localStorage.getItem('kv_stripe_key')|| '',
-    adminPass:    localStorage.getItem('kv_admin_pass')|| 'kavox2024'
-  };
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function saveAdminConfig() {
-  const url  = document.getElementById('cfg-supabase-url').value.trim();
-  const key  = document.getElementById('cfg-supabase-key').value.trim();
-  const sk   = document.getElementById('cfg-stripe-key').value.trim();
-  const pass = document.getElementById('cfg-admin-pass').value.trim();
-  if (url)  localStorage.setItem('kv_sb_url', url);
-  if (key)  localStorage.setItem('kv_sb_key', key);
-  if (sk)   localStorage.setItem('kv_stripe_key', sk);
-  if (pass) localStorage.setItem('kv_admin_pass', pass);
-  const msg = document.getElementById('cfg-save-msg');
-  msg.style.display = 'inline';
-  setTimeout(() => msg.style.display = 'none', 2500);
-  // Re-init Supabase if URL/key changed
-  initSupabase();
-}
-
-// ── SUPABASE CLIENT ───────────────────────────────────────────────
+// ── SUPABASE CORE ──────────────────────────────────────────────────
 let _sb = null;
-function initSupabase() {
-  const cfg = getAdminConfig();
-  if (!cfg.supabaseUrl || !cfg.supabaseKey) return;
-  // Dynamically load Supabase JS if not loaded
-  if (!window.supabase) {
-    const s = document.createElement('script');
-    s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
-    s.onload = () => {
-      _sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseKey);
-    };
-    document.head.appendChild(s);
-  } else {
-    _sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseKey);
-  }
-}
 
-// ── SAVE ORDER TO SUPABASE ────────────────────────────────────────
-async function saveOrderToSupabase(orderData) {
-  if (!_sb) { initSupabase(); if (!_sb) return; }
+async function initSupabase() {
+  if (_sb) return;
   try {
-    await _sb.from('kavox_orders').insert([orderData]);
-  } catch(e) {
-    console.warn('Supabase save failed:', e);
-  }
+    const res = await fetch('/api/config', {
+      headers: { 'x-internal-token': 'kavox-internal-2024' }
+    });
+    if (!res.ok) { console.warn('Config fetch failed', res.status); return; }
+    const cfg = await res.json();
+    if (!cfg.supabaseUrl || !cfg.supabaseKey) { console.warn('Supabase env vars missing from config'); return; }
+    const { createClient } = window.supabase;
+    _sb = createClient(cfg.supabaseUrl, cfg.supabaseKey);
+  } catch(e) { console.warn('Supabase init failed:', e); }
 }
 
-// ── SAVE CV TO SUPABASE ──────────────────────────────────────────
-async function saveCVToSupabase(name, email, tier, language, cvHTML) {
+async function saveOrderToSupabase(order) {
   if (!_sb) { initSupabase(); await new Promise(r => setTimeout(r, 800)); }
   if (!_sb) return;
   try {
-    await _sb.from('cvs').insert([{ name, email, tier, language, cv_html: cvHTML }]);
-  } catch(e) {
-    console.warn('Supabase CV save failed:', e);
-  }
-}
-
-// ── STRIPE CHECKOUT ───────────────────────────────────────────────
-async function launchStripeCheckout(tier, downloadFormat) {
-  const cfg = getAdminConfig();
-  // Price IDs — replace with your Stripe price IDs
-  const prices = {
-    pro:   window._stripePrices?.pro   || 'price_pro_placeholder',
-    royal: window._stripePrices?.royal || 'price_royal_placeholder',
-    elite: window._stripePrices?.elite || 'price_elite_placeholder'
-  };
-
-  if (!cfg.stripeKey || cfg.stripeKey.startsWith('pk_live_placeholder') || cfg.stripeKey === '') {
-    // Demo mode: skip payment and download directly
-    _doDownloadCV(downloadFormat);
-    document.getElementById('modal-payment').classList.remove('open');
-    return;
-  }
-
-  // Load Stripe.js if not loaded
-  if (!window.Stripe) {
-    await new Promise((res, rej) => {
-      const s = document.createElement('script');
-      s.src = 'https://js.stripe.com/v3/';
-      s.onload = res; s.onerror = rej;
-      document.head.appendChild(s);
-    });
-  }
-
-  const stripe = window.Stripe(cfg.stripeKey);
-  const amounts = { pro: 500, royal: 900, elite: 1900 };
-  const names   = { pro: 'KAVOX Pro CV', royal: 'KAVOX Royal CV', elite: 'KAVOX Elite CV' };
-
-  // For demo/dev: show payment modal (real Stripe Checkout requires server)
-  document.getElementById('modal-payment').classList.remove('open');
-  _doDownloadCV(downloadFormat);
-}
-
-// ── ADMIN AUTH ────────────────────────────────────────────────────
-
-function openAdminLogin() {
-  document.getElementById('admin-login-pass').value = '';
-  document.getElementById('admin-login-error').style.display = 'none';
-  document.getElementById('modal-admin-login').classList.add('open');
-  setTimeout(() => document.getElementById('admin-login-pass').focus(), 300);
-}
-
-function attemptAdminLogin() {
-  const entered = document.getElementById('admin-login-pass').value;
-  const correct = getAdminConfig().adminPass;
-  if (entered === correct) {
-    _adminLoggedIn = true;
-    document.getElementById('modal-admin-login').classList.remove('open');
-    // Prefill saved config
-    const cfg = getAdminConfig();
-    document.getElementById('cfg-supabase-url').value = cfg.supabaseUrl;
-    document.getElementById('cfg-supabase-key').value = cfg.supabaseKey ? '••••••••' : '';
-    document.getElementById('cfg-stripe-key').value   = cfg.stripeKey   ? '••••••••' : '';
-    showPage('admin');
-    loadAdminData();
-  } else {
-    document.getElementById('admin-login-error').style.display = 'block';
-    document.getElementById('admin-login-pass').classList.add('field-invalid');
-    setTimeout(() => document.getElementById('admin-login-pass').classList.remove('field-invalid'), 600);
-  }
-}
-
-function adminLogout() {
-  _adminLoggedIn = false;
-  showPage('hero');
-}
-
-// Admin protection is integrated directly in showPage above
-
-// ── ADMIN DATA ────────────────────────────────────────────────────
-let _allOrders = [];
-let _adminPage = 0;
-const ORDERS_PER_PAGE = 20;
-
-async function loadAdminData() {
-  if (!_sb) { initSupabase(); }
-
-  // Demo data (shown when Supabase not connected)
-  const demoOrders = generateDemoOrders();
-  _allOrders = demoOrders;
-
-  if (_sb) {
-    try {
-      const { data, error } = await _sb
-        .from('kavox_orders')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(500);
-      if (!error && data && data.length > 0) {
-        _allOrders = data;
-      }
-    } catch(e) {
-      console.warn('Supabase fetch error:', e);
-    }
-  }
-
-  renderAdminStats(_allOrders);
-  renderAdminChart(_allOrders);
-  renderAdminOrders(_allOrders, 0);
-}
-
-function generateDemoOrders() {
-  const names   = ['Ahmed Al-Rashid','Sarah Johnson','Mohammed Al-Farsi','Emily Chen','Khaled Al-Mutairi','Priya Sharma','Omar Hassan','Laura García','Ali Al-Zahrani','James Wilson'];
-  const tiers   = ['pro','pro','royal','royal','elite','pro','elite','royal','pro','elite'];
-  const tmpl    = ['The Minimalist','The Executive Clean','Royal Dark Mode','The Visionary','The Charcoal Signature'];
-  const amounts = { pro: 5, royal: 9, elite: 19 };
-  const statuses = ['paid','paid','paid','paid','paid','paid','pending','paid','paid','paid'];
-  const orders = [];
-  for (let i = 0; i < 38; i++) {
-    const name  = names[i % names.length];
-    const tier  = tiers[i % tiers.length];
-    const daysAgo = Math.floor(Math.random() * 30);
-    const d = new Date(); d.setDate(d.getDate() - daysAgo);
-    orders.push({
-      id: 1000 + i,
-      name,
-      email: name.toLowerCase().replace(/\s+/g,'.') + '@example.com',
-      tier,
-      template: tmpl[i % tmpl.length],
-      amount: amounts[tier],
-      status: statuses[i % statuses.length],
-      created_at: d.toISOString()
-    });
-  }
-  return orders.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
-}
-
-function renderAdminStats(orders) {
-  const paid = orders.filter(o => o.status === 'paid');
-  const revenue = paid.reduce((s,o) => s + (Number(o.amount)||0), 0);
-  const today   = new Date().toDateString();
-  const todayCount = orders.filter(o => new Date(o.created_at).toDateString() === today).length;
-
-  document.getElementById('val-total-orders').textContent = orders.length;
-  document.getElementById('val-revenue').textContent = '$' + revenue.toLocaleString();
-  document.getElementById('val-pro-count').textContent   = orders.filter(o => o.tier === 'pro').length;
-  document.getElementById('val-royal-count').textContent = orders.filter(o => o.tier === 'royal').length;
-  document.getElementById('val-elite-count').textContent = orders.filter(o => o.tier === 'elite').length;
-  document.getElementById('val-today').textContent = todayCount;
-}
-
-function renderAdminChart(orders) {
-  const chart = document.getElementById('admin-chart');
-  if (!chart) return;
-  // Build last 7 days
-  const days = [];
-  for (let i = 6; i >= 0; i--) {
-    const d = new Date(); d.setDate(d.getDate() - i);
-    const label = d.toLocaleDateString('en',{weekday:'short'});
-    const key   = d.toDateString();
-    const dayOrders = orders.filter(o => new Date(o.created_at).toDateString() === key);
-    const rev = dayOrders.filter(o=>o.status==='paid').reduce((s,o)=>s+(Number(o.amount)||0),0);
-    days.push({ label, rev });
-  }
-  const maxRev = Math.max(...days.map(d=>d.rev), 1);
-  chart.innerHTML = days.map(d => {
-    const pct = Math.max((d.rev / maxRev) * 100, 3);
-    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
-      <div style="font-family:'Cinzel',serif;font-size:0.58rem;color:rgba(201,168,76,0.7);">$${d.rev}</div>
-      <div style="width:100%;height:${Math.round(pct * 0.72)}px;background:linear-gradient(to top,#c9a84c,rgba(201,168,76,0.4));border-radius:3px 3px 0 0;min-height:3px;transition:height 0.5s;"></div>
-      <div style="font-family:'EB Garamond',serif;font-size:0.72rem;color:var(--text-muted);">${d.label}</div>
-    </div>`;
-  }).join('');
-}
-
-function renderAdminOrders(orders, page) {
-  _adminPage = page;
-  const tbody = document.getElementById('admin-orders-body');
-  const start = page * ORDERS_PER_PAGE;
-  const slice = orders.slice(start, start + ORDERS_PER_PAGE);
-
-  if (slice.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text-muted);font-family:\'EB Garamond\',serif;">No orders found</td></tr>';
-    document.getElementById('admin-pagination-info').textContent = '';
-    document.getElementById('btn-prev-page').disabled = true;
-    document.getElementById('btn-next-page').disabled = true;
-    return;
-  }
-
-  tbody.innerHTML = slice.map((o, idx) => `
-    <tr style="transition:background 0.2s;" onmouseover="this.style.background='rgba(201,168,76,0.04)'" onmouseout="this.style.background='transparent'">
-      <td class="admin-td admin-td-muted">${o.id || start+idx+1}</td>
-      <td class="admin-td" style="font-weight:600;">${escHtml(o.name||'—')}</td>
-      <td class="admin-td admin-td-muted">${escHtml(o.email||'—')}</td>
-      <td class="admin-td"><span class="tier-pill tier-pill-${o.tier||'pro'}">${o.tier||'pro'}</span></td>
-      <td class="admin-td admin-td-muted">${escHtml(o.template||'—')}</td>
-      <td class="admin-td" style="color:var(--gold);font-family:'Cinzel',serif;">$${o.amount||0}</td>
-      <td class="admin-td"><span class="status-pill status-${o.status||'pending'}">${o.status||'pending'}</span></td>
-      <td class="admin-td admin-td-muted">${new Date(o.created_at).toLocaleDateString('en',{month:'short',day:'numeric',year:'2-digit'})}</td>
-    </tr>`).join('');
-
-  const total = orders.length;
-  const end = Math.min(start + ORDERS_PER_PAGE, total);
-  document.getElementById('admin-pagination-info').textContent = `Showing ${start+1}–${end} of ${total}`;
-  document.getElementById('btn-prev-page').disabled = page === 0;
-  document.getElementById('btn-next-page').disabled = end >= total;
-}
-
-function filterAdminOrders() {
-  const search = (document.getElementById('admin-search')?.value || '').toLowerCase();
-  const tier   = document.getElementById('admin-filter-tier')?.value || '';
-  const filtered = _allOrders.filter(o => {
-    const matchTier = !tier || o.tier === tier;
-    const matchSearch = !search ||
-      (o.name||'').toLowerCase().includes(search) ||
-      (o.email||'').toLowerCase().includes(search);
-    return matchTier && matchSearch;
-  });
-  renderAdminOrders(filtered, 0);
-}
-
-function adminChangePage(dir) {
-  const search = (document.getElementById('admin-search')?.value || '').toLowerCase();
-  const tier   = document.getElementById('admin-filter-tier')?.value || '';
-  const filtered = _allOrders.filter(o => {
-    const matchTier = !tier || o.tier === tier;
-    const matchSearch = !search ||
-      (o.name||'').toLowerCase().includes(search) ||
-      (o.email||'').toLowerCase().includes(search);
-    return matchTier && matchSearch;
-  });
-  const newPage = _adminPage + dir;
-  const maxPage = Math.floor((filtered.length - 1) / ORDERS_PER_PAGE);
-  if (newPage >= 0 && newPage <= maxPage) {
-    renderAdminOrders(filtered, newPage);
-  }
-}
-
-function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    await _sb.from('orders').insert([order]);
+  } catch(e) { console.warn('Supabase order save failed:', e); }
 }
 
 // ── RECORD ORDER AFTER PAYMENT ─────────────────────────────────────
