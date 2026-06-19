@@ -2790,7 +2790,7 @@
     <script>
     document.getElementById('trust-badges').innerHTML = [
       ['⚡','Instant Generation','Your CV in under 60 seconds'],
-      ['🔒','No Data Stored','Your info stays in your browser'],
+      ['🔒','Secure Storage','Your saved CVs are encrypted and private'],
       ['🌍','20+ Languages','Auto-detected from your input'],
       ['♾️','20 Templates','From clean Pro to luxury Elite'],
     ].map(([icon,title,desc])=>`
@@ -4724,7 +4724,7 @@
       </div>
       <div class="about-value">
         <div class="value-title">✦ Prestige</div>
-        <div class="value-text">Templates modeled on documents that have opened doors at McKinsey, Goldman Sachs, and Oxford.</div>
+        <div class="value-text">Templates modeled on the documents that have opened doors at the world's most prestigious institutions.</div>
       </div>
       <div class="about-value">
         <div class="value-title">✦ Intelligence</div>
@@ -4749,7 +4749,7 @@
       ['What is the difference between Pro, Royal, and Elite?','Pro delivers a clean, ATS-optimised CV. Royal adds quantified achievements, power language, and an ATS analysis report. Elite is our pinnacle tier — featuring a full CV, Cover Letter, LinkedIn summary, and ATS report.'],
       ['Can I download my CV?','Yes. All tiers include PDF and Word download options directly from the result page.'],
       ['How many templates are available?','KAVOX offers 20 premium templates across three tiers — 5 in Pro, 8 additional in Royal, and 7 additional in Elite.'],
-      ['Is my data safe?','We do not store your CV data on any server. All processing happens in your browser session and is discarded when you close the page.'],
+      ['Is my data safe?','If you create an account, your CVs are securely stored on our servers and accessible only to you. Without an account, your data stays in your browser session only.'],
       ['Can I regenerate my CV?','Yes — use the Regenerate button on the result page to generate a fresh version with the same details at any time.'],
     ].map(([q,a])=>`
       <div style="border:1px solid rgba(201,168,76,0.2);border-radius:8px;padding:16px 20px;background:rgba(201,168,76,0.03);">
@@ -4804,7 +4804,7 @@
       <div>
         <div style="font-family:'Cinzel',serif;font-size:0.9rem;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(201,168,76,0.25);">Privacy Policy</div>
         <div style="font-family:'EB Garamond',serif;font-size:0.97rem;color:var(--text-muted);line-height:1.85;display:flex;flex-direction:column;gap:10px;">
-          <p><strong style="color:var(--white);">1. Data Collection.</strong> KAVOX does not store your personal information on any server. All data you enter (name, experience, achievements) is processed locally in your browser session and is discarded when you close or refresh the page.</p>
+          <p><strong style="color:var(--white);">1. Data Collection.</strong> If you create a KAVOX account, your CV data is securely stored on our servers and accessible only to you. If you use KAVOX without an account, your data is processed locally and discarded when you close the page.</p>
           <p><strong style="color:var(--white);">2. AI Processing.</strong> Your CV data is transmitted to third-party AI infrastructure providers solely for the purpose of generating your CV. These providers operate under strict data processing agreements and their own privacy policies governing data handling.</p>
           <p><strong style="color:var(--white);">3. Cookies.</strong> KAVOX does not use tracking cookies or third-party analytics. No personal data is collected for advertising purposes.</p>
           <p><strong style="color:var(--white);">4. Third-Party Links.</strong> Our service may reference third-party services. We are not responsible for the privacy practices of these external services.</p>
@@ -6570,7 +6570,6 @@ async function initSupabase() {
   if (_sb) return;
   try {
     const res = await fetch('/api/config', {
-      headers: { 'x-internal-token': 'kavox-internal-2024' }
     });
     if (!res.ok) { console.warn('Config fetch failed', res.status); return; }
     const cfg = await res.json();
