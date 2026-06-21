@@ -6583,7 +6583,7 @@ async function saveOrderToSupabase(order) {
   if (!_sb) { initSupabase(); await new Promise(r => setTimeout(r, 800)); }
   if (!_sb) return;
   try {
-    await _sb.from('orders').insert([order]);
+    await _sb.from('kavox_orders').insert([order]);
   } catch(e) { console.warn('Supabase order save failed:', e); }
 }
 
