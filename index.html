@@ -2258,6 +2258,7 @@
   </a>
   <ul class="nav-links">
     <li><a onclick="showPage('hero')">Home</a></li>
+   <li><a id="nav-auth-link" onclick="showPage('auth')">تسجيل الدخول</a></li>
     <li><a onclick="showPage('templates')">Templates</a></li>
     <li><a onclick="showPage('pricing')">Pricing</a></li>
     <li><a onclick="showPage('about')">About Us</a></li>
@@ -4843,7 +4844,60 @@
   </footer>
 </div>
 
+<!-- ░░ صفحة تسجيل الدخول / إنشاء حساب ░░ -->
+<div id="page-auth" class="page">
+  <div class="about-container fade-in" style="max-width:480px;">
+    <div style="text-align:center;">
+      <div class="gold-ornament" style="margin-bottom:20px;"><div class="ornament-diamond"></div></div>
+      <p class="pricing-eyebrow" id="auth-eyebrow" style="margin-bottom:12px;">تسجيل الدخول</p>
+      <h2 class="about-heading" id="auth-heading" style="font-size:1.8rem;">مرحباً بعودتك</h2>
+    </div>
 
+    <div class="form-fields" style="margin-top:24px;">
+      <div class="field-group">
+        <label>البريد الإلكتروني</label>
+        <input id="auth-email" type="email" placeholder="بريدك@الإلكتروني.com" />
+      </div>
+      <div class="field-group">
+        <label>كلمة المرور</label>
+        <input id="auth-password" type="password" placeholder="••••••••" />
+      </div>
+
+      <div id="auth-error" style="display:none; color:#e57373; font-family:'EB Garamond',serif; font-size:0.9rem; text-align:center; margin-top:4px;"></div>
+      <div id="auth-success" style="display:none; color:#4caf50; font-family:'EB Garamond',serif; font-size:0.9rem; text-align:center; margin-top:4px;"></div>
+
+      <button class="btn-primary" id="auth-submit-btn" onclick="handleAuthSubmit()" style="margin-top:8px;">دخول</button>
+
+      <p style="text-align:center; font-family:'EB Garamond',serif; font-size:0.92rem; color:var(--text-muted); margin-top:16px;">
+        <span id="auth-toggle-text">ما عندك حساب؟</span>
+        <a onclick="toggleAuthMode()" style="color:var(--gold); cursor:pointer; text-decoration:underline;" id="auth-toggle-link">سجّل حساب جديد</a>
+      </p>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <span class="footer-logo">KAVOX</span>
+    <ul class="footer-links"><li><a onclick="showPage('legal')">الشروط</a></li><li><span class="footer-sep">|</span></li><li><a onclick="showPage('about')">عنّا</a></li></ul>
+  </footer>
+</div>
+
+<!-- ░░ صفحة "يرجى تأكيد بريدك" ░░ -->
+<div id="page-verify" class="page">
+  <div class="confirm-content fade-in">
+    <div class="confirm-emblem">
+      <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+        <path d="M30 8 C22 16 8 18 8 30 C8 42 20 52 30 54 C40 52 52 42 52 30 C52 18 38 16 30 8Z" opacity="0.3" fill="#c9a84c"/>
+        <path d="M18 28 L27 37 L42 20" stroke="#c9a84c" stroke-width="3" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <h2 class="confirm-heading">تحقق من بريدك الإلكتروني</h2>
+    <p class="confirm-text">أرسلنا رابط تأكيد إلى بريدك. اضغط عليه لتفعيل حسابك، وبعدها رجع لهنا وسجّل دخولك.</p>
+    <button class="btn-secondary" onclick="showPage('auth')" style="margin-top:16px;">رجوع لتسجيل الدخول</button>
+  </div>
+  <footer class="site-footer">
+    <span class="footer-logo">KAVOX</span>
+    <ul class="footer-links"><li><a onclick="showPage('about')">عنّا</a></li></ul>
+  </footer>
+</div>
 <!-- ░░ SCRIPTS ░░ -->
 <script>
 // ── FREE TRIAL BANNER ──────────────────────────────────────────────
@@ -4873,9 +4927,110 @@ const API_PROVIDERS = [
   { name: 'Groq',       providerKey: 'groq' }
 ];
 let currentProviderIndex = 0;
+// ── تسجيل الدخول وإنشاء الحساب ──────────────────────────────────
+let _authMode = 'signin'; // 'signin' أو 'signup'
 
+function toggleAuthMode() {
+  _authMode = _authMode === 'signin' ? 'signup' : 'signin';
+  const isSignup = _authMode === 'signup';
+  document.getElementById('auth-eyebrow').textContent = isSignup ? 'حساب جديد' : 'تسجيل الدخول';
+  document.getElementById('auth-heading').textContent = isSignup ? 'ابدأ رحلتك معنا' : 'مرحباً بعودتك';
+  document.getElementById('auth-submit-btn').textContent = isSignup ? 'إنشاء حساب' : 'دخول';
+  document.getElementById('auth-toggle-text').textContent = isSignup ? 'عندك حساب فعلاً؟' : 'ما عندك حساب؟';
+  document.getElementById('auth-toggle-link').textContent = isSignup ? 'سجّل دخولك' : 'سجّل حساب جديد';
+  document.getElementById('auth-error').style.display = 'none';
+  document.getElementById('auth-success').style.display = 'none';
+}
+
+async function handleAuthSubmit() {
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const errorEl = document.getElementById('auth-error');
+  const successEl = document.getElementById('auth-success');
+  errorEl.style.display = 'none';
+  successEl.style.display = 'none';
+
+  if (!email || !password) {
+    errorEl.textContent = 'الرجاء تعبئة البريد وكلمة المرور.';
+    errorEl.style.display = 'block';
+    return;
+  }
+  if (password.length < 6) {
+    errorEl.textContent = 'كلمة المرور لازم تكون 6 أحرف على الأقل.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  if (!_sb) { await initSupabase(); }
+  if (!_sb) {
+    errorEl.textContent = 'حدث خطأ بالاتصال، حاول مرة ثانية بعد قليل.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  const submitBtn = document.getElementById('auth-submit-btn');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'لحظة...';
+
+  if (_authMode === 'signup') {
+    const { data, error } = await _sb.auth.signUp({ email, password });
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'إنشاء حساب';
+    if (error) {
+      errorEl.textContent = translateAuthError(error.message);
+      errorEl.style.display = 'block';
+      return;
+    }
+    showPage('verify');
+  } else {
+    const { data, error } = await _sb.auth.signInWithPassword({ email, password });
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'دخول';
+    if (error) {
+      errorEl.textContent = translateAuthError(error.message);
+      errorEl.style.display = 'block';
+      return;
+    }
+    updateAuthUI();
+    showPage('account');
+  }
+}
+
+function translateAuthError(msg) {
+  if (msg.includes('Invalid login credentials')) return 'البريد أو كلمة المرور غير صحيحة.';
+  if (msg.includes('User already registered')) return 'هذا البريد مسجّل مسبقاً، سجّل دخولك بدل إنشاء حساب جديد.';
+  if (msg.includes('Email not confirmed')) return 'لازم تأكد بريدك الإلكتروني أولاً قبل تسجيل الدخول.';
+  return 'حدث خطأ: ' + msg;
+}
+
+async function handleSignOut() {
+  if (_sb) await _sb.auth.signOut();
+  updateAuthUI();
+  showPage('hero');
+}
+
+// ── تحديث روابط القائمة حسب حالة تسجيل الدخول ───────────────────
+async function updateAuthUI() {
+  if (!_sb) await initSupabase();
+  if (!_sb) return;
+  const { data } = await _sb.auth.getUser();
+  const navLink = document.getElementById('nav-auth-link');
+  if (!navLink) return;
+  if (data && data.user) {
+    navLink.textContent = 'حسابي';
+    navLink.setAttribute('onclick', "showPage('account'); loadMyAccount();");
+  } else {
+    navLink.textContent = 'تسجيل الدخول';
+    navLink.setAttribute('onclick', "showPage('auth');");
+  }
+}
+
+// تحديث الحالة عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(updateAuthUI, 1000);
+});
 // ── PAGE NAVIGATION ──────────────────────────────────────────────
-const pages = ['hero','path','form','pricing','confirm','result','templates','about','tpl-picker','legal'];
+const pages = ['hero','path','form','pricing','confirm','result','templates','about','tpl-picker','legal','auth','verify','account'];
 
 function showPage(id) {
   pages.forEach(p => {
