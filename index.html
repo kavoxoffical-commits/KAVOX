@@ -4898,6 +4898,41 @@
     <ul class="footer-links"><li><a onclick="showPage('about')">عنّا</a></li></ul>
   </footer>
 </div>
+<!-- ░░ صفحة حسابي ░░ -->
+<div id="page-account" class="page">
+  <div class="about-container fade-in" style="max-width:760px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+      <div>
+        <p class="pricing-eyebrow" style="margin-bottom:8px;">حسابي</p>
+        <h2 class="about-heading" style="font-size:1.8rem;">السير الذاتية المحفوظة</h2>
+      </div>
+      <button class="btn-secondary" onclick="handleSignOut()">تسجيل الخروج</button>
+    </div>
+
+    <div class="gold-line" style="margin:24px 0;"></div>
+
+    <div id="account-loading" style="text-align:center; padding:40px 0;">
+      <div style="display:flex; gap:10px; justify-content:center;">
+        <div class="loading-dot"></div>
+        <div class="loading-dot" style="animation-delay:0.2s"></div>
+        <div class="loading-dot" style="animation-delay:0.4s"></div>
+      </div>
+    </div>
+
+    <div id="account-empty" style="display:none; text-align:center; padding:40px 20px;">
+      <p style="font-family:'EB Garamond',serif; font-size:1.05rem; color:var(--text-muted); margin-bottom:20px;">
+        ما عندك أي سيرة محفوظة لسا.
+      </p>
+      <button class="btn-primary" onclick="showPage('path')">ابدأ أول سيرة لك</button>
+    </div>
+
+    <div id="account-cv-list" style="display:flex; flex-direction:column; gap:16px;"></div>
+  </div>
+  <footer class="site-footer">
+    <span class="footer-logo">KAVOX</span>
+    <ul class="footer-links"><li><a onclick="showPage('about')">عنّا</a></li></ul>
+  </footer>
+</div> 
 <!-- ░░ SCRIPTS ░░ -->
 <script>
 // ── FREE TRIAL BANNER ──────────────────────────────────────────────
@@ -5029,6 +5064,82 @@ async function updateAuthUI() {
 document.addEventListener('DOMContentLoaded', () => {
   setTimeout(updateAuthUI, 1000);
 });
+ // ── صفحة حسابي: تحميل السير المحفوظة ──────────────────────────────
+async function loadMyAccount() {
+  const loadingEl = document.getElementById('account-loading');
+  const emptyEl   = document.getElementById('account-empty');
+  const listEl    = document.getElementById('account-cv-list');
+
+  loadingEl.style.display = 'block';
+  emptyEl.style.display = 'none';
+  listEl.innerHTML = '';
+
+  if (!_sb) await initSupabase();
+  if (!_sb) { loadingEl.style.display = 'none'; return; }
+
+  const { data: userData } = await _sb.auth.getUser();
+  if (!userData || !userData.user) {
+    // ما هو مسجّل دخول، رجّعه لصفحة الدخول
+    showPage('auth');
+    return;
+  }
+
+  const { data: cvs, error } = await _sb
+    .from('cvs')
+    .select('id, name, language, tier, cv_html, created_at')
+    .eq('user_id', userData.user.id)
+    .order('created_at', { ascending: false });
+
+  loadingEl.style.display = 'none';
+
+  if (error) {
+    listEl.innerHTML = '<p style="color:#e57373; text-align:center; font-family:\'EB Garamond\',serif;">حدث خطأ بتحميل سيرك المحفوظة، حاول مرة ثانية.</p>';
+    return;
+  }
+
+  if (!cvs || cvs.length === 0) {
+    emptyEl.style.display = 'block';
+    return;
+  }
+
+  const tierLabels = { pro: '✦ Pro', royal: '♛ Royal', elite: '◈ Elite' };
+
+  listEl.innerHTML = cvs.map(cv => {
+    const date = new Date(cv.created_at).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
+    const tierLabel = tierLabels[cv.tier] || cv.tier || '';
+    return `
+      <div style="background:linear-gradient(160deg,#112240 0%,#0d1b2e 100%); border:1px solid rgba(201,168,76,0.2); border-radius:8px; padding:20px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+        <div>
+          <div style="font-family:'Cinzel',serif; font-size:1rem; color:var(--gold); margin-bottom:4px;">${escHtml(cv.name || 'سيرة بدون اسم')}</div>
+          <div style="font-family:'EB Garamond',serif; font-size:0.85rem; color:var(--text-muted);">${tierLabel} · ${date}</div>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button class="btn-pricing" onclick="viewSavedCV('${cv.id}')">عرض</button>
+          <button class="btn-pricing" style="border-color:rgba(229,115,115,0.4); color:#e57373;" onclick="deleteSavedCV('${cv.id}')">حذف</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── عرض سيرة محفوظة بصفحة النتيجة ──────────────────────────────
+async function viewSavedCV(cvId) {
+  if (!_sb) await initSupabase();
+  const { data, error } = await _sb.from('cvs').select('cv_html, tier').eq('id', cvId).single();
+  if (error || !data) { alert('تعذّر فتح هذي السيرة.'); return; }
+  window._cvHTML = data.cv_html;
+  window._cvName = 'CV';
+  document.getElementById('cv-output').innerHTML = data.cv_html;
+  showPage('result');
+}
+
+// ── حذف سيرة محفوظة ──────────────────────────────────────────────
+async function deleteSavedCV(cvId) {
+  if (!confirm('متأكد بدك تحذف هذي السيرة؟ هذا الإجراء ما له رجعة.')) return;
+  if (!_sb) await initSupabase();
+  const { error } = await _sb.from('cvs').delete().eq('id', cvId);
+  if (error) { alert('تعذّر حذف السيرة، حاول مرة ثانية.'); return; }
+  loadMyAccount();
+}
 // ── PAGE NAVIGATION ──────────────────────────────────────────────
 const pages = ['hero','path','form','pricing','confirm','result','templates','about','tpl-picker','legal','auth','verify','account'];
 
