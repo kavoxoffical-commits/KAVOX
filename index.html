@@ -2256,14 +2256,13 @@
       <span class="nav-logo-sub">The Art of Professional CVs</span>
     </div>
   </a>
-  <ul class="nav-links">
-    <li><a onclick="showPage('hero')">Home</a></li>
-   <li><a id="nav-auth-link" onclick="showPage('auth')">تسجيل الدخول</a></li>
-    <li><a onclick="showPage('templates')">Templates</a></li>
-    <li><a onclick="showPage('pricing')">Pricing</a></li>
-    <li><a onclick="showPage('about')">About Us</a></li>
-
-  </ul>
+ <ul class="nav-links">
+  <li><a onclick="showPage('hero')">Home</a></li>
+  <li><a onclick="showPage('templates')">Templates</a></li>
+  <li><a onclick="showPage('pricing')">Pricing</a></li>
+  <li><a onclick="showPage('about')">About Us</a></li>
+  <li><a id="nav-auth-link" onclick="showPage('auth')">Login</a></li>
+</ul>
 </nav>
 
 <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
@@ -4844,43 +4843,43 @@
   </footer>
 </div>
 
-<!-- ░░ صفحة تسجيل الدخول / إنشاء حساب ░░ -->
+<!-- ░░ LOGIN / SIGN UP PAGE ░░ -->
 <div id="page-auth" class="page">
   <div class="about-container fade-in" style="max-width:480px;">
     <div style="text-align:center;">
       <div class="gold-ornament" style="margin-bottom:20px;"><div class="ornament-diamond"></div></div>
-      <p class="pricing-eyebrow" id="auth-eyebrow" style="margin-bottom:12px;">تسجيل الدخول</p>
-      <h2 class="about-heading" id="auth-heading" style="font-size:1.8rem;">مرحباً بعودتك</h2>
+      <p class="pricing-eyebrow" id="auth-eyebrow" style="margin-bottom:12px;">Login</p>
+      <h2 class="about-heading" id="auth-heading" style="font-size:1.8rem;">Welcome Back</h2>
     </div>
 
     <div class="form-fields" style="margin-top:24px;">
       <div class="field-group">
-        <label>البريد الإلكتروني</label>
-        <input id="auth-email" type="email" placeholder="بريدك@الإلكتروني.com" />
+        <label>Email</label>
+        <input id="auth-email" type="email" placeholder="your@email.com" />
       </div>
       <div class="field-group">
-        <label>كلمة المرور</label>
+        <label>Password</label>
         <input id="auth-password" type="password" placeholder="••••••••" />
       </div>
 
       <div id="auth-error" style="display:none; color:#e57373; font-family:'EB Garamond',serif; font-size:0.9rem; text-align:center; margin-top:4px;"></div>
       <div id="auth-success" style="display:none; color:#4caf50; font-family:'EB Garamond',serif; font-size:0.9rem; text-align:center; margin-top:4px;"></div>
 
-      <button class="btn-primary" id="auth-submit-btn" onclick="handleAuthSubmit()" style="margin-top:8px;">دخول</button>
+      <button class="btn-primary" id="auth-submit-btn" onclick="handleAuthSubmit()" style="margin-top:8px;">Sign In</button>
 
       <p style="text-align:center; font-family:'EB Garamond',serif; font-size:0.92rem; color:var(--text-muted); margin-top:16px;">
-        <span id="auth-toggle-text">ما عندك حساب؟</span>
-        <a onclick="toggleAuthMode()" style="color:var(--gold); cursor:pointer; text-decoration:underline;" id="auth-toggle-link">سجّل حساب جديد</a>
+        <span id="auth-toggle-text">Don't have an account?</span>
+        <a onclick="toggleAuthMode()" style="color:var(--gold); cursor:pointer; text-decoration:underline;" id="auth-toggle-link">Create one</a>
       </p>
     </div>
   </div>
   <footer class="site-footer">
     <span class="footer-logo">KAVOX</span>
-    <ul class="footer-links"><li><a onclick="showPage('legal')">الشروط</a></li><li><span class="footer-sep">|</span></li><li><a onclick="showPage('about')">عنّا</a></li></ul>
+    <ul class="footer-links"><li><a onclick="showPage('legal')">Terms</a></li><li><span class="footer-sep">|</span></li><li><a onclick="showPage('about')">About</a></li></ul>
   </footer>
 </div>
 
-<!-- ░░ صفحة "يرجى تأكيد بريدك" ░░ -->
+<!-- ░░ "PLEASE CONFIRM YOUR EMAIL" PAGE ░░ -->
 <div id="page-verify" class="page">
   <div class="confirm-content fade-in">
     <div class="confirm-emblem">
@@ -4889,24 +4888,24 @@
         <path d="M18 28 L27 37 L42 20" stroke="#c9a84c" stroke-width="3" stroke-linecap="round" fill="none"/>
       </svg>
     </div>
-    <h2 class="confirm-heading">تحقق من بريدك الإلكتروني</h2>
-    <p class="confirm-text">أرسلنا رابط تأكيد إلى بريدك. اضغط عليه لتفعيل حسابك، وبعدها رجع لهنا وسجّل دخولك.</p>
-    <button class="btn-secondary" onclick="showPage('auth')" style="margin-top:16px;">رجوع لتسجيل الدخول</button>
+    <h2 class="confirm-heading">Check Your Email</h2>
+    <p class="confirm-text">We sent a confirmation link to your email. Click it to activate your account, then come back here and sign in.</p>
+    <button class="btn-secondary" onclick="showPage('auth')" style="margin-top:16px;">Back to Login</button>
   </div>
   <footer class="site-footer">
     <span class="footer-logo">KAVOX</span>
-    <ul class="footer-links"><li><a onclick="showPage('about')">عنّا</a></li></ul>
+    <ul class="footer-links"><li><a onclick="showPage('about')">About</a></li></ul>
   </footer>
 </div>
-<!-- ░░ صفحة حسابي ░░ -->
+<!-- ░░ MY ACCOUNT PAGE ░░ -->
 <div id="page-account" class="page">
   <div class="about-container fade-in" style="max-width:760px;">
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
       <div>
-        <p class="pricing-eyebrow" style="margin-bottom:8px;">حسابي</p>
-        <h2 class="about-heading" style="font-size:1.8rem;">السير الذاتية المحفوظة</h2>
+        <p class="pricing-eyebrow" style="margin-bottom:8px;">My Account</p>
+        <h2 class="about-heading" style="font-size:1.8rem;">Saved CVs</h2>
       </div>
-      <button class="btn-secondary" onclick="handleSignOut()">تسجيل الخروج</button>
+      <button class="btn-secondary" onclick="handleSignOut()">Sign Out</button>
     </div>
 
     <div class="gold-line" style="margin:24px 0;"></div>
@@ -4921,18 +4920,18 @@
 
     <div id="account-empty" style="display:none; text-align:center; padding:40px 20px;">
       <p style="font-family:'EB Garamond',serif; font-size:1.05rem; color:var(--text-muted); margin-bottom:20px;">
-        ما عندك أي سيرة محفوظة لسا.
+        You don't have any saved CVs yet.
       </p>
-      <button class="btn-primary" onclick="showPage('path')">ابدأ أول سيرة لك</button>
+      <button class="btn-primary" onclick="showPage('path')">Create Your First CV</button>
     </div>
 
     <div id="account-cv-list" style="display:flex; flex-direction:column; gap:16px;"></div>
   </div>
   <footer class="site-footer">
     <span class="footer-logo">KAVOX</span>
-    <ul class="footer-links"><li><a onclick="showPage('about')">عنّا</a></li></ul>
+    <ul class="footer-links"><li><a onclick="showPage('about')">About</a></li></ul>
   </footer>
-</div> 
+</div>
 <!-- ░░ SCRIPTS ░░ -->
 <script>
 // ── FREE TRIAL BANNER ──────────────────────────────────────────────
@@ -4962,75 +4961,23 @@ const API_PROVIDERS = [
   { name: 'Groq',       providerKey: 'groq' }
 ];
 let currentProviderIndex = 0;
-// ── تسجيل الدخول وإنشاء الحساب ──────────────────────────────────
-let _authMode = 'signin'; // 'signin' أو 'signup'
+// ── LOGIN & SIGN UP ──────────────────────────────────────────────
+let _authMode = 'signin'; // 'signin' or 'signup'
 
 function toggleAuthMode() {
   _authMode = _authMode === 'signin' ? 'signup' : 'signin';
   const isSignup = _authMode === 'signup';
-  document.getElementById('auth-eyebrow').textContent = isSignup ? 'حساب جديد' : 'تسجيل الدخول';
-  document.getElementById('auth-heading').textContent = isSignup ? 'ابدأ رحلتك معنا' : 'مرحباً بعودتك';
-  document.getElementById('auth-submit-btn').textContent = isSignup ? 'إنشاء حساب' : 'دخول';
-  document.getElementById('auth-toggle-text').textContent = isSignup ? 'عندك حساب فعلاً؟' : 'ما عندك حساب؟';
-  document.getElementById('auth-toggle-link').textContent = isSignup ? 'سجّل دخولك' : 'سجّل حساب جديد';
+  document.getElementById('auth-eyebrow').textContent = isSignup ? 'Sign Up' : 'Login';
+  document.getElementById('auth-heading').textContent = isSignup ? 'Start Your Journey' : 'Welcome Back';
+  document.getElementById('auth-submit-btn').textContent = isSignup ? 'Create Account' : 'Sign In';
+  document.getElementById('auth-toggle-text').textContent = isSignup ? 'Already have an account?' : "Don't have an account?";
+  document.getElementById('auth-toggle-link').textContent = isSignup ? 'Sign in' : 'Create one';
   document.getElementById('auth-error').style.display = 'none';
   document.getElementById('auth-success').style.display = 'none';
 }
 
 async function handleAuthSubmit() {
-  const email = document.getElementById('auth-email').value.trim();
-  const password = document.getElementById('auth-password').value;
-  const errorEl = document.getElementById('auth-error');
-  const successEl = document.getElementById('auth-success');
-  errorEl.style.display = 'none';
-  successEl.style.display = 'none';
-
-  if (!email || !password) {
-    errorEl.textContent = 'الرجاء تعبئة البريد وكلمة المرور.';
-    errorEl.style.display = 'block';
-    return;
-  }
-  if (password.length < 6) {
-    errorEl.textContent = 'كلمة المرور لازم تكون 6 أحرف على الأقل.';
-    errorEl.style.display = 'block';
-    return;
-  }
-
-  if (!_sb) { await initSupabase(); }
-  if (!_sb) {
-    errorEl.textContent = 'حدث خطأ بالاتصال، حاول مرة ثانية بعد قليل.';
-    errorEl.style.display = 'block';
-    return;
-  }
-
-  const submitBtn = document.getElementById('auth-submit-btn');
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'لحظة...';
-
-  if (_authMode === 'signup') {
-    const { data, error } = await _sb.auth.signUp({ email, password });
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'إنشاء حساب';
-    if (error) {
-      errorEl.textContent = translateAuthError(error.message);
-      errorEl.style.display = 'block';
-      return;
-    }
-    showPage('verify');
-  } else {
-    const { data, error } = await _sb.auth.signInWithPassword({ email, password });
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'دخول';
-    if (error) {
-      errorEl.textContent = translateAuthError(error.message);
-      errorEl.style.display = 'block';
-      return;
-    }
-    updateAuthUI();
-    showPage('account');
-  }
-}
-
+  
 function translateAuthError(msg) {
   if (msg.includes('Invalid login credentials')) return 'البريد أو كلمة المرور غير صحيحة.';
   if (msg.includes('User already registered')) return 'هذا البريد مسجّل مسبقاً، سجّل دخولك بدل إنشاء حساب جديد.';
