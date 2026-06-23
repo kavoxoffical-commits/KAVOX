@@ -4977,12 +4977,64 @@ function toggleAuthMode() {
 }
 
 async function handleAuthSubmit() {
-  
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const errorEl = document.getElementById('auth-error');
+  const successEl = document.getElementById('auth-success');
+  errorEl.style.display = 'none';
+  successEl.style.display = 'none';
+
+  if (!email || !password) {
+    errorEl.textContent = 'Please enter your email and password.';
+    errorEl.style.display = 'block';
+    return;
+  }
+  if (password.length < 6) {
+    errorEl.textContent = 'Password must be at least 6 characters.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  if (!_sb) { await initSupabase(); }
+  if (!_sb) {
+    errorEl.textContent = 'Connection error, please try again shortly.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  const submitBtn = document.getElementById('auth-submit-btn');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'One moment...';
+
+  if (_authMode === 'signup') {
+    const { data, error } = await _sb.auth.signUp({ email, password });
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Create Account';
+    if (error) {
+      errorEl.textContent = translateAuthError(error.message);
+      errorEl.style.display = 'block';
+      return;
+    }
+    showPage('verify');
+  } else {
+    const { data, error } = await _sb.auth.signInWithPassword({ email, password });
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Sign In';
+    if (error) {
+      errorEl.textContent = translateAuthError(error.message);
+      errorEl.style.display = 'block';
+      return;
+    }
+    updateAuthUI();
+    showPage('account');
+  }
+}
+
 function translateAuthError(msg) {
-  if (msg.includes('Invalid login credentials')) return 'البريد أو كلمة المرور غير صحيحة.';
-  if (msg.includes('User already registered')) return 'هذا البريد مسجّل مسبقاً، سجّل دخولك بدل إنشاء حساب جديد.';
-  if (msg.includes('Email not confirmed')) return 'لازم تأكد بريدك الإلكتروني أولاً قبل تسجيل الدخول.';
-  return 'حدث خطأ: ' + msg;
+  if (msg.includes('Invalid login credentials')) return 'Incorrect email or password.';
+  if (msg.includes('User already registered')) return 'This email is already registered — please sign in instead.';
+  if (msg.includes('Email not confirmed')) return 'Please confirm your email before signing in.';
+  return 'An error occurred: ' + msg;
 }
 
 async function handleSignOut() {
@@ -4991,7 +5043,7 @@ async function handleSignOut() {
   showPage('hero');
 }
 
-// ── تحديث روابط القائمة حسب حالة تسجيل الدخول ───────────────────
+// ── UPDATE NAV LINK BASED ON LOGIN STATE ─────────────────────────
 async function updateAuthUI() {
   if (!_sb) await initSupabase();
   if (!_sb) return;
@@ -4999,19 +5051,20 @@ async function updateAuthUI() {
   const navLink = document.getElementById('nav-auth-link');
   if (!navLink) return;
   if (data && data.user) {
-    navLink.textContent = 'حسابي';
+    navLink.textContent = 'My Account';
     navLink.setAttribute('onclick', "showPage('account'); loadMyAccount();");
   } else {
-    navLink.textContent = 'تسجيل الدخول';
+    navLink.textContent = 'Login';
     navLink.setAttribute('onclick', "showPage('auth');");
   }
 }
 
-// تحديث الحالة عند تحميل الصفحة
+// Update state on page load
 document.addEventListener('DOMContentLoaded', () => {
   setTimeout(updateAuthUI, 1000);
 });
- // ── صفحة حسابي: تحميل السير المحفوظة ──────────────────────────────
+
+// ── MY ACCOUNT PAGE: LOAD SAVED CVs ──────────────────────────────
 async function loadMyAccount() {
   const loadingEl = document.getElementById('account-loading');
   const emptyEl   = document.getElementById('account-empty');
@@ -5026,7 +5079,7 @@ async function loadMyAccount() {
 
   const { data: userData } = await _sb.auth.getUser();
   if (!userData || !userData.user) {
-    // ما هو مسجّل دخول، رجّعه لصفحة الدخول
+    // Not logged in, redirect to login page
     showPage('auth');
     return;
   }
@@ -5040,7 +5093,7 @@ async function loadMyAccount() {
   loadingEl.style.display = 'none';
 
   if (error) {
-    listEl.innerHTML = '<p style="color:#e57373; text-align:center; font-family:\'EB Garamond\',serif;">حدث خطأ بتحميل سيرك المحفوظة، حاول مرة ثانية.</p>';
+    listEl.innerHTML = '<p style="color:#e57373; text-align:center; font-family:\'EB Garamond\',serif;">Error loading your saved CVs, please try again.</p>';
     return;
   }
 
@@ -5052,39 +5105,39 @@ async function loadMyAccount() {
   const tierLabels = { pro: '✦ Pro', royal: '♛ Royal', elite: '◈ Elite' };
 
   listEl.innerHTML = cvs.map(cv => {
-    const date = new Date(cv.created_at).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
+    const date = new Date(cv.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     const tierLabel = tierLabels[cv.tier] || cv.tier || '';
     return `
       <div style="background:linear-gradient(160deg,#112240 0%,#0d1b2e 100%); border:1px solid rgba(201,168,76,0.2); border-radius:8px; padding:20px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
         <div>
-          <div style="font-family:'Cinzel',serif; font-size:1rem; color:var(--gold); margin-bottom:4px;">${escHtml(cv.name || 'سيرة بدون اسم')}</div>
+          <div style="font-family:'Cinzel',serif; font-size:1rem; color:var(--gold); margin-bottom:4px;">${escHtml(cv.name || 'Untitled CV')}</div>
           <div style="font-family:'EB Garamond',serif; font-size:0.85rem; color:var(--text-muted);">${tierLabel} · ${date}</div>
         </div>
         <div style="display:flex; gap:10px;">
-          <button class="btn-pricing" onclick="viewSavedCV('${cv.id}')">عرض</button>
-          <button class="btn-pricing" style="border-color:rgba(229,115,115,0.4); color:#e57373;" onclick="deleteSavedCV('${cv.id}')">حذف</button>
+          <button class="btn-pricing" onclick="viewSavedCV('${cv.id}')">View</button>
+          <button class="btn-pricing" style="border-color:rgba(229,115,115,0.4); color:#e57373;" onclick="deleteSavedCV('${cv.id}')">Delete</button>
         </div>
       </div>`;
   }).join('');
 }
 
-// ── عرض سيرة محفوظة بصفحة النتيجة ──────────────────────────────
+// ── VIEW SAVED CV ON RESULT PAGE ─────────────────────────────────
 async function viewSavedCV(cvId) {
   if (!_sb) await initSupabase();
   const { data, error } = await _sb.from('cvs').select('cv_html, tier').eq('id', cvId).single();
-  if (error || !data) { alert('تعذّر فتح هذي السيرة.'); return; }
+  if (error || !data) { alert('Could not open this CV.'); return; }
   window._cvHTML = data.cv_html;
   window._cvName = 'CV';
   document.getElementById('cv-output').innerHTML = data.cv_html;
   showPage('result');
 }
 
-// ── حذف سيرة محفوظة ──────────────────────────────────────────────
+// ── DELETE SAVED CV ───────────────────────────────────────────────
 async function deleteSavedCV(cvId) {
-  if (!confirm('متأكد بدك تحذف هذي السيرة؟ هذا الإجراء ما له رجعة.')) return;
+  if (!confirm('Are you sure you want to delete this CV? This action cannot be undone.')) return;
   if (!_sb) await initSupabase();
   const { error } = await _sb.from('cvs').delete().eq('id', cvId);
-  if (error) { alert('تعذّر حذف السيرة، حاول مرة ثانية.'); return; }
+  if (error) { alert('Could not delete this CV, please try again.'); return; }
   loadMyAccount();
 }
 // ── PAGE NAVIGATION ──────────────────────────────────────────────
