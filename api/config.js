@@ -1,51 +1,42 @@
 // api/config.js
-// KAVOX — Secure config endpoint. Returns Supabase public credentials from env vars.
-//
-// ⚠️ مهم: تأكد إن CONFIG_SECRET موجود بـ Vercel Environment Variables
-//    (موجود فعلاً بحسابك ✓)
+// Securely exposes PUBLIC Supabase credentials to the frontend.
+// The Supabase "anon" key is designed to be public — protection comes from
+// Row Level Security (RLS) policies on the database tables, not from hiding this key.
+// We still restrict CORS to our own domain to avoid casual scraping/abuse.
 
-// ── ALLOWED ORIGINS ───────────────────────────────────────────────
 const ALLOWED_ORIGINS = [
   'https://kavox-zeta.vercel.app',
-  'https://kavox.vercel.app',
-  // أضف دومينك المخصص هنا لو عندك واحد
+  'https://kavox-kavox-s-projects.vercel.app',
+  'https://kavox-git-main-kavox-s-projects.vercel.app'
 ];
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
+  const origin = req.headers.origin || '';
 
-  // ── CORS (مقيّد لدومين KAVOX فقط) ───────────────────────────────
-  const origin = req.headers['origin'];
-  if (origin && ALLOWED_ORIGINS.includes(origin)) {
+  if (ALLOWED_ORIGINS.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-internal-token');
-  res.setHeader('Vary', 'Origin');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // ── TOKEN CHECK (من environment variable، مش hardcoded) ──────────
-  const expectedToken = process.env.CONFIG_SECRET;
-  if (!expectedToken) {
-    console.error('INTERNAL_TOKEN environment variable not set');
-    return res.status(500).json({ error: 'Server misconfiguration' });
-  }
-
-  const token = req.headers['x-internal-token'];
-  if (!token || token !== expectedToken) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
-  // ── RETURN ENV VARS ────────────────────────────────────────────
   const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_KEY; // anon/public key فقط، مش service key
+  const supabaseKey = process.env.SUPABASE_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
-    return res.status(500).json({ error: 'Supabase env vars not configured' });
+    console.error('Missing SUPABASE_URL or SUPABASE_KEY environment variables');
+    return res.status(500).json({ error: 'Server configuration error' });
   }
 
-  return res.status(200).json({ supabaseUrl, supabaseKey });
-}
+  return res.status(200).json({
+    supabaseUrl,
+    supabaseKey
+  });
+};
