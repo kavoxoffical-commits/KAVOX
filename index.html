@@ -5113,7 +5113,7 @@ async function updateAuthUI() {
     navLink.setAttribute('onclick', "showPage('account'); loadMyAccount();");
   } else {
     navLink.textContent = 'Login';
-    navLink.setAttribute('onclick', "showPage('auth');");
+    navLink.setAttribute('onclick', "showPage('auth'); goBackToEmailStep();");
   }
 }
 
