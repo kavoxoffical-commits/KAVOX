@@ -4941,79 +4941,16 @@ const API_PROVIDERS = [
 ];
 let currentProviderIndex = 0;
 // ── LOGIN & SIGN UP ──────────────────────────────────────────────
-let _authMode = 'signin'; // 'signin' or 'signup'
-
-function toggleAuthMode() {
-  _authMode = _authMode === 'signin' ? 'signup' : 'signin';
-  const isSignup = _authMode === 'signup';
-  document.getElementById('auth-eyebrow').textContent = isSignup ? 'Sign Up' : 'Login';
-  document.getElementById('auth-heading').textContent = isSignup ? 'Start Your Journey' : 'Welcome Back';
-  document.getElementById('auth-submit-btn').textContent = isSignup ? 'Create Account' : 'Sign In';
-  document.getElementById('auth-toggle-text').textContent = isSignup ? 'Already have an account?' : "Don't have an account?";
-  document.getElementById('auth-toggle-link').textContent = isSignup ? 'Sign in' : 'Create one';
-  document.getElementById('auth-error').style.display = 'none';
-  document.getElementById('auth-success').style.display = 'none';
-}
-
-async function handleAuthSubmit() {
-  const email = document.getElementById('auth-email').value.trim();
-  const password = document.getElementById('auth-password').value;
-  const errorEl = document.getElementById('auth-error');
-  const successEl = document.getElementById('auth-success');
-  errorEl.style.display = 'none';
-  successEl.style.display = 'none';
-
-  if (!email || !password) {
-    errorEl.textContent = 'Please enter your email and password.';
-    errorEl.style.display = 'block';
-    return;
+async function signInWithGoogle() {
+  if (!_sb) await initSupabase();
+  const { error } = await _sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: 'https://kavox-zeta.vercel.app' }
+  });
+  if (error) {
+    const el = document.getElementById('auth-error');
+    if (el) { el.textContent = 'Google sign-in failed: ' + error.message; el.style.display = 'block'; }
   }
-  if (password.length < 6) {
-    errorEl.textContent = 'Password must be at least 6 characters.';
-    errorEl.style.display = 'block';
-    return;
-  }
-
-  if (!_sb) { await initSupabase(); }
-  if (!_sb) {
-    errorEl.textContent = 'Connection error, please try again shortly.';
-    errorEl.style.display = 'block';
-    return;
-  }
-
-  const submitBtn = document.getElementById('auth-submit-btn');
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'One moment...';
-
-  if (_authMode === 'signup') {
-    const { data, error } = await _sb.auth.signUp({ email, password });
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'Create Account';
-    if (error) {
-      errorEl.textContent = translateAuthError(error.message);
-      errorEl.style.display = 'block';
-      return;
-    }
-    showPage('verify');
-  } else {
-    const { data, error } = await _sb.auth.signInWithPassword({ email, password });
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'Sign In';
-    if (error) {
-      errorEl.textContent = translateAuthError(error.message);
-      errorEl.style.display = 'block';
-      return;
-    }
-    updateAuthUI();
-    showPage('account');
-  }
-}
-
-function translateAuthError(msg) {
-  if (msg.includes('Invalid login credentials')) return 'Incorrect email or password.';
-  if (msg.includes('User already registered')) return 'This email is already registered — please sign in instead.';
-  if (msg.includes('Email not confirmed')) return 'Please confirm your email before signing in.';
-  return 'An error occurred: ' + msg;
 }
 
 async function handleSignOut() {
