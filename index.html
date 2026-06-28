@@ -1486,7 +1486,12 @@
     background: linear-gradient(135deg, #c9a84c, #e2c06a);
     font-weight: 700;
   }
-
+#page-auth {
+  align-items: center;
+  justify-content: flex-start;
+  padding: 100px 40px 60px;
+  min-height: 100vh;
+}
   /* ── ABOUT PAGE ── */
   #page-about {
     align-items: center;
@@ -6900,6 +6905,7 @@ async function initSupabase() {
     if (!cfg.supabaseUrl || !cfg.supabaseKey) { console.warn('Supabase env vars missing from config'); return; }
     const { createClient } = window.supabase;
     _sb = createClient(cfg.supabaseUrl, cfg.supabaseKey);
+   _sb.auth.onAuthStateChange(() => { updateAuthUI(); });
   } catch(e) { console.warn('Supabase init failed:', e); }
 }
 
