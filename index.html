@@ -6553,7 +6553,13 @@ RULES:
       window._cvName = name;
       window._cvData = cvData;
 
-      saveCvToSupabase(name, email, tier, cvLang, cvHTML);
+      // حفظ فوري لو مسجل دخول، أو تخزين مؤقت لو زائر
+      const { data: _authCheck } = await _sb.auth.getUser();
+      if (_authCheck && _authCheck.user) {
+        saveCvToSupabase(name, email, tier, cvLang, cvHTML);
+      } else {
+        window._pendingCvSave = { name, email, tier, language: cvLang, cvHTML };
+      }
 
       renderResult(cvHTML, tier);
       showPage('result');
@@ -6917,7 +6923,14 @@ async function initSupabase() {
     if (!cfg.supabaseUrl || !cfg.supabaseKey) { console.warn('Supabase env vars missing from config'); return; }
     const { createClient } = window.supabase;
     _sb = createClient(cfg.supabaseUrl, cfg.supabaseKey);
-   _sb.auth.onAuthStateChange(() => { updateAuthUI(); });
+   _sb.auth.onAuthStateChange(async (event) => {
+     updateAuthUI();
+     if (event === 'SIGNED_IN' && window._pendingCvSave) {
+       const p = window._pendingCvSave;
+       window._pendingCvSave = null;
+       await saveCvToSupabase(p.name, p.email, p.tier, p.language, p.cvHTML);
+     }
+   });
   } catch(e) { console.warn('Supabase init failed:', e); }
 }
 // ── SAVE CV TO SUPABASE ───────────────────────────────────────────
