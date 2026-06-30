@@ -6549,9 +6549,11 @@ RULES:
       // Build HTML from fixed template
       const cvHTML = buildCVFromTemplate(templateName, cvData, tier);
 
-      window._cvHTML = cvHTML;
+     window._cvHTML = cvHTML;
       window._cvName = name;
       window._cvData = cvData;
+
+      saveCvToSupabase(name, email, tier, cvLang, cvHTML);
 
       renderResult(cvHTML, tier);
       showPage('result');
@@ -6918,7 +6920,24 @@ async function initSupabase() {
    _sb.auth.onAuthStateChange(() => { updateAuthUI(); });
   } catch(e) { console.warn('Supabase init failed:', e); }
 }
-
+// ── SAVE CV TO SUPABASE ───────────────────────────────────────────
+async function saveCvToSupabase(name, email, tier, language, cvHTML) {
+  if (!_sb) { initSupabase(); await new Promise(r => setTimeout(r, 800)); }
+  if (!_sb) return;
+  try {
+    const { data: userData } = await _sb.auth.getUser();
+    const userId = userData && userData.user ? userData.user.id : null;
+    if (!userId) return; // المستخدم مو مسجل دخول، ما نحفظ
+    await _sb.from('cvs').insert([{
+      name,
+      email,
+      tier,
+      language,
+      cv_html: cvHTML,
+      user_id: userId
+    }]);
+  } catch(e) { console.warn('CV save failed:', e); }
+}
 async function saveOrderToSupabase(order) {
   if (!_sb) { initSupabase(); await new Promise(r => setTimeout(r, 800)); }
   if (!_sb) return;
