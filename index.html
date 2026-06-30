@@ -1492,6 +1492,9 @@
   padding: 100px 40px 60px;
   min-height: 100vh;
 }
+ #page-account {
+  padding-top: 100px;
+}
   /* ── ABOUT PAGE ── */
   #page-about {
     align-items: center;
@@ -4927,14 +4930,16 @@
 <!-- ░░ MY ACCOUNT PAGE ░░ -->
 <div id="page-account" class="page">
   <div class="about-container fade-in" style="max-width:760px;">
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-      <div>
-        <p class="pricing-eyebrow" style="margin-bottom:8px;">My Account</p>
-        <h2 class="about-heading" style="font-size:1.8rem;">Saved CVs</h2>
-      </div>
-      <button class="btn-secondary" onclick="handleSignOut()">Sign Out</button>
+  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+  <div style="display:flex; align-items:center; gap:16px;">
+    <div id="account-avatar" style="width:48px;height:48px;border-radius:50%;border:2px solid var(--gold-border);background:radial-gradient(circle at 40% 40%,#1a2e4a,#0d1b2e);display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:1.1rem;color:var(--gold);flex-shrink:0;">?</div>
+    <div>
+      <p class="pricing-eyebrow" style="margin-bottom:4px;">My Account</p>
+      <div id="account-email" style="font-family:'EB Garamond',serif;font-size:1rem;color:var(--text-muted);">Loading...</div>
     </div>
-
+  </div>
+  <button class="btn-secondary" onclick="handleSignOut()">Sign Out</button>
+</div>
     <div class="gold-line" style="margin:24px 0;"></div>
 
     <div id="account-loading" style="text-align:center; padding:40px 0;">
@@ -5146,7 +5151,12 @@ async function loadMyAccount() {
     showPage('auth');
     return;
   }
-
+// عرض الإيميل والأفاتار
+  const email = userData.user.email || '';
+  const emailEl = document.getElementById('account-email');
+  const avatarEl = document.getElementById('account-avatar');
+  if (emailEl) emailEl.textContent = email;
+  if (avatarEl) avatarEl.textContent = email ? email[0].toUpperCase() : '?';
   const { data: cvs, error } = await _sb
     .from('cvs')
     .select('id, name, language, tier, cv_html, created_at')
