@@ -4765,11 +4765,39 @@
         <div style="font-family:'EB Garamond',serif;font-size:0.97rem;color:var(--text-muted);line-height:1.7;">${a}</div>
       </div>`).join('');
     </script>
-
-    <div style="margin-top:8px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+<div style="margin-top:8px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
       <button class="btn-primary" onclick="showPage('path')">Begin Your Journey</button>
       <button class="btn-secondary" onclick="showPage('legal')">Legal & Privacy</button>
     </div>
+
+    <div class="gold-line" style="margin:40px 0 32px;"></div>
+
+    <!-- CONTACT SECTION -->
+    <p class="pricing-eyebrow" style="margin-bottom:16px;">Get In Touch</p>
+    <h3 class="about-heading" style="font-size:1.4rem;margin-bottom:12px;">We'd Love to Hear From You</h3>
+    <p class="about-text" style="margin-bottom:28px;">Whether you have a question, a suggestion, or need support — our team is here to help.</p>
+
+    <div style="display:flex;flex-direction:column;gap:14px;max-width:520px;margin:0 auto 32px;">
+      <input id="contact-name" type="text" placeholder="Your Name"
+        style="width:100%;padding:14px 18px;background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.2);border-radius:8px;color:var(--cream);font-family:'EB Garamond',serif;font-size:1rem;outline:none;box-sizing:border-box;">
+      <input id="contact-email" type="email" placeholder="Your Email"
+        style="width:100%;padding:14px 18px;background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.2);border-radius:8px;color:var(--cream);font-family:'EB Garamond',serif;font-size:1rem;outline:none;box-sizing:border-box;">
+      <textarea id="contact-msg" placeholder="Your Message" rows="4"
+        style="width:100%;padding:14px 18px;background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.2);border-radius:8px;color:var(--cream);font-family:'EB Garamond',serif;font-size:1rem;outline:none;resize:vertical;box-sizing:border-box;"></textarea>
+      <button onclick="handleContactSubmit()"
+        style="width:100%;padding:14px;background:transparent;border:1px solid rgba(201,168,76,0.5);border-radius:50px;color:var(--gold);font-family:'Cinzel',serif;font-size:0.78rem;letter-spacing:0.15em;cursor:pointer;transition:all 0.25s;"
+        onmouseover="this.style.background='rgba(201,168,76,0.08)'"
+        onmouseout="this.style.background='transparent'">
+        SEND MESSAGE
+      </button>
+      <p id="contact-status" style="text-align:center;font-family:'EB Garamond',serif;font-size:0.95rem;color:var(--gold);display:none;"></p>
+    </div>
+
+    <p class="about-text" style="text-align:center;font-size:0.9rem;">
+      Or reach us directly at
+      <a href="mailto:kavoxoffical@gmail.com" style="color:var(--gold);text-decoration:none;">kavoxoffical@gmail.com</a>
+    </p>
+
   </div>
 
   <footer class="site-footer">
@@ -5104,6 +5132,27 @@ function translateAuthError(msg) {
   if (msg.includes('Invalid') || msg.includes('invalid')) return 'Incorrect code. Please check and try again.';
   if (msg.includes('rate limit') || msg.includes('Too many')) return 'Too many attempts. Please wait a moment and try again.';
   return 'An error occurred: ' + msg;
+}
+ function handleContactSubmit() {
+  const name = document.getElementById('contact-name').value.trim();
+  const email = document.getElementById('contact-email').value.trim();
+  const msg = document.getElementById('contact-msg').value.trim();
+  const status = document.getElementById('contact-status');
+  if (!name || !email || !msg) {
+    status.style.display = 'block';
+    status.style.color = '#e57373';
+    status.textContent = 'Please fill in all fields.';
+    return;
+  }
+  const subject = encodeURIComponent('KAVOX Contact: ' + name);
+  const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${msg}`);
+  window.open(`mailto:kavoxoffical@gmail.com?subject=${subject}&body=${body}`);
+  status.style.display = 'block';
+  status.style.color = 'var(--gold)';
+  status.textContent = '✦ Message prepared — please send it from your email client.';
+  document.getElementById('contact-name').value = '';
+  document.getElementById('contact-email').value = '';
+  document.getElementById('contact-msg').value = '';
 }
 async function handleSignOut() {
   if (_sb) await _sb.auth.signOut();
