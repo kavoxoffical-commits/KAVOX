@@ -176,34 +176,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Empty response from AI provider' });
     }
 
-    // ── SAVE TO SUPABASE ──────────────────────────────────────────
-    // ملاحظة: الحفظ هنا بدون JWT تحقق فعلي — آمن بشكل نسبي لأن
-    // userData مش مصدر ثقة، لكن مقبول للمرحلة الحالية.
-    // عند إضافة auth كامل: مرّر JWT token من الواجهة وتحقق منه هنا.
-    try {
-      const sbUrl = process.env.SUPABASE_URL;
-      const sbKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY;
-      if (sbUrl && sbKey && userData) {
-        await fetch(`${sbUrl}/rest/v1/cvs`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'apikey': sbKey,
-            'Authorization': `Bearer ${sbKey}`,
-            'Prefer': 'return=minimal'
-          },
-          body: JSON.stringify({
-            name:     userData.name     || null,
-            email:    userData.email    || null,
-            language: userData.language || null,
-            tier:     userData.tier     || 'free',
-            cv_html:  text
-          })
-        });
-      }
-    } catch (sbErr) {
-      console.warn('Supabase save failed:', sbErr.message);
-    }
+   
 
     return res.status(200).json({ text });
 
