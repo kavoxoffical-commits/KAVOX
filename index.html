@@ -1592,103 +1592,132 @@
     color: var(--gold);
   }
   .progress-line {
-    flex: 1;
     height: 1px;
+    flex: 1;
     background: rgba(201,168,76,0.15);
     transition: background 0.3s;
   }
   .progress-line.done { background: rgba(201,168,76,0.4); }
 
   /* ── ANIM ── */
- /* ── MICRO-INTERACTIONS & ANIMATIONS ── */
+/* ── MICRO-INTERACTIONS & ANIMATIONS ── */
   .fade-in {
-    animation: fadeIn 0.6s cubic-bezier(0.22,1,0.36,1) both;
+    animation: fadeIn 0.7s cubic-bezier(0.22,1,0.36,1) both;
   }
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(24px); }
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Page transition */
+  .page.active {
+    animation: pageIn 0.5s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  @keyframes pageIn {
+    from { opacity: 0; transform: translateY(14px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
   /* Scroll reveal */
   .reveal {
     opacity: 0;
-    transform: translateY(32px);
-    transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
+    transform: translateY(36px);
+    transition: opacity 0.8s cubic-bezier(0.22,1,0.36,1), transform 0.8s cubic-bezier(0.22,1,0.36,1);
   }
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
   .reveal-delay-1 { transition-delay: 0.1s; }
   .reveal-delay-2 { transition-delay: 0.2s; }
   .reveal-delay-3 { transition-delay: 0.3s; }
 
-  /* Button press effect */
+  /* Button press */
   .btn-primary:active, .btn-secondary:active {
-    transform: scale(0.97);
-    transition: transform 0.1s;
+    transform: scale(0.96);
+    transition: transform 0.08s;
   }
 
-  /* Gold shimmer on hover for headings */
-  .about-heading, .hero-title {
-    transition: letter-spacing 0.4s cubic-bezier(0.22,1,0.36,1);
+  /* Button primary — توهج ذهبي نابض هادئ */
+  .btn-primary {
+    animation: goldPulse 3s ease-in-out infinite;
   }
-  .about-heading:hover, .hero-title:hover {
-    letter-spacing: 0.04em;
+  .btn-primary:hover {
+    animation: none;
+    transform: translateY(-2px);
+    box-shadow: 0 0 60px rgba(201,168,76,0.35), inset 0 0 30px rgba(201,168,76,0.1) !important;
+    transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s;
+  }
+  @keyframes goldPulse {
+    0%, 100% { box-shadow: 0 0 30px rgba(201,168,76,0.08), inset 0 0 30px rgba(201,168,76,0.04); }
+    50%       { box-shadow: 0 0 55px rgba(201,168,76,0.22), inset 0 0 30px rgba(201,168,76,0.08); }
   }
 
-  /* Card lift */
+  /* Button secondary hover */
+  .btn-secondary:hover {
+    transform: translateY(-2px);
+    transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s, border-color 0.3s;
+  }
+
+  /* Coin — رفع أعمق مع توهج */
   .coin {
-    transition: box-shadow 0.4s, transform 0.4s cubic-bezier(0.22,1,0.36,1) !important;
+    transition: box-shadow 0.5s cubic-bezier(0.22,1,0.36,1), transform 0.5s cubic-bezier(0.22,1,0.36,1) !important;
   }
   .coin:hover {
-    transform: translateY(-8px) scale(1.03) !important;
-    box-shadow: 0 24px 48px rgba(201,168,76,0.18) !important;
+    transform: translateY(-10px) scale(1.04) !important;
+    box-shadow:
+      0 0 0 1px rgba(201,168,76,0.4),
+      0 0 80px rgba(201,168,76,0.35),
+      inset 0 0 40px rgba(0,0,0,0.2),
+      0 20px 60px rgba(0,0,0,0.6) !important;
   }
 
   /* Input focus glow */
   input:focus, textarea:focus, select:focus {
-    border-color: rgba(201,168,76,0.6) !important;
-    box-shadow: 0 0 0 3px rgba(201,168,76,0.08) !important;
+    border-color: rgba(201,168,76,0.7) !important;
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.1), 0 0 20px rgba(201,168,76,0.08) !important;
     outline: none !important;
-    transition: border-color 0.25s, box-shadow 0.25s;
+    transition: border-color 0.3s, box-shadow 0.3s;
   }
 
-  /* Nav link underline slide */
-  .nav-links a {
-    position: relative;
-  }
+  /* Nav underline slide */
+  .nav-links a { position: relative; }
   .nav-links a::after {
     content: '';
     position: absolute;
-    bottom: -3px; left: 0;
+    bottom: -4px; left: 0;
     width: 0; height: 1px;
     background: var(--gold);
-    transition: width 0.3s cubic-bezier(0.22,1,0.36,1);
+    transition: width 0.35s cubic-bezier(0.22,1,0.36,1);
   }
-  .nav-links a:hover::after {
-    width: 100%;
-  }
+  .nav-links a:hover::after { width: 100%; }
 
-  /* Page transition */
-  .page.active {
-    animation: pageIn 0.45s cubic-bezier(0.22,1,0.36,1) both;
+  /* Gold shimmer على العناوين */
+  .pricing-eyebrow {
+    position: relative;
+    display: inline-block;
   }
-  @keyframes pageIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: translateY(0); }
+  .pricing-eyebrow::after {
+    content: '';
+    position: absolute;
+    bottom: -6px; left: 50%; transform: translateX(-50%);
+    width: 0; height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    transition: width 0.6s cubic-bezier(0.22,1,0.36,1);
   }
+  .fade-in .pricing-eyebrow::after,
+  .reveal.visible .pricing-eyebrow::after { width: 60%; }
 
-  /* Gold pulse on CTA */
-  @keyframes goldPulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(201,168,76,0.3); }
-    50%       { box-shadow: 0 0 0 10px rgba(201,168,76,0); }
+  /* Floating gold orbs — زخرفة بصرية هادئة */
+  @keyframes floatOrb {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.03; }
+    50%       { transform: translateY(-30px) scale(1.1); opacity: 0.07; }
   }
-  .btn-primary {
-    animation: goldPulse 2.5s infinite;
+  .gold-orb {
+    position: fixed;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.6), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+    animation: floatOrb ease-in-out infinite;
   }
-  .btn-primary:hover {
-    animation: none;
   }
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(16px); }
@@ -7122,6 +7151,21 @@ function initScrollReveal() {
   els.forEach(el => obs.observe(el));
 }
 document.addEventListener('DOMContentLoaded', initScrollReveal);
+ // ── GOLD ORBS (زخرفة بصرية خلفية) ──────────────────────────────
+function initGoldOrbs() {
+  const orbs = [
+    { size: 600, top: '10%', left: '-10%', duration: '12s' },
+    { size: 400, top: '60%', right: '-8%', duration: '16s', delay: '-5s' },
+    { size: 300, top: '40%', left: '50%', duration: '20s', delay: '-8s' },
+  ];
+  orbs.forEach(o => {
+    const el = document.createElement('div');
+    el.className = 'gold-orb';
+    el.style.cssText = `width:${o.size}px;height:${o.size}px;top:${o.top || 'auto'};left:${o.left || 'auto'};right:${o.right || 'auto'};animation-duration:${o.duration};animation-delay:${o.delay || '0s'};`;
+    document.body.appendChild(el);
+  });
+}
+document.addEventListener('DOMContentLoaded', initGoldOrbs);
 async function saveOrderToSupabase(order) {
   if (!_sb) { initSupabase(); await new Promise(r => setTimeout(r, 800)); }
   if (!_sb) return;
