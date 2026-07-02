@@ -7224,7 +7224,7 @@ document.addEventListener('DOMContentLoaded', initScrollReveal);
 function initParticles() {
   const canvas = document.createElement('canvas');
   canvas.id = 'particle-canvas';
-  document.body.prepend(canvas);
+document.body.appendChild(canvas);
   const ctx = canvas.getContext('2d');
   let W, H, particles = [];
 
