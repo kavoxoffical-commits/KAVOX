@@ -1780,7 +1780,6 @@
     z-index: 0;
     animation: floatOrb ease-in-out infinite;
   }
-  }
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(16px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -7218,7 +7217,6 @@ function initScrollReveal() {
   }, { threshold: 0.15 });
   els.forEach(el => obs.observe(el));
 }
-document.addEventListener('DOMContentLoaded', initScrollReveal);
  // ── GOLD ORBS (زخرفة بصرية خلفية) ──────────────────────────────
 // ── PARTICLE CANVAS ───────────────────────────────────────────────
 function initParticles() {
@@ -7307,12 +7305,11 @@ function initCounters() {
     }, 16);
   });
 }
-
 document.addEventListener('DOMContentLoaded', () => {
   initScrollReveal();
-  initParticles();
   initTypewriter();
   setTimeout(initCounters, 600);
+});
 });
 async function saveOrderToSupabase(order) {
   if (!_sb) { initSupabase(); await new Promise(r => setTimeout(r, 800)); }
