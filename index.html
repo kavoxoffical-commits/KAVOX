@@ -1671,13 +1671,13 @@
   }
 
   /* ── PARTICLE CANVAS ── */
-#particle-canvas {
+  #particle-canvas {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    z-index: -1;
+    z-index: 0;
     pointer-events: none;
-    opacity: 0.5;
+    opacity: 0.6;
   }
 
   /* Scroll reveal */
@@ -1779,6 +1779,7 @@
     pointer-events: none;
     z-index: 0;
     animation: floatOrb ease-in-out infinite;
+  }
   }
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(16px); }
@@ -7217,12 +7218,13 @@ function initScrollReveal() {
   }, { threshold: 0.15 });
   els.forEach(el => obs.observe(el));
 }
+document.addEventListener('DOMContentLoaded', initScrollReveal);
  // ── GOLD ORBS (زخرفة بصرية خلفية) ──────────────────────────────
 // ── PARTICLE CANVAS ───────────────────────────────────────────────
 function initParticles() {
   const canvas = document.createElement('canvas');
   canvas.id = 'particle-canvas';
-document.body.appendChild(canvas);
+  document.body.prepend(canvas);
   const ctx = canvas.getContext('2d');
   let W, H, particles = [];
 
@@ -7305,11 +7307,12 @@ function initCounters() {
     }, 16);
   });
 }
+
 document.addEventListener('DOMContentLoaded', () => {
   initScrollReveal();
+  initParticles();
   initTypewriter();
   setTimeout(initCounters, 600);
-});
 });
 async function saveOrderToSupabase(order) {
   if (!_sb) { initSupabase(); await new Promise(r => setTimeout(r, 800)); }
