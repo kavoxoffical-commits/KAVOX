@@ -1617,68 +1617,6 @@
     from { opacity: 0; transform: translateY(14px); }
     to   { opacity: 1; transform: translateY(0); }
   }
- /* ── TYPEWRITER ── */
-  .typewriter-cursor {
-    display: inline-block;
-    color: var(--gold);
-    animation: blink 0.8s step-end infinite;
-    margin-left: 2px;
-  }
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0; }
-  }
-
-  /* ── HERO STATS ── */
-  .hero-stats {
-    display: flex;
-    align-items: center;
-    gap: 32px;
-    margin: 28px 0 36px;
-    z-index: 2;
-    position: relative;
-  }
-  .hero-stat {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-  }
-  .hero-stat .stat-num {
-    font-family: 'Cinzel', serif;
-    font-size: 2rem;
-    color: var(--gold);
-    line-height: 1;
-    letter-spacing: 0.05em;
-  }
-  .hero-stat .stat-unit {
-    font-family: 'Cinzel', serif;
-    font-size: 1.2rem;
-    color: var(--gold);
-    display: inline;
-  }
-  .hero-stat .stat-label-hero {
-    font-family: 'EB Garamond', serif;
-    font-size: 0.85rem;
-    color: rgba(240,230,208,0.55);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-  .hero-stat-sep {
-    width: 1px;
-    height: 40px;
-    background: linear-gradient(to bottom, transparent, rgba(201,168,76,0.3), transparent);
-  }
-
-  /* ── PARTICLE CANVAS ── */
-  #particle-canvas {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0.6;
-  }
 
   /* Scroll reveal */
   .reveal {
@@ -1780,6 +1718,12 @@
     z-index: 0;
     animation: floatOrb ease-in-out infinite;
   }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
   /* ── ADMIN DASHBOARD ── */
   @keyframes pulse-green {
     0%,100% { box-shadow:0 0 0 0 rgba(0,200,100,0.4); }
@@ -2459,20 +2403,14 @@
     <div class="gold-ornament" style="position:relative;z-index:2;">
       <div class="ornament-diamond"></div>
     </div>
-   <h1 class="hero-heading"><span id="typewriter-text"></span><span class="typewriter-cursor">|</span></h1>
-    <p class="hero-sub">The AI-Powered Platform for Elite Global Careers</p>
 
-    <div class="hero-stats">
-      <div class="hero-stat"><span class="stat-num" data-target="25">0</span><span class="stat-unit">+</span><span class="stat-label-hero">Languages</span></div>
-      <div class="hero-stat-sep"></div>
-      <div class="hero-stat"><span class="stat-num" data-target="3">0</span><span class="stat-unit"></span><span class="stat-label-hero">AI Engines</span></div>
-      <div class="hero-stat-sep"></div>
-      <div class="hero-stat"><span class="stat-num" data-target="10000">0</span><span class="stat-unit">+</span><span class="stat-label-hero">CVs Created</span></div>
-    </div>
+    <h1 class="hero-heading">Kavox: Crafting Your<br>Professional Legacy</h1>
+    <p class="hero-sub">The AI-Powered Platform for Elite Global Careers</p>
 
     <div class="hero-cta">
       <button class="btn-primary" onclick="showPage('path')">Start Your Journey</button>
     </div>
+  </div>
 
   <footer class="site-footer">
     <span class="footer-logo">KAVOX</span>
@@ -7212,101 +7150,22 @@ function initScrollReveal() {
   }, { threshold: 0.15 });
   els.forEach(el => obs.observe(el));
 }
+document.addEventListener('DOMContentLoaded', initScrollReveal);
  // ── GOLD ORBS (زخرفة بصرية خلفية) ──────────────────────────────
-// ── PARTICLE CANVAS ───────────────────────────────────────────────
-function initParticles() {
-  const canvas = document.createElement('canvas');
-  canvas.id = 'particle-canvas';
-  document.body.prepend(canvas);
-  const ctx = canvas.getContext('2d');
-  let W, H, particles = [];
-
-  function resize() {
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-  }
-  resize();
-  window.addEventListener('resize', resize);
-
-  for (let i = 0; i < 60; i++) {
-    particles.push({
-      x: Math.random() * 1920,
-      y: Math.random() * 1080,
-      r: Math.random() * 1.5 + 0.3,
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
-      o: Math.random() * 0.5 + 0.1
-    });
-  }
-
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-    particles.forEach(p => {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(201,168,76,${p.o})`;
-      ctx.fill();
-      p.x += p.vx; p.y += p.vy;
-      if (p.x < 0) p.x = W;
-      if (p.x > W) p.x = 0;
-      if (p.y < 0) p.y = H;
-      if (p.y > H) p.y = 0;
-    });
-    requestAnimationFrame(draw);
-  }
-  draw();
-}
-
-// ── TYPEWRITER ────────────────────────────────────────────────────
-function initTypewriter() {
-  const el = document.getElementById('typewriter-text');
-  if (!el) return;
-  const texts = [
-    'Crafting Your Professional Legacy',
-    'Elevating Your Career Story',
-    'Building Your Global Future'
+function initGoldOrbs() {
+  const orbs = [
+    { size: 600, top: '10%', left: '-10%', duration: '12s' },
+    { size: 400, top: '60%', right: '-8%', duration: '16s', delay: '-5s' },
+    { size: 300, top: '40%', left: '50%', duration: '20s', delay: '-8s' },
   ];
-  let ti = 0, ci = 0, deleting = false;
-
-  function type() {
-    const current = texts[ti];
-    if (!deleting) {
-      el.textContent = current.slice(0, ++ci);
-      if (ci === current.length) { deleting = true; setTimeout(type, 2200); return; }
-      setTimeout(type, 55);
-    } else {
-      el.textContent = current.slice(0, --ci);
-      if (ci === 0) { deleting = false; ti = (ti + 1) % texts.length; setTimeout(type, 400); return; }
-      setTimeout(type, 28);
-    }
-  }
-  setTimeout(type, 800);
-}
-
-// ── ANIMATED COUNTERS ─────────────────────────────────────────────
-function initCounters() {
-  const els = document.querySelectorAll('.stat-num');
-  els.forEach(el => {
-    const target = +el.dataset.target;
-    const duration = 1800;
-    const step = target / (duration / 16);
-    let current = 0;
-    const timer = setInterval(() => {
-      current = Math.min(current + step, target);
-      el.textContent = target >= 1000
-        ? Math.floor(current / 1000) + 'K'
-        : Math.floor(current);
-      if (current >= target) clearInterval(timer);
-    }, 16);
+  orbs.forEach(o => {
+    const el = document.createElement('div');
+    el.className = 'gold-orb';
+    el.style.cssText = `width:${o.size}px;height:${o.size}px;top:${o.top || 'auto'};left:${o.left || 'auto'};right:${o.right || 'auto'};animation-duration:${o.duration};animation-delay:${o.delay || '0s'};`;
+    document.body.appendChild(el);
   });
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  initScrollReveal();
-  initParticles();
-  initTypewriter();
-  setTimeout(initCounters, 600);
-});
+document.addEventListener('DOMContentLoaded', initGoldOrbs);
 async function saveOrderToSupabase(order) {
   if (!_sb) { initSupabase(); await new Promise(r => setTimeout(r, 800)); }
   if (!_sb) return;
