@@ -4998,7 +4998,45 @@
     </ul>
   </footer>
 </div>
+<!-- ░░ TAILOR FOR A JOB PAGE ░░ -->
+<div id="page-tailor" class="page">
+  <div class="about-container fade-in" style="max-width:680px;">
 
+    <button class="back-link" onclick="showPage('account'); loadMyAccount();">Return to My Account</button>
+
+    <div style="text-align:center;">
+      <div class="gold-ornament" style="margin-bottom:20px;"><div class="ornament-diamond"></div></div>
+      <p class="pricing-eyebrow" style="margin-bottom:10px;">AI-Powered Tailoring</p>
+      <h2 class="about-heading" style="font-size:1.7rem;">Tailor Your CV for a Job</h2>
+      <p style="font-family:'EB Garamond',serif;font-size:1rem;color:var(--text-muted);margin-top:8px;">Paste the job description and let KAVOX AI customise your CV, generate a Cover Letter, and calculate your ATS score.</p>
+    </div>
+
+    <div class="gold-line"></div>
+
+    <div style="display:flex;flex-direction:column;gap:20px;">
+      <div class="field-group">
+        <label>Job Title</label>
+        <input id="tailor-job-title" type="text" placeholder="e.g. Senior Product Manager" />
+      </div>
+      <div class="field-group">
+        <label>Company Name</label>
+        <input id="tailor-company" type="text" placeholder="e.g. Google" />
+      </div>
+      <div class="field-group">
+        <label>Job Description</label>
+        <textarea id="tailor-jd" placeholder="Paste the full job description here..." style="min-height:200px;"></textarea>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="runTailorCV()" style="width:100%;margin-top:8px;">✦ Tailor My CV</button>
+    <div id="tailor-error" style="display:none;text-align:center;color:#e57373;font-family:'EB Garamond',serif;font-size:0.95rem;margin-top:8px;"></div>
+
+  </div>
+  <footer class="site-footer">
+    <span class="footer-logo">KAVOX</span>
+    <ul class="footer-links"><li><a onclick="showPage('legal')">Legal</a></li><li><span class="footer-sep">|</span></li><li><a onclick="showPage('about')">Contact</a></li></ul>
+  </footer>
+</div>
 <!-- ░░ LOGIN / SIGN UP PAGE ░░ -->
 <div id="page-auth" class="page">
   <div class="about-container fade-in" style="max-width:440px;">
