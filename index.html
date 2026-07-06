@@ -7137,6 +7137,7 @@ async function saveCvToSupabase(name, email, tier, language, cvHTML) {
       tier,
       language,
       cv_html: cvHTML,
+      cv_data: window._cvData || null,
       user_id: userId
     }]);
   } catch(e) { console.warn('CV save failed:', e); }
