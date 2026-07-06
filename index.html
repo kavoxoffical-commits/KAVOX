@@ -5330,10 +5330,24 @@ async function runTailorCV() {
   }
 
   const cvData = cvRow.cv_data;
-  if (!cvData) {
-    errorEl.textContent = 'This CV was saved before tailoring was available. Please regenerate it first.';
-    errorEl.style.display = 'block';
-    return;
+if (!cvData) {
+    // استخرج البيانات من الـ HTML عبر الـ AI
+    updateLoadingStatus('Extracting CV data…', 10);
+    showPage('confirm');
+    try {
+      const { data: cvHtmlRow } = await _sb.from('cvs').select('cv_html').eq('id', _tailorCvId).single();
+      const extractPrompt = `Extract the CV data from this HTML and return ONLY valid JSON with these fields: name, title, email, phone, location, summary, experience (array with title/company/dates/bullets), education (array with degree/institution/dates), skills (array), languages (array). HTML: ${(cvHtmlRow?.cv_html||'').substring(0,4000)}`;
+      const extracted = await callProvider(API_PROVIDERS[0], extractPrompt, {});
+      const clean = extracted.replace(/\`\`\`json/gi,'').replace(/\`\`\`/g,'').trim();
+      const match = clean.match(/\{[\s\S]*\}/);
+      cvRow.cv_data = match ? JSON.parse(match[0]) : null;
+      if (!cvRow.cv_data) throw new Error('extract failed');
+    } catch(e) {
+      showPage('tailor');
+      errorEl.textContent = 'Could not read this CV. Please regenerate it first from the main form.';
+      errorEl.style.display = 'block';
+      return;
+    }
   }
 
   // Show loading
