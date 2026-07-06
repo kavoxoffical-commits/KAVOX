@@ -5291,6 +5291,146 @@ function translateAuthError(msg) {
   if (msg.includes('rate limit') || msg.includes('Too many')) return 'Too many attempts. Please wait a moment and try again.';
   return 'An error occurred: ' + msg;
 }
+ // ── TAILOR CV ─────────────────────────────────────────────────────
+let _tailorCvId = null;
+
+function openTailorPage(cvId) {
+  _tailorCvId = cvId;
+  document.getElementById('tailor-job-title').value = '';
+  document.getElementById('tailor-company').value = '';
+  document.getElementById('tailor-jd').value = '';
+  document.getElementById('tailor-error').style.display = 'none';
+  showPage('tailor');
+}
+
+async function runTailorCV() {
+  const jobTitle = document.getElementById('tailor-job-title').value.trim();
+  const company  = document.getElementById('tailor-company').value.trim();
+  const jd       = document.getElementById('tailor-jd').value.trim();
+  const errorEl  = document.getElementById('tailor-error');
+  errorEl.style.display = 'none';
+
+  if (!jobTitle || !company || !jd) {
+    errorEl.textContent = 'Please fill in all fields.';
+    errorEl.style.display = 'block';
+    return;
+  }
+  if (jd.length < 100) {
+    errorEl.textContent = 'Please paste a more complete job description (at least 100 characters).';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  if (!_sb) await initSupabase();
+  const { data: cvRow, error } = await _sb.from('cvs').select('cv_data, tier, language, name').eq('id', _tailorCvId).single();
+  if (error || !cvRow) {
+    errorEl.textContent = 'Could not load your CV. Please try again.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  const cvData = cvRow.cv_data;
+  if (!cvData) {
+    errorEl.textContent = 'This CV was saved before tailoring was available. Please regenerate it first.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  // Show loading
+  showPage('confirm');
+  updateLoadingStatus('Analysing job description…', 15);
+
+  const prompt = `You are KAVOX, an elite CV tailoring AI. You will tailor a CV for a specific job.
+
+ORIGINAL CV DATA:
+${JSON.stringify(cvData, null, 2)}
+
+JOB DETAILS:
+- Job Title: ${jobTitle}
+- Company: ${company}
+- Job Description: ${jd}
+
+YOUR TASK:
+1. Rewrite the CV summary to match this specific role and company
+2. Reorder and emphasise skills that match the job requirements
+3. Rewrite bullet points to highlight relevant achievements (DO NOT invent new information)
+4. Calculate ATS Score (0-100) based on keyword match
+5. Write a tailored Cover Letter (3 paragraphs)
+6. Write a brief explanation of what you changed and why (2-3 sentences)
+
+Return ONLY valid JSON in this exact structure:
+{
+  "name": "${cvData.name}",
+  "title": "tailored job title",
+  "email": "${cvData.email || ''}",
+  "phone": "${cvData.phone || ''}",
+  "location": "${cvData.location || ''}",
+  "summary": "tailored summary",
+  "experience": ${JSON.stringify(cvData.experience || [])},
+  "education": ${JSON.stringify(cvData.education || [])},
+  "skills": ["skill1","skill2"],
+  "languages": ${JSON.stringify(cvData.languages || [])},
+  "rtl": ${cvData.rtl || false},
+  "ats_score": 85,
+  "cover_letter": "Full cover letter text here",
+  "tailor_notes": "Brief explanation of changes made"
+}`;
+
+  try {
+    updateLoadingStatus('Tailoring your CV for ' + company + '…', 40);
+    const rawText = await callProvider(API_PROVIDERS[0], prompt, { name: cvData.name, email: cvData.email, tier: cvRow.tier });
+    const clean = rawText.replace(/\`\`\`json/gi,'').replace(/\`\`\`/g,'').trim();
+    const tailored = JSON.parse(clean);
+
+    tailored.labels = cvData.labels;
+    tailored.lang   = cvRow.language || 'English';
+
+    const templateName = window._selectedTemplate || 'The Minimalist';
+    const cvHTML = buildCVFromTemplate(templateName, tailored, cvRow.tier);
+
+    // Add ATS score and cover letter blocks
+    const atsBlock = `<div style="margin-top:32px;padding:20px 24px;border:1px solid rgba(201,168,76,0.35);border-radius:8px;background:rgba(201,168,76,0.04);">
+      <div style="font-family:'Cinzel',serif;font-size:0.75rem;color:#c9a84c;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:12px;">✦ ATS Score</div>
+      <div style="font-family:'Cinzel',serif;font-size:3rem;color:#c9a84c;font-weight:700;">${tailored.ats_score}<span style="font-size:1.2rem;opacity:0.6;">/100</span></div>
+      <p style="font-family:'EB Garamond',serif;font-size:0.95rem;color:rgba(240,230,208,0.7);margin-top:8px;">${tailored.tailor_notes || ''}</p>
+    </div>
+    <div style="margin-top:20px;padding:20px 24px;border:1px solid rgba(201,168,76,0.2);border-radius:8px;">
+      <div style="font-family:'Cinzel',serif;font-size:0.75rem;color:#c9a84c;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:12px;">✦ Cover Letter</div>
+      <p style="font-family:'EB Garamond',serif;font-size:1rem;color:rgba(240,230,208,0.85);line-height:1.8;white-space:pre-line;">${tailored.cover_letter || ''}</p>
+    </div>`;
+
+    window._cvHTML = cvHTML + atsBlock;
+    window._cvName = cvData.name + ' — ' + jobTitle + ' at ' + company;
+    window._cvData = tailored;
+    window._currentTier = cvRow.tier;
+    window._selectedTemplate = templateName;
+
+    // Save tailored CV
+    const { data: userData } = await _sb.auth.getUser();
+    if (userData?.user) {
+      await _sb.from('cvs').insert([{
+        name: cvData.name,
+        email: cvData.email || '',
+        tier: cvRow.tier,
+        language: cvRow.language,
+        cv_html: cvHTML,
+        cv_data: tailored,
+        job_title: jobTitle,
+        company_name: company,
+        user_id: userData.user.id
+      }]);
+    }
+
+    document.getElementById('cv-output').innerHTML = window._cvHTML;
+    renderResult(window._cvHTML, cvRow.tier);
+    showPage('result');
+
+  } catch(e) {
+    showPage('tailor');
+    errorEl.textContent = 'AI generation failed. Please try again.';
+    errorEl.style.display = 'block';
+  }
+}
  async function handleContactSubmit() {
   const name = document.getElementById('contact-name').value.trim();
   const email = document.getElementById('contact-email').value.trim();
