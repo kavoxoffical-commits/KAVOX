@@ -5374,17 +5374,17 @@ YOUR TASK:
 
 Return ONLY valid JSON in this exact structure:
 {
-  "name": "${cvData.name}",
+"name": "${cvDataFinal.name}",
   "title": "tailored job title",
-  "email": "${cvData.email || ''}",
-  "phone": "${cvData.phone || ''}",
-  "location": "${cvData.location || ''}",
+  "email": "${cvDataFinal.email || ''}",
+  "phone": "${cvDataFinal.phone || ''}",
+  "location": "${cvDataFinal.location || ''}",
   "summary": "tailored summary",
-  "experience": ${JSON.stringify(cvData.experience || [])},
-  "education": ${JSON.stringify(cvData.education || [])},
+  "experience": ${JSON.stringify(cvDataFinal.experience || [])},
+  "education": ${JSON.stringify(cvDataFinal.education || [])},
   "skills": ["skill1","skill2"],
-  "languages": ${JSON.stringify(cvData.languages || [])},
-  "rtl": ${cvData.rtl || false},
+  "languages": ${JSON.stringify(cvDataFinal.languages || [])},
+  "rtl": ${cvDataFinal.rtl || false},
   "ats_score": 85,
   "cover_letter": "Full cover letter text here",
   "tailor_notes": "Brief explanation of changes made"
@@ -5392,12 +5392,12 @@ Return ONLY valid JSON in this exact structure:
 
   try {
     updateLoadingStatus('Tailoring your CV for ' + company + '…', 40);
-    const rawText = await callProvider(API_PROVIDERS[0], prompt, { name: cvData.name, email: cvData.email, tier: cvRow.tier });
+    const rawText = await callProvider(API_PROVIDERS[0], prompt, { name: cvDataFinal.name, email: cvDataFinal.email, tier: cvRow.tier });
     const clean = rawText.replace(/\`\`\`json/gi,'').replace(/\`\`\`/g,'').trim();
     const tailored = JSON.parse(clean);
 
-    tailored.labels = cvData.labels;
-    tailored.lang   = cvRow.language || 'English';
+   tailored.labels = cvDataFinal.labels;
+   tailored.lang   = cvRow.language || 'English';
 
     const templateName = window._selectedTemplate || 'The Minimalist';
     const cvHTML = buildCVFromTemplate(templateName, tailored, cvRow.tier);
@@ -5414,7 +5414,7 @@ Return ONLY valid JSON in this exact structure:
     </div>`;
 
     window._cvHTML = cvHTML + atsBlock;
-    window._cvName = cvData.name + ' — ' + jobTitle + ' at ' + company;
+    window._cvName = cvDataFinal.name + ' — ' + jobTitle + ' at ' + company;
     window._cvData = tailored;
     window._currentTier = cvRow.tier;
     window._selectedTemplate = templateName;
@@ -5423,8 +5423,8 @@ Return ONLY valid JSON in this exact structure:
     const { data: userData } = await _sb.auth.getUser();
     if (userData?.user) {
       await _sb.from('cvs').insert([{
-        name: cvData.name,
-        email: cvData.email || '',
+        name: cvDataFinal.name,
+        email: cvDataFinal.email || '',
         tier: cvRow.tier,
         language: cvRow.language,
         cv_html: cvHTML,
