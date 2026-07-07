@@ -4,7 +4,7 @@
 // ── RATE LIMITING (in-memory, resets on cold start) ──────────────
 // For production: replace with Supabase-based rate limiting (see comment below)
 const rateLimitMap = new Map();
-const RATE_LIMIT_MAX = 5;       // max requests
+const RATE_LIMIT_MAX = 1000;       // max requests — مفتوح مؤقتًا للتجربة، نرجع نضبطه بعدين
 const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 hour in ms
 const MAX_PROMPT_LENGTH = 8000; // max characters in prompt
 
