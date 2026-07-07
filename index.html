@@ -5353,11 +5353,11 @@ if (!cvData) {
   // Show loading
   showPage('confirm');
   updateLoadingStatus('Analysing job description…', 15);
-
+const cvDataFinal = cvRow.cv_data;
   const prompt = `You are KAVOX, an elite CV tailoring AI. You will tailor a CV for a specific job.
 
 ORIGINAL CV DATA:
-${JSON.stringify(cvData, null, 2)}
+${JSON.stringify(cvDataFinal, null, 2)}
 
 JOB DETAILS:
 - Job Title: ${jobTitle}
