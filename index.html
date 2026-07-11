@@ -5389,7 +5389,8 @@ Return ONLY valid JSON in this exact structure:
   "cover_letter": "Full cover letter text here",
   "tailor_notes": "Brief explanation of changes made"
 }`;
-let tailored;
+ let tailored;
+  try {
   for (let i = 0; i < API_PROVIDERS.length; i++) {
     const provider = API_PROVIDERS[(currentProviderIndex + i) % API_PROVIDERS.length];
     try {
@@ -5406,8 +5407,7 @@ let tailored;
       await new Promise(r => setTimeout(r, 1000));
     }
   }
-
-  try {
+}
 
    tailored.labels = cvDataFinal.labels;
    tailored.lang   = cvRow.language || 'English';
