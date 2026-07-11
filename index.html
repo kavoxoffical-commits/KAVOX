@@ -5389,12 +5389,25 @@ Return ONLY valid JSON in this exact structure:
   "cover_letter": "Full cover letter text here",
   "tailor_notes": "Brief explanation of changes made"
 }`;
+let tailored;
+  for (let i = 0; i < API_PROVIDERS.length; i++) {
+    const provider = API_PROVIDERS[(currentProviderIndex + i) % API_PROVIDERS.length];
+    try {
+      updateLoadingStatus('Tailoring your CV for ' + company + '…', 40 + (i * 15));
+      const rawText = await callProvider(provider, prompt, { name: cvDataFinal.name, email: cvDataFinal.email, tier: cvRow.tier });
+      if (!rawText) throw new Error('EMPTY');
+      const clean = rawText.replace(/\`\`\`json/gi,'').replace(/\`\`\`/g,'').trim();
+      tailored = JSON.parse(clean);
+      currentProviderIndex = (currentProviderIndex + i + 1) % API_PROVIDERS.length;
+      break;
+    } catch (err) {
+      if (i === API_PROVIDERS.length - 1) throw err;
+      updateLoadingStatus('Switching to backup server…', 45 + (i * 15));
+      await new Promise(r => setTimeout(r, 1000));
+    }
+  }
 
   try {
-    updateLoadingStatus('Tailoring your CV for ' + company + '…', 40);
-    const rawText = await callProvider(API_PROVIDERS[0], prompt, { name: cvDataFinal.name, email: cvDataFinal.email, tier: cvRow.tier });
-    const clean = rawText.replace(/\`\`\`json/gi,'').replace(/\`\`\`/g,'').trim();
-    const tailored = JSON.parse(clean);
 
    tailored.labels = cvDataFinal.labels;
    tailored.lang   = cvRow.language || 'English';
