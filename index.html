@@ -6797,7 +6797,8 @@ async function generateCV(tier) {
   // ── TIER EXTRA FIELDS ──────────────────────────────────────────
   const atsLangNote = cvLang !== 'English' ? ` IMPORTANT: Write the ats_report, cover_letter, and linkedin_summary in ${cvLang}, same language as the CV.` : '';
   const tierExtraFields = tier === 'pro' ? '' :
-    tier === 'royal' ? `,"ats_report": "3-4 sentence ATS analysis: keyword match score, missing keywords, recommendations.${atsLangNote}"` :
+    tier === 'royal' ? `,"ats_report": "3-4 sentence ATS analysis. State the score explicitly in the format 'X/100' using a keyword-match percentage score (0-100), then list missing keywords and recommendations.${atsLangNote}"` :
+`,"ats_report": "3-4 sentence ATS analysis. State the score explicitly in the format 'X/100' using a keyword-match percentage score (0-100).${atsLangNote}"...
     `,"ats_report": "3-4 sentence ATS analysis with score.${atsLangNote}", "cover_letter": "Full cover letter (3 paragraphs, plain text only, no HTML).${atsLangNote}", "linkedin_summary": "LinkedIn About section (150 words max, plain text).${atsLangNote}"`;
 
   const langInstruction = {
@@ -6908,7 +6909,7 @@ Return this exact JSON structure:
 RULES:
 - experience: ${optData.workEntries.length > 0 ? 'USE the exact work history provided above — do NOT invent other positions' : 'generate 2-3 relevant positions based on the info provided'}
 - skills: ${skillsRaw ? 'include all user-provided skills first, then add complementary ones to reach 6 total. Write in the CV language.' : 'generate 5-6 relevant skills based on industry and title — write in the CV language'}
-- bullets: ${tier==='pro'?'2-3 bullets per job':'3-4 quantified bullets per job with numbers/percentages'}
+- bullets: ${tier==='pro'?'2-3 bullets per job':'3-4 achievement-focused bullets per job. ONLY use specific numbers or percentages if the user\'s original input mentions or clearly implies a real figure — NEVER invent statistics that are not grounded in what the user actually wrote. If the user gave vague input (e.g. "helped increase sales"), rewrite it with strong action verbs and impact language WITHOUT fabricating a number.'}
 - dates: always write in format "YYYY - YYYY" or "YYYY - Present"
 - If exp is "Fresh Graduate / No Experience": create 1 entry as internship or academic project, do NOT invent fake work history
 - languages array: use exactly the languages provided, keep the level text as-is
