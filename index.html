@@ -5304,6 +5304,11 @@ function openTailorPage(cvId) {
 }
 
 async function runTailorCV() {
+  let _rlUserId = null;
+  try {
+    const { data: _rlAuth } = await _sb.auth.getUser();
+    _rlUserId = _rlAuth?.user?.id || null;
+  } catch (_) {}
   const jobTitle = document.getElementById('tailor-job-title').value.trim();
   const company  = document.getElementById('tailor-company').value.trim();
   const jd       = document.getElementById('tailor-jd').value.trim();
@@ -5394,14 +5399,14 @@ let tailored;
     const provider = API_PROVIDERS[(currentProviderIndex + i) % API_PROVIDERS.length];
     try {
       updateLoadingStatus('Tailoring your CV for ' + company + '…', 40 + (i * 15));
-      const rawText = await callProvider(provider, prompt, { name: cvDataFinal.name, email: cvDataFinal.email, tier: cvRow.tier });
+      const rawText = await callProvider(provider, prompt, { name: cvDataFinal.name, email: cvDataFinal.email, tier: cvRow.tier, user_id: _rlUserId });
       if (!rawText) throw new Error('EMPTY');
       const clean = rawText.replace(/\`\`\`json/gi,'').replace(/\`\`\`/g,'').trim();
       tailored = JSON.parse(clean);
       currentProviderIndex = (currentProviderIndex + i + 1) % API_PROVIDERS.length;
       break;
     } catch (err) {
-      if (i === API_PROVIDERS.length - 1) throw err;
+      if (err.message === 'RATE_LIMIT_EXCEEDED' || i === API_PROVIDERS.length - 1) throw err;
       updateLoadingStatus('Switching to backup server…', 45 + (i * 15));
       await new Promise(r => setTimeout(r, 1000));
     }
@@ -5454,7 +5459,9 @@ let tailored;
 
   } catch(e) {
     showPage('tailor');
-    errorEl.textContent = 'AI generation failed. Please try again.';
+    errorEl.textContent = (e && e.message === 'RATE_LIMIT_EXCEEDED')
+      ? "You've reached your daily CV generation limit. Please try again in 24 hours."
+      : 'AI generation failed. Please try again.';
     errorEl.style.display = 'block';
   }
 }
@@ -5890,7 +5897,15 @@ async function callProvider(provider, prompt, userData) {
       userData: userData || null
     })
   });
-  if (response.status === 429 || response.status === 403) throw new Error('LIMIT');
+  if (response.status === 429) {
+    // Distinguish OUR OWN daily rate limit (no point retrying other providers)
+    // from a single provider being temporarily overloaded (worth trying a fallback provider).
+    let payload = null;
+    try { payload = await response.json(); } catch (_) {}
+    if (payload && payload.retryAfter) throw new Error('RATE_LIMIT_EXCEEDED');
+    throw new Error('LIMIT');
+  }
+  if (response.status === 403) throw new Error('LIMIT');
   if (!response.ok) throw new Error('ERROR');
   const data = await response.json();
   if (data.error) throw new Error(data.error);
@@ -6632,6 +6647,11 @@ function collectOptionalData() {
 }
 
 async function generateCV(tier) {
+  let _rlUserId = null;
+  try {
+    const { data: _rlAuth } = await _sb.auth.getUser();
+    _rlUserId = _rlAuth?.user?.id || null;
+  } catch (_) {}
   const name      = document.getElementById('f-name').value.trim() || 'Professional';
   const email     = document.getElementById('f-email').value.trim() || '';
   const phone     = document.getElementById('f-phone')?.value.trim() || '';
@@ -6921,7 +6941,7 @@ RULES:
     const provider = API_PROVIDERS[(currentProviderIndex + i) % API_PROVIDERS.length];
     try {
       updateLoadingStatus(`Crafting your ${tier.toUpperCase()} CV with KAVOX AI…`, 20 + (i * 25));
-      const rawText = await callProvider(provider, prompt, { name, email, language: cvLang, tier });
+      const rawText = await callProvider(provider, prompt, { name, email, language: cvLang, tier, user_id: _rlUserId });
       if (!rawText) throw new Error('EMPTY');
 
       currentProviderIndex = (currentProviderIndex + i + 1) % API_PROVIDERS.length;
@@ -6962,6 +6982,17 @@ RULES:
       return;
 
     } catch (err) {
+      if (err.message === 'RATE_LIMIT_EXCEEDED') {
+        document.getElementById('cv-output').innerHTML = `
+          <div style="text-align:center;padding:40px 20px;">
+            <h2 style="color:#c9a84c;font-family:'Cinzel',serif;">Daily Limit Reached</h2>
+            <p style="color:rgba(240,230,208,0.75);margin-top:16px;font-family:'EB Garamond',serif;line-height:1.7;">
+              You've reached your daily CV generation limit.<br>Please try again in 24 hours.
+            </p>
+          </div>`;
+        showPage('result');
+        return;
+      }
       updateLoadingStatus(`Switching to backup server…`, 30 + (i * 20));
       await new Promise(r => setTimeout(r, 1000));
     }
