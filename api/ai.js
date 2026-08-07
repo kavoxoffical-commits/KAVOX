@@ -7,18 +7,17 @@ const RATE_LIMIT_MAX = 15;                 // requests per identity per window
 const RATE_LIMIT_WINDOW_SECONDS = 24 * 60 * 60; // 24 hours
 const MAX_PROMPT_LENGTH = 8000; // max characters in prompt
 
-async function getRateLimit(identity) {
+async function getRateLimit(identity, requestId) {
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_KEY;
 
-  // Fail-open if Supabase env vars are missing, so a config issue never takes down AI generation entirely
   if (!supabaseUrl || !supabaseKey) {
     console.error('Rate limiting disabled: missing SUPABASE_URL/SUPABASE_KEY');
     return { allowed: true, remaining: RATE_LIMIT_MAX };
   }
 
   try {
-    const r = await fetch(`${supabaseUrl}/rest/v1/rpc/check_rate_limit`, {
+    const r = await fetch(`${supabaseUrl}/rest/v1/rpc/check_rate_limit_dedup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -27,6 +26,7 @@ async function getRateLimit(identity) {
       },
       body: JSON.stringify({
         p_identity: identity,
+        p_request_id: requestId,
         p_max: RATE_LIMIT_MAX,
         p_window_seconds: RATE_LIMIT_WINDOW_SECONDS
       })
@@ -74,7 +74,7 @@ export default async function handler(req, res) {
     catch { return res.status(400).json({ error: 'Invalid JSON' }); }
   }
 
-  const { provider, prompt, systemPrompt, userData } = body || {};
+  const { provider, prompt, systemPrompt, userData, requestId } = body || {};
 
   // ── RATE LIMITING ─────────────────────────────────────────────────
   // Prefer logged-in user_id (stable identity); fall back to IP for guests
@@ -84,8 +84,14 @@ export default async function handler(req, res) {
     req.socket?.remoteAddress ||
     'unknown';
   const identity = (userData && userData.user_id) ? `user:${userData.user_id}` : `ip:${ip}`;
+  // requestId groups provider-fallback retries of the SAME generation attempt so they only
+  // consume one slot from the daily limit. Falls back to a random id (no dedup) if the client
+  // didn't send one — never trust the client to skip the check, only to group retries.
+  const effectiveRequestId = (typeof requestId === 'string' && requestId.length > 0)
+    ? requestId
+    : `${identity}:${Date.now()}:${Math.random()}`;
 
-  const { allowed, remaining } = await getRateLimit(identity);
+  const { allowed, remaining } = await getRateLimit(identity, effectiveRequestId);
   res.setHeader('X-RateLimit-Limit', RATE_LIMIT_MAX);
   res.setHeader('X-RateLimit-Remaining', remaining);
 
