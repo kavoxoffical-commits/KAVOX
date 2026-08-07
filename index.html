@@ -5304,6 +5304,7 @@ function openTailorPage(cvId) {
 }
 
 async function runTailorCV() {
+  const _rlRequestId = 'tailor-' + Date.now() + '-' + Math.random().toString(36).slice(2);
   let _rlUserId = null;
   try {
     const { data: _rlAuth } = await _sb.auth.getUser();
@@ -5399,7 +5400,7 @@ let tailored;
     const provider = API_PROVIDERS[(currentProviderIndex + i) % API_PROVIDERS.length];
     try {
       updateLoadingStatus('Tailoring your CV for ' + company + '…', 40 + (i * 15));
-      const rawText = await callProvider(provider, prompt, { name: cvDataFinal.name, email: cvDataFinal.email, tier: cvRow.tier, user_id: _rlUserId });
+      const rawText = await callProvider(provider, prompt, { name: cvDataFinal.name, email: cvDataFinal.email, tier: cvRow.tier, user_id: _rlUserId }, _rlRequestId);
       if (!rawText) throw new Error('EMPTY');
       const clean = rawText.replace(/\`\`\`json/gi,'').replace(/\`\`\`/g,'').trim();
       tailored = JSON.parse(clean);
@@ -5886,7 +5887,7 @@ const CV_SYSTEM_PROMPT = `You are an expert Frontend Engineer and UI/UX Designer
 
 // ── CALL ONE PROVIDER (via Netlify serverless function) ───────────
 // API keys are stored securely as environment variables on the server.
-async function callProvider(provider, prompt, userData) {
+async function callProvider(provider, prompt, userData, requestId) {
   const response = await fetch('/api/ai', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -5894,7 +5895,8 @@ async function callProvider(provider, prompt, userData) {
       provider: provider.providerKey,
       systemPrompt: CV_SYSTEM_PROMPT,
       prompt,
-      userData: userData || null
+      userData: userData || null,
+      requestId: requestId || null
     })
   });
   if (response.status === 429) {
@@ -6647,6 +6649,7 @@ function collectOptionalData() {
 }
 
 async function generateCV(tier) {
+  const _rlRequestId = 'gen-' + Date.now() + '-' + Math.random().toString(36).slice(2);
   let _rlUserId = null;
   try {
     const { data: _rlAuth } = await _sb.auth.getUser();
@@ -6941,7 +6944,7 @@ RULES:
     const provider = API_PROVIDERS[(currentProviderIndex + i) % API_PROVIDERS.length];
     try {
       updateLoadingStatus(`Crafting your ${tier.toUpperCase()} CV with KAVOX AI…`, 20 + (i * 25));
-      const rawText = await callProvider(provider, prompt, { name, email, language: cvLang, tier, user_id: _rlUserId });
+      const rawText = await callProvider(provider, prompt, { name, email, language: cvLang, tier, user_id: _rlUserId }, _rlRequestId);
       if (!rawText) throw new Error('EMPTY');
 
       currentProviderIndex = (currentProviderIndex + i + 1) % API_PROVIDERS.length;
