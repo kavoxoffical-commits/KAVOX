@@ -1,25 +1,47 @@
 // api/ai.js
 // KAVOX — Secure AI proxy. Keys are in Vercel environment variables.
 
-// ── RATE LIMITING (in-memory, resets on cold start) ──────────────
-// For production: replace with Supabase-based rate limiting (see comment below)
-const rateLimitMap = new Map();
-const RATE_LIMIT_MAX = 1000;       // max requests — مفتوح مؤقتًا للتجربة، نرجع نضبطه بعدين
-const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 hour in ms
+// ── RATE LIMITING (persistent, Supabase-backed — survives cold starts) ──
+// Single unified limit for now (no paid tiers exist yet). Revisit when payment ships.
+const RATE_LIMIT_MAX = 15;                 // requests per identity per window
+const RATE_LIMIT_WINDOW_SECONDS = 24 * 60 * 60; // 24 hours
 const MAX_PROMPT_LENGTH = 8000; // max characters in prompt
 
-function getRateLimit(ip) {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ip);
-  if (!entry || now - entry.windowStart > RATE_LIMIT_WINDOW) {
-    rateLimitMap.set(ip, { count: 1, windowStart: now });
-    return { allowed: true, remaining: RATE_LIMIT_MAX - 1 };
+async function getRateLimit(identity) {
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_KEY;
+
+  // Fail-open if Supabase env vars are missing, so a config issue never takes down AI generation entirely
+  if (!supabaseUrl || !supabaseKey) {
+    console.error('Rate limiting disabled: missing SUPABASE_URL/SUPABASE_KEY');
+    return { allowed: true, remaining: RATE_LIMIT_MAX };
   }
-  if (entry.count >= RATE_LIMIT_MAX) {
-    return { allowed: false, remaining: 0 };
+
+  try {
+    const r = await fetch(`${supabaseUrl}/rest/v1/rpc/check_rate_limit`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: supabaseKey,
+        Authorization: `Bearer ${supabaseKey}`
+      },
+      body: JSON.stringify({
+        p_identity: identity,
+        p_max: RATE_LIMIT_MAX,
+        p_window_seconds: RATE_LIMIT_WINDOW_SECONDS
+      })
+    });
+    if (!r.ok) {
+      console.error('Rate limit check failed:', r.status, await r.text());
+      return { allowed: true, remaining: RATE_LIMIT_MAX }; // fail-open
+    }
+    const rows = await r.json();
+    const row = Array.isArray(rows) ? rows[0] : rows;
+    return { allowed: !!row?.allowed, remaining: row?.remaining ?? 0 };
+  } catch (err) {
+    console.error('Rate limit check error:', err.message);
+    return { allowed: true, remaining: RATE_LIMIT_MAX }; // fail-open
   }
-  entry.count++;
-  return { allowed: true, remaining: RATE_LIMIT_MAX - entry.count };
 }
 
 // ── ALLOWED ORIGINS ───────────────────────────────────────────────
@@ -45,24 +67,6 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // ── RATE LIMITING ─────────────────────────────────────────────────
-  const ip =
-    req.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
-    req.headers['x-real-ip'] ||
-    req.socket?.remoteAddress ||
-    'unknown';
-
-  const { allowed, remaining } = getRateLimit(ip);
-  res.setHeader('X-RateLimit-Limit', RATE_LIMIT_MAX);
-  res.setHeader('X-RateLimit-Remaining', remaining);
-
-  if (!allowed) {
-    return res.status(429).json({
-      error: 'Too many requests. Please wait before trying again.',
-      retryAfter: '1 hour'
-    });
-  }
-
   // ── PARSE BODY ────────────────────────────────────────────────────
   let body = req.body;
   if (typeof body === 'string') {
@@ -71,6 +75,26 @@ export default async function handler(req, res) {
   }
 
   const { provider, prompt, systemPrompt, userData } = body || {};
+
+  // ── RATE LIMITING ─────────────────────────────────────────────────
+  // Prefer logged-in user_id (stable identity); fall back to IP for guests
+  const ip =
+    req.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
+    req.headers['x-real-ip'] ||
+    req.socket?.remoteAddress ||
+    'unknown';
+  const identity = (userData && userData.user_id) ? `user:${userData.user_id}` : `ip:${ip}`;
+
+  const { allowed, remaining } = await getRateLimit(identity);
+  res.setHeader('X-RateLimit-Limit', RATE_LIMIT_MAX);
+  res.setHeader('X-RateLimit-Remaining', remaining);
+
+  if (!allowed) {
+    return res.status(429).json({
+      error: 'Too many requests. Please wait before trying again.',
+      retryAfter: '24 hours'
+    });
+  }
 
   // ── VALIDATE PROMPT ───────────────────────────────────────────────
   if (!prompt) return res.status(400).json({ error: 'Missing prompt' });
