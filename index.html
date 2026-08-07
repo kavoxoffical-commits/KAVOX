@@ -5371,11 +5371,11 @@ JOB DETAILS:
 - Job Description: ${jd}
 
 YOUR TASK:
-1. Rewrite the CV summary to match this specific role and company
+1. Rewrite the CV summary to match this specific role and company — reference the actual company name and role naturally
 2. Reorder and emphasise skills that match the job requirements
-3. Rewrite bullet points to highlight relevant achievements (DO NOT invent new information)
-4. Calculate ATS Score (0-100) based on keyword match
-5. Write a tailored Cover Letter (3 paragraphs)
+3. Rewrite bullet points to highlight relevant achievements (DO NOT invent new information). STRICT RULE ON NUMBERS: a specific number, percentage, or metric may ONLY appear if it already exists in the ORIGINAL CV DATA above. NEVER invent, estimate, or add a statistic that isn't already there — rephrasing for relevance is fine, adding fabricated numbers is not.
+4. Calculate ATS Score (0-100) based on keyword match against the job description
+5. Write a tailored Cover Letter (3 paragraphs) that references at least 2 SPECIFIC details from the ORIGINAL CV DATA (a real job title, employer, skill, or achievement) plus the company name "${company}" — a reader should be able to tell this was written for this candidate and this company, not a template. STRICTLY FORBIDDEN generic filler phrases: 'results-driven professional', 'proven track record', 'unique blend of skills', 'strong believer in the power of', 'exceed expectations', 'esteemed organization', 'meaningful impact'.
 6. Write a brief explanation of what you changed and why (2-3 sentences)
 
 Return ONLY valid JSON in this exact structure:
@@ -6821,7 +6821,7 @@ async function generateCV(tier) {
   const atsLangNote = cvLang !== 'English' ? ` IMPORTANT: Write the ats_report, cover_letter, and linkedin_summary in ${cvLang}, same language as the CV.` : '';
   const tierExtraFields = tier === 'pro' ? '' :
     tier === 'royal' ? `,"ats_report": "3-4 sentence ATS analysis. State the score explicitly in the format 'X/100' using a keyword-match percentage score (0-100), then list missing keywords and recommendations.${atsLangNote}"` :
-    `,"ats_report": "3-4 sentence ATS analysis. State the score explicitly in the format 'X/100' using a keyword-match percentage score (0-100).${atsLangNote}", "cover_letter": "Full cover letter (3 paragraphs, plain text only, no HTML).${atsLangNote}", "linkedin_summary": "LinkedIn About section (150 words max, plain text).${atsLangNote}"`;
+    `,"ats_report": "3-4 sentence ATS analysis. State the score explicitly in the format 'X/100' using a keyword-match percentage score (0-100).${atsLangNote}", "cover_letter": "Full cover letter (3 paragraphs, plain text only, no HTML). MUST reference at least 2 SPECIFIC details actually present in this candidate's CV (a real job title, a real employer name, a real skill, or a real achievement from the experience section above) — a reader should be able to tell this was written for THIS person, not a template. STRICTLY FORBIDDEN generic filler phrases: 'results-driven professional', 'proven track record', 'unique blend of skills', 'strong believer in the power of', 'exceed expectations', 'esteemed organization', 'meaningful impact'. Do not invent any number/statistic not already grounded in the CV data above.${atsLangNote}", "linkedin_summary": "LinkedIn About section (150 words max, plain text). MUST reference at least 1 SPECIFIC detail from this candidate's actual experience or skills above (not a generic category). STRICTLY FORBIDDEN generic filler phrases: 'results-driven', 'proven track record', 'passionate about', 'exceed expectations'. Do not invent any number/statistic not already grounded in the CV data above.${atsLangNote}"`;
 
   const langInstruction = {
     'English':    'Write ALL text values in English.',
@@ -6931,7 +6931,7 @@ Return this exact JSON structure:
 RULES:
 - experience: ${optData.workEntries.length > 0 ? 'USE the exact work history provided above — do NOT invent other positions' : 'generate 2-3 relevant positions based on the info provided'}
 - skills: ${skillsRaw ? 'include all user-provided skills first, then add complementary ones to reach 6 total. Write in the CV language.' : 'generate 5-6 relevant skills based on industry and title — write in the CV language'}
-- bullets: ${tier==='pro'?'2-3 bullets per job':'3-4 achievement-focused bullets per job. ONLY use specific numbers or percentages if the user\'s original input mentions or clearly implies a real figure — NEVER invent statistics that are not grounded in what the user actually wrote. If the user gave vague input (e.g. "helped increase sales"), rewrite it with strong action verbs and impact language WITHOUT fabricating a number.'}
+- bullets: ${tier==='pro'?'2-3':'3-4'} achievement-focused bullets per job. STRICT RULE ON NUMBERS: a specific number, percentage, or metric may ONLY appear if the user's original input explicitly states or clearly implies that exact figure. NEVER invent, estimate, or "fill in" a statistic that is not grounded in what the user actually wrote — this is a hard rule, not a style preference. Example of what NOT to do: user wrote "helped increase sales a bit" → do NOT write "increased sales by 25%". Instead rewrite it with strong action verbs and real impact language WITHOUT a number, e.g. "Drove measurable growth in sales performance through targeted customer engagement." If the user's input already contains a real number (e.g. "grew the team from 3 to 8 people"), you MUST keep that exact number — do not alter it.
 - dates: always write in format "YYYY - YYYY" or "YYYY - Present"
 - If exp is "Fresh Graduate / No Experience": create 1 entry as internship or academic project, do NOT invent fake work history
 - languages array: use exactly the languages provided, keep the level text as-is
