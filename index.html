@@ -5419,6 +5419,8 @@ let tailored;
 
    tailored.labels = cvDataFinal.labels;
    tailored.lang   = cvRow.language || 'English';
+   // Deterministic safety net: strip any generic cliché sentence the AI slipped in despite instructions
+   if (tailored.cover_letter) tailored.cover_letter = sanitizeGeneratedText(tailored.cover_letter);
 
     // Use the SAME template the CV was originally created with, not the current session's transient selection
     const templateName = cvDataFinal.template || window._selectedTemplate || 'The Minimalist';
@@ -5892,6 +5894,41 @@ const CV_SYSTEM_PROMPT = `You are an expert Frontend Engineer and UI/UX Designer
 
 // ── CALL ONE PROVIDER (via Netlify serverless function) ───────────
 // API keys are stored securely as environment variables on the server.
+// ── CONTENT SAFETY NET ─────────────────────────────────────────────
+// The AI is instructed not to use generic template clichés, but instructions alone
+// aren't 100% reliable. This is a deterministic guarantee: every known cliché phrase
+// is swapped for a neutral equivalent before the text ever reaches the user — the
+// sentence structure stays intact, only the offending phrase changes.
+const CLICHE_REPLACEMENTS = [
+  [/at your esteemed organization/gi, 'at your company'],
+  [/esteemed organization/gi, 'company'],
+  [/detail-oriented and results-driven professional/gi, 'dedicated professional'],
+  [/results-driven professional/gi, 'professional'],
+  [/proven track record/gi, 'track record'],
+  [/unique blend of skills/gi, 'combination of skills'],
+  [/strong believer in the power of/gi, 'firm believer in'],
+  [/exceeding expectations/gi, 'delivering strong results'],
+  [/exceed expectations/gi, 'deliver strong results'],
+  [/meaningful impact/gi, 'a real impact'],
+  [/seasoned (marketing |digital |sales )?professional/gi, '$1professional'],
+  [/dynamic professional/gi, 'professional'],
+  [/passionate about/gi, 'focused on'],
+  [/drive business success/gi, 'support business growth'],
+  [/unique perspective/gi, 'perspective']
+];
+
+function sanitizeGeneratedText(text) {
+  if (!text || typeof text !== 'string') return text;
+  let result = text;
+  for (const [pattern, replacement] of CLICHE_REPLACEMENTS) {
+    result = result.replace(pattern, replacement);
+  }
+  // Fix capitalization at start of text / after sentence-ending punctuation, since a
+  // replacement can leave a lowercase word where an uppercase one used to be
+  result = result.replace(/(^\s*|[.!?]\s+)([a-z])/g, (m, sep, ch) => sep + ch.toUpperCase());
+  return result;
+}
+
 async function callProvider(provider, prompt, userData, requestId) {
   const response = await fetch('/api/ai', {
     method: 'POST',
@@ -6970,6 +7007,9 @@ RULES:
       cvData.labels = lc.labels;
       cvData.lang   = cvLang;
       cvData.template = templateName; // persist so Tailor-for-a-Job (and any reload) keeps the SAME template
+      // Deterministic safety net: strip any generic cliché sentence the AI slipped in despite instructions
+      if (cvData.cover_letter) cvData.cover_letter = sanitizeGeneratedText(cvData.cover_letter);
+      if (cvData.linkedin_summary) cvData.linkedin_summary = sanitizeGeneratedText(cvData.linkedin_summary);
 
       // Build HTML from fixed template
       const cvHTML = buildCVFromTemplate(templateName, cvData, tier);
