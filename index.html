@@ -5421,6 +5421,9 @@ let tailored;
    tailored.lang   = cvRow.language || 'English';
    // Deterministic safety net: strip any generic cliché sentence the AI slipped in despite instructions
    if (tailored.cover_letter) tailored.cover_letter = sanitizeGeneratedText(tailored.cover_letter);
+   // Real ATS score: actual keyword-match against the job description, not the AI's guess
+   const realAts = calculateATSScore(tailored, jd);
+   if (realAts) tailored.ats_score = realAts.score;
 
     // Use the SAME template the CV was originally created with, not the current session's transient selection
     const templateName = cvDataFinal.template || window._selectedTemplate || 'The Minimalist';
@@ -5927,6 +5930,45 @@ function sanitizeGeneratedText(text) {
   // replacement can leave a lowercase word where an uppercase one used to be
   result = result.replace(/(^\s*|[.!?]\s+)([a-z])/g, (m, sep, ch) => sep + ch.toUpperCase());
   return result;
+}
+
+// ── REAL ATS KEYWORD-MATCH SCORE ───────────────────────────────────
+// Previously the "ATS score" was just the AI's guess (85, 90, etc.) — not an actual
+// measurement. This computes a real score: extract meaningful keywords from the job
+// description, check how many actually appear in the CV, calculate the percentage.
+const ATS_STOPWORDS = new Set(['the','a','an','and','or','but','if','then','for','to','of','in','on','at','by','with','from',
+  'is','are','was','were','be','been','being','this','that','these','those','it','its','as','we','you','your','our',
+  'will','can','may','must','should','would','could','have','has','had','do','does','did','not','no','all','any',
+  'each','other','such','also','into','about','over','under','more','most','some','than','their','them','they',
+  'who','what','which','when','where','why','how','job','role','position','company','team','looking','ideal',
+  'candidate','experience','years','plus','including','including','etc','across','work','working']);
+
+function normalize(w) {
+  // very light stemming: drop a trailing 's' for rough singular/plural tolerance
+  return w.length > 4 && w.endsWith('s') && !w.endsWith('ss') ? w.slice(0, -1) : w;
+}
+
+function extractKeywords(text) {
+  if (!text) return [];
+  const raw = text.toLowerCase().match(/[a-z][a-z0-9+#]*(?:\.[a-z0-9+#]+)*/g) || [];
+  const words = raw.filter(w => w.length > 2 && !ATS_STOPWORDS.has(w));
+  return [...new Set(words.map(normalize))];
+}
+
+function calculateATSScore(cvDataFinal, jobDescription) {
+  const keywords = extractKeywords(jobDescription);
+  if (keywords.length === 0) return null; // nothing to compare against
+
+  const cvText = normalize([
+    cvDataFinal.summary || '',
+    ...(cvDataFinal.experience || []).flatMap(e => [e.title, e.company, ...(e.bullets || [])]),
+    ...(cvDataFinal.skills || []),
+    cvDataFinal.title || ''
+  ].join(' ').toLowerCase());
+
+  const matched = keywords.filter(k => cvText.includes(k));
+  const score = Math.round((matched.length / keywords.length) * 100);
+  return { score: Math.min(score, 100), matched: matched.length, total: keywords.length };
 }
 
 async function callProvider(provider, prompt, userData, requestId) {
