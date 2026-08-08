@@ -5420,7 +5420,10 @@ let tailored;
    tailored.labels = cvDataFinal.labels;
    tailored.lang   = cvRow.language || 'English';
 
-    const templateName = window._selectedTemplate || 'The Minimalist';
+    // Use the SAME template the CV was originally created with, not the current session's transient selection
+    const templateName = cvDataFinal.template || window._selectedTemplate || 'The Minimalist';
+    window._selectedTemplate = templateName;
+    tailored.template = templateName; // keep it persisted forward too
     const cvHTML = buildCVFromTemplate(templateName, tailored, cvRow.tier);
 
     // Add ATS score and cover letter blocks
@@ -6966,6 +6969,7 @@ RULES:
       // Inject language labels and lang code
       cvData.labels = lc.labels;
       cvData.lang   = cvLang;
+      cvData.template = templateName; // persist so Tailor-for-a-Job (and any reload) keeps the SAME template
 
       // Build HTML from fixed template
       const cvHTML = buildCVFromTemplate(templateName, cvData, tier);
