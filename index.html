@@ -3822,6 +3822,22 @@
 </div>
 
 <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+<!-- MODAL: WEAK CONTENT WARNING           -->
+<!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+<div id="modal-weak-content" class="modal-overlay" onclick="closeWeakContentModal(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeWeakContentModal()">✕</button>
+    <div class="modal-emblem">✎</div>
+    <div class="modal-title" id="weak-modal-title">Your CV could be stronger</div>
+    <div class="modal-desc" id="weak-modal-desc" style="white-space:pre-line;">Add a bit more detail for a noticeably better result.</div>
+    <div class="modal-actions">
+      <button class="modal-btn-cancel" onclick="closeWeakContentModal()" id="weak-modal-back-btn">Go Back &amp; Add Details</button>
+      <button class="modal-btn-confirm" id="weak-modal-continue-btn">Continue Anyway</button>
+    </div>
+  </div>
+</div>
+
+<!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
 <!-- MODAL: PAYMENT (download gate)        -->
 <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
 <div id="modal-payment" class="modal-overlay" onclick="closePaymentModal(event)">
@@ -5837,6 +5853,51 @@ function confirmTierAndGenerate() {
   generateCV(window._selectedTier);
 }
 
+// ── CV STRENGTH CHECK (before spending a daily generation) ─────────
+// Catches the most common cause of a generic/weak result: too little real detail
+// in the achievements/experience field. Warns the user before they spend a slot
+// on a result that's likely to disappoint them.
+function assessCVStrength() {
+  const nameVal = (document.getElementById('f-name')?.value || '').trim();
+  const achieve = (document.getElementById('f-achievements')?.value || '').trim();
+  const title   = (document.getElementById('f-title')?.value || '').trim();
+  const skills  = (document.getElementById('f-skills')?.value || '').trim();
+
+  const isAr = /[\u0600-\u06FF]/.test(nameVal + achieve + title);
+  const reasons = [];
+  if (achieve.length < 40) reasons.push(isAr ? 'وصف الإنجازات/الخبرة قصير جدًا' : 'Your achievements/experience description is very short');
+  if (!title) reasons.push(isAr ? 'المسمى الوظيفي فاضي' : 'Professional title is empty');
+  if (skills.length < 10) reasons.push(isAr ? 'قسم المهارات شبه فاضي' : 'Skills section is nearly empty');
+
+  return { isWeak: reasons.length > 0, reasons, isAr };
+}
+
+function showWeakContentModal(weakness, onContinue) {
+  const t = weakness.isAr
+    ? { title: 'الـ CV ممكن يطلع أقوى', desc: 'لاحظنا:\n• ' + weakness.reasons.join('\n• ') + '\n\nكل ما تكتب تفاصيل أكتر، كل ما النتيجة تبقى أدق وأقرب لخبرتك الحقيقية (مش عبارات عامة). كمان بتستهلك من رصيدك اليومي المحدود — يستاهل تاخد ثانيتين وتزوّد تفاصيل.', back: 'ارجع أضيف تفاصيل', cont: 'كمل زي ما هو' }
+    : { title: 'Your CV could be stronger', desc: 'We noticed:\n• ' + weakness.reasons.join('\n• ') + "\n\nMore detail means a more accurate, specific result (not generic filler). This also uses one of your limited daily generations — worth a minute to add detail first.", back: 'Go Back & Add Details', cont: 'Continue Anyway' };
+
+  document.getElementById('weak-modal-title').textContent = t.title;
+  document.getElementById('weak-modal-desc').textContent = t.desc;
+  document.getElementById('weak-modal-back-btn').textContent = t.back;
+  document.getElementById('weak-modal-continue-btn').textContent = t.cont;
+
+  const continueBtn = document.getElementById('weak-modal-continue-btn');
+  const newBtn = continueBtn.cloneNode(true); // strip old listeners to avoid stacking
+  continueBtn.parentNode.replaceChild(newBtn, continueBtn);
+  newBtn.addEventListener('click', () => {
+    document.getElementById('modal-weak-content').classList.remove('open');
+    onContinue();
+  });
+
+  document.getElementById('modal-weak-content').classList.add('open');
+}
+
+function closeWeakContentModal(e) {
+  if (e && e.target !== document.getElementById('modal-weak-content')) return;
+  document.getElementById('modal-weak-content').classList.remove('open');
+}
+
 // ── PAYMENT MODAL ─────────────────────────────────────────────────
 window._pendingDownloadFormat = null;
 
@@ -6764,7 +6825,7 @@ function collectOptionalData() {
   return { workEntries: workEntries, projectEntries: projectEntries, skillCats: skillCats };
 }
 
-async function generateCV(tier) {
+async function _doGenerateCV(tier) {
   const _rlRequestId = 'gen-' + Date.now() + '-' + Math.random().toString(36).slice(2);
   let _rlUserId = null;
   try {
@@ -7130,6 +7191,16 @@ RULES:
       <button class="btn-primary" style="margin-top:32px;" onclick="generateCV(window._selectedTier)">Try Again</button>
     </div>`;
   showPage('result');
+}
+
+// ── PUBLIC ENTRY POINT: checks CV strength before spending a generation ────
+function generateCV(tier) {
+  const weakness = assessCVStrength();
+  if (weakness.isWeak) {
+    showWeakContentModal(weakness, () => _doGenerateCV(tier));
+  } else {
+    _doGenerateCV(tier);
+  }
 }
 
 // ── RENDER RESULT WITH TIER FEATURES ─────────────────────────────
