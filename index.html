@@ -5452,7 +5452,7 @@ let tailored;
     const { data: userData } = await _sb.auth.getUser();
     if (userData?.user) {
       await _sb.from('cvs').insert([{
-        name: cvDataFinal.name,
+        name: cvDataFinal.name + ' — ' + jobTitle + ' @ ' + company,
         email: cvDataFinal.email || '',
         tier: cvRow.tier,
         language: cvRow.language,
@@ -5572,7 +5572,7 @@ async function loadMyAccount() {
   if (avatarEl) avatarEl.textContent = email ? email[0].toUpperCase() : '?';
   const { data: cvs, error } = await _sb
     .from('cvs')
-    .select('id, name, language, tier, cv_html, created_at')
+    .select('id, name, language, tier, cv_html, created_at, job_title, company_name')
     .eq('user_id', userData.user.id)
     .order('created_at', { ascending: false });
 
@@ -5593,10 +5593,13 @@ async function loadMyAccount() {
   listEl.innerHTML = cvs.map(cv => {
     const date = new Date(cv.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     const tierLabel = tierLabels[cv.tier] || cv.tier || '';
+    const tailoredBadge = cv.job_title
+      ? `<span style="display:inline-block;margin-left:8px;padding:2px 8px;border-radius:4px;background:rgba(201,168,76,0.15);color:var(--gold);font-size:0.72rem;font-family:'EB Garamond',serif;">Tailored: ${escHtml(cv.job_title)}${cv.company_name ? ' @ ' + escHtml(cv.company_name) : ''}</span>`
+      : '';
     return `
       <div style="background:linear-gradient(160deg,#112240 0%,#0d1b2e 100%); border:1px solid rgba(201,168,76,0.2); border-radius:8px; padding:20px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
         <div>
-          <div style="font-family:'Cinzel',serif; font-size:1rem; color:var(--gold); margin-bottom:4px;">${escHtml(cv.name || 'Untitled CV')}</div>
+          <div style="font-family:'Cinzel',serif; font-size:1rem; color:var(--gold); margin-bottom:4px;">${escHtml(cv.name || 'Untitled CV')}${tailoredBadge}</div>
           <div style="font-family:'EB Garamond',serif; font-size:0.85rem; color:var(--text-muted);">${tierLabel} · ${date}</div>
         </div>
         <div style="display:flex; gap:10px;">
