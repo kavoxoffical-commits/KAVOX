@@ -5479,7 +5479,16 @@ let tailored;
     <div style="margin-top:20px;padding:20px 24px;border:1px solid rgba(201,168,76,0.2);border-radius:8px;">
       <div style="font-family:'Cinzel',serif;font-size:0.75rem;color:#c9a84c;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:12px;">✦ Cover Letter</div>
       <p style="font-family:'EB Garamond',serif;font-size:1rem;color:rgba(240,230,208,0.85);line-height:1.8;white-space:pre-line;">${tailored.cover_letter || ''}</p>
+    </div>
+    <div style="margin-top:20px;text-align:center;">
+      <button class="btn-pricing" style="border-color:rgba(201,168,76,0.5);color:var(--gold);" onclick="prepareInterview()">${isAr ? '🎙 استعد للمقابلة الشخصية' : '🎙 Prepare for the Interview'}</button>
+      <div id="interview-prep-container"></div>
     </div>`;
+
+    // Keep job context available for the Interview Prep feature (form fields may get cleared/navigated away from)
+    window._tailorJobTitle = jobTitle;
+    window._tailorCompany  = company;
+    window._tailorJD       = jd;
 
     window._cvHTML = cvHTML + atsBlock;
     window._cvName = cvDataFinal.name + ' — ' + jobTitle + ' at ' + company;
@@ -6063,6 +6072,91 @@ function calculateATSScore(cvDataFinal, jobDescription) {
   const missing = keywords.filter(k => !cvText.includes(k));
   const score = Math.round((matched.length / keywords.length) * 100);
   return { score: Math.min(score, 100), matched: matched.length, total: keywords.length, missing };
+}
+
+// ── INTERVIEW PREP ──────────────────────────────────────────────────
+// Generates likely interview questions for the specific job (grounded in the actual JD)
+// plus suggested answers grounded in the candidate's actual CV — not generic interview advice.
+async function prepareInterview() {
+  const container = document.getElementById('interview-prep-container');
+  const cvData = window._cvData;
+  const jobTitle = window._tailorJobTitle;
+  const company  = window._tailorCompany;
+  const jd       = window._tailorJD;
+  if (!container || !cvData || !jobTitle || !jd) return;
+
+  const cvLang = cvData.lang || 'English';
+  const isAr = /arabic/i.test(cvLang);
+
+  container.innerHTML = `<p style="margin-top:20px;color:rgba(240,230,208,0.6);font-family:'EB Garamond',serif;">${isAr ? 'جاري تجهيز أسئلة المقابلة...' : 'Preparing interview questions…'}</p>`;
+
+  const _rlRequestId = 'interview-' + Date.now() + '-' + Math.random().toString(36).slice(2);
+  let _rlUserId = null;
+  try {
+    const { data: _rlAuth } = await _sb.auth.getUser();
+    _rlUserId = _rlAuth?.user?.id || null;
+  } catch (_) {}
+
+  const prompt = `You are an expert interview coach. Based on this candidate's CV and the specific job below, generate likely interview questions with strong suggested answers.
+Write ALL output text in ${cvLang}.
+
+CANDIDATE CV DATA:
+${JSON.stringify(cvData, null, 2)}
+
+JOB: ${jobTitle} at ${company}
+JOB DESCRIPTION:
+${jd}
+
+Generate exactly 5 interview questions this candidate is likely to be asked for THIS specific role (a mix of role-specific and behavioral questions grounded in the actual job description — not generic "tell me about yourself" filler). For each question, write a suggested answer that:
+- Uses SPECIFIC real details already present in the candidate's CV data above (real employer names, real achievements, real skills) — never invent new experience the candidate doesn't have.
+- STRICT RULE ON NUMBERS: only use a number/statistic if it already exists in the CV data above — never invent one.
+- HARD BAN on these exact phrases (and their direct translation into ${cvLang}): 'results-driven professional', 'proven track record', 'exceed expectations', 'esteemed organization', 'seasoned professional', 'passionate about'.
+- If the CV genuinely lacks direct experience for a question, the answer should coach the candidate on how to honestly bridge the gap using transferable skills from their actual background — not fabricate experience they don't have.
+
+Return ONLY valid JSON, no markdown, no code fences, in this exact structure:
+{"questions": [{"question": "...", "suggested_answer": "..."}, {"question": "...", "suggested_answer": "..."}, {"question": "...", "suggested_answer": "..."}, {"question": "...", "suggested_answer": "..."}, {"question": "...", "suggested_answer": "..."}]}`;
+
+  let result = null;
+  for (let i = 0; i < API_PROVIDERS.length; i++) {
+    const provider = API_PROVIDERS[(currentProviderIndex + i) % API_PROVIDERS.length];
+    try {
+      const rawText = await callProvider(provider, prompt, { user_id: _rlUserId }, _rlRequestId);
+      if (!rawText) throw new Error('EMPTY');
+      const clean = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
+      try {
+        result = JSON.parse(clean);
+      } catch {
+        const match = clean.match(/\{[\s\S]*\}/);
+        if (!match) throw new Error('PARSE_FAIL');
+        result = JSON.parse(match[0]);
+      }
+      break;
+    } catch (err) {
+      if (err.message === 'RATE_LIMIT_EXCEEDED') {
+        container.innerHTML = `<p style="margin-top:20px;color:#e57373;font-family:'EB Garamond',serif;">${isAr ? 'وصلت لحدك اليومي من التوليد. حاول تاني بعد 24 ساعة.' : "You've reached your daily generation limit. Please try again in 24 hours."}</p>`;
+        return;
+      }
+      // try next provider
+    }
+  }
+
+  if (!result || !Array.isArray(result.questions)) {
+    container.innerHTML = `<p style="margin-top:20px;color:#e57373;font-family:'EB Garamond',serif;">${isAr ? 'حصل خطأ، حاول تاني.' : 'Something went wrong, please try again.'}</p>`;
+    return;
+  }
+
+  const qBlocks = result.questions.map((q, idx) => `
+    <div style="margin-top:16px;padding-top:16px;${idx > 0 ? 'border-top:1px solid rgba(201,168,76,0.15);' : ''}">
+      <div style="font-family:'Cinzel',serif;font-size:0.95rem;color:#c9a84c;margin-bottom:8px;">${idx + 1}. ${escHtml(q.question || '')}</div>
+      <p style="font-family:'EB Garamond',serif;font-size:0.92rem;color:rgba(240,230,208,0.8);line-height:1.7;white-space:pre-line;">${escHtml(sanitizeGeneratedText(q.suggested_answer || ''))}</p>
+    </div>`).join('');
+
+  container.innerHTML = `
+    <div style="margin-top:24px;padding:24px;border:1px solid rgba(201,168,76,0.25);border-radius:8px;text-align:${isAr ? 'right' : 'left'};background:rgba(201,168,76,0.03);">
+      <div style="font-family:'Cinzel',serif;font-size:0.75rem;color:#c9a84c;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:6px;">🎙 ${isAr ? 'التحضير للمقابلة' : 'Interview Prep'}</div>
+      <p style="font-family:'EB Garamond',serif;font-size:0.85rem;color:rgba(240,230,208,0.55);margin-bottom:8px;">${isAr ? 'مبني على وصف الوظيفة وخبرتك الفعلية' : 'Based on this job description and your actual experience'}</p>
+      ${qBlocks}
+    </div>`;
 }
 
 async function callProvider(provider, prompt, userData, requestId) {
