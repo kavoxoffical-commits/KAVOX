@@ -5865,8 +5865,9 @@ function assessCVStrength() {
 
   const isAr = /[\u0600-\u06FF]/.test(nameVal + achieve + title);
   const reasons = [];
-  if (achieve.length < 40) reasons.push(isAr ? 'وصف الإنجازات/الخبرة قصير جدًا' : 'Your achievements/experience description is very short');
-  if (!title) reasons.push(isAr ? 'المسمى الوظيفي فاضي' : 'Professional title is empty');
+  // Note: goToPricing() already hard-blocks empty title / achieve under 60 chars before this page
+  // is even reachable, so these thresholds target content that passes that gate but is still thin.
+  if (achieve.length > 0 && achieve.length < 150) reasons.push(isAr ? 'وصف الإنجازات/الخبرة لسه مختصر — تفاصيل أكتر بتدّي نتيجة أدق' : 'Your achievements/experience description is still fairly brief — more detail gives a more accurate result');
   if (skills.length < 10) reasons.push(isAr ? 'قسم المهارات شبه فاضي' : 'Skills section is nearly empty');
 
   return { isWeak: reasons.length > 0, reasons, isAr };
