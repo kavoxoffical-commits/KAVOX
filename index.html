@@ -5431,11 +5431,34 @@ let tailored;
     tailored.template = templateName; // keep it persisted forward too
     const cvHTML = buildCVFromTemplate(templateName, tailored, cvRow.tier);
 
+    // Minimal bilingual UI labels for the two languages actually in use — falls back to English otherwise
+    const isAr = /arabic/i.test(tailored.lang);
+    const t = isAr
+      ? { missingTitle: 'كلمات مفتاحية ناقصة من الـ CV', missingHint: 'دي كلمات موجودة في وصف الوظيفة ومش موجودة في CV بتاعك — لو بتنطبق على خبرتك فعليًا، حاول تضيفها.',
+          mismatchTitle: '⚠ فجوة كبيرة بين خبرتك والوظيفة', mismatchHint: 'نسبة التطابق واطية جدًا — الوظيفة دي ممكن تكون بعيدة عن مجال خبرتك الحالي.' }
+      : { missingTitle: 'Keywords missing from your CV', missingHint: 'These appear in the job description but not in your CV — if they genuinely apply to your experience, consider adding them.',
+          mismatchTitle: '⚠ Significant gap from this role', mismatchHint: "Your match score is quite low — this role may be a stretch from your current experience." };
+
+    const missingBlock = (realAts && realAts.missing && realAts.missing.length > 0) ? `
+    <div style="margin-top:16px;padding:16px 20px;border:1px solid rgba(201,168,76,0.2);border-radius:8px;background:rgba(201,168,76,0.03);">
+      <div style="font-family:'Cinzel',serif;font-size:0.7rem;color:#c9a84c;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:8px;">${t.missingTitle}</div>
+      <p style="font-family:'EB Garamond',serif;font-size:0.85rem;color:rgba(240,230,208,0.6);margin-bottom:10px;">${t.missingHint}</p>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;">${realAts.missing.slice(0,10).map(k=>`<span style="padding:3px 10px;border-radius:12px;background:rgba(229,115,115,0.1);border:1px solid rgba(229,115,115,0.25);color:#e5a5a5;font-size:0.8rem;font-family:'EB Garamond',serif;">${escHtml(k)}</span>`).join('')}</div>
+    </div>` : '';
+
+    const mismatchBlock = (realAts && realAts.score < 30) ? `
+    <div style="margin-top:16px;padding:16px 20px;border:1px solid rgba(229,115,115,0.35);border-radius:8px;background:rgba(229,115,115,0.06);">
+      <div style="font-family:'Cinzel',serif;font-size:0.85rem;color:#e57373;margin-bottom:6px;">${t.mismatchTitle}</div>
+      <p style="font-family:'EB Garamond',serif;font-size:0.9rem;color:rgba(240,230,208,0.75);">${t.mismatchHint}</p>
+    </div>` : '';
+
     // Add ATS score and cover letter blocks
     const atsBlock = `<div style="margin-top:32px;padding:20px 24px;border:1px solid rgba(201,168,76,0.35);border-radius:8px;background:rgba(201,168,76,0.04);">
       <div style="font-family:'Cinzel',serif;font-size:0.75rem;color:#c9a84c;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:12px;">✦ ATS Score</div>
       <div style="font-family:'Cinzel',serif;font-size:3rem;color:#c9a84c;font-weight:700;">${tailored.ats_score}<span style="font-size:1.2rem;opacity:0.6;">/100</span></div>
       <p style="font-family:'EB Garamond',serif;font-size:0.95rem;color:rgba(240,230,208,0.7);margin-top:8px;">${tailored.tailor_notes || ''}</p>
+      ${mismatchBlock}
+      ${missingBlock}
     </div>
     <div style="margin-top:20px;padding:20px 24px;border:1px solid rgba(201,168,76,0.2);border-radius:8px;">
       <div style="font-family:'Cinzel',serif;font-size:0.75rem;color:#c9a84c;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:12px;">✦ Cover Letter</div>
@@ -5946,15 +5969,20 @@ const ATS_STOPWORDS = new Set(['the','a','an','and','or','but','if','then','for'
   'who','what','which','when','where','why','how','job','role','position','company','team','looking','ideal',
   'candidate','experience','years','plus','including','including','etc','across','work','working']);
 
+const ATS_STOPWORDS_AR = new Set(['في','من','على','إلى','و','أو','التي','الذي','هذا','هذه','ذلك','تلك','مع','عن','كل','بعض',
+  'هو','هي','هم','نحن','أنت','انت','لا','لم','لن','قد','كان','تكون','يكون','ما','لديك','لدينا','نحو','ضمن','خلال',
+  'الشركة','الوظيفة','المرشح','الفريق','سنوات','خبرة','دور','منصب','يبحث','نبحث','مطلوب']);
+
 function normalize(w) {
-  // very light stemming: drop a trailing 's' for rough singular/plural tolerance
+  // very light stemming: drop a trailing 's' for rough singular/plural tolerance (Latin scripts only)
   return w.length > 4 && w.endsWith('s') && !w.endsWith('ss') ? w.slice(0, -1) : w;
 }
 
 function extractKeywords(text) {
   if (!text) return [];
-  const raw = text.toLowerCase().match(/[a-z][a-z0-9+#]*(?:\.[a-z0-9+#]+)*/g) || [];
-  const words = raw.filter(w => w.length > 2 && !ATS_STOPWORDS.has(w));
+  // Unicode-aware: matches Arabic, Latin, and other scripts, not just a-z
+  const raw = text.toLowerCase().match(/[\p{L}][\p{L}\p{N}+#]*(?:\.[\p{L}\p{N}+#]+)*/gu) || [];
+  const words = raw.filter(w => w.length > 2 && !ATS_STOPWORDS.has(w) && !ATS_STOPWORDS_AR.has(w));
   return [...new Set(words.map(normalize))];
 }
 
@@ -5970,8 +5998,9 @@ function calculateATSScore(cvDataFinal, jobDescription) {
   ].join(' ').toLowerCase());
 
   const matched = keywords.filter(k => cvText.includes(k));
+  const missing = keywords.filter(k => !cvText.includes(k));
   const score = Math.round((matched.length / keywords.length) * 100);
-  return { score: Math.min(score, 100), matched: matched.length, total: keywords.length };
+  return { score: Math.min(score, 100), matched: matched.length, total: keywords.length, missing };
 }
 
 async function callProvider(provider, prompt, userData, requestId) {
