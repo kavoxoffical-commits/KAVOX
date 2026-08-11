@@ -3030,6 +3030,7 @@
     <div class="cv-result-wrapper">
       <div id="cv-output"></div>
     </div>
+    <div id="tailor-extras" style="max-width:800px;margin:0 auto;padding:0 20px;"></div>
   </div>
   <footer class="site-footer">
     <span class="footer-logo">KAVOX</span>
@@ -5468,8 +5469,9 @@ let tailored;
       <p style="font-family:'EB Garamond',serif;font-size:0.9rem;color:rgba(240,230,208,0.75);">${t.mismatchHint}</p>
     </div>` : '';
 
-    // Add ATS score and cover letter blocks
-    const atsBlock = `<div style="margin-top:32px;padding:20px 24px;border:1px solid rgba(201,168,76,0.35);border-radius:8px;background:rgba(201,168,76,0.04);">
+    // Build the two reveal buttons (content stays hidden until clicked, and lives OUTSIDE #cv-output
+    // so it's never included in the PDF/Word download of the actual CV document)
+    const atsRevealHTML = `<div style="margin-top:32px;padding:20px 24px;border:1px solid rgba(201,168,76,0.35);border-radius:8px;background:rgba(201,168,76,0.04);">
       <div style="font-family:'Cinzel',serif;font-size:0.75rem;color:#c9a84c;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:12px;">✦ ATS Score</div>
       <div style="font-family:'Cinzel',serif;font-size:3rem;color:#c9a84c;font-weight:700;">${tailored.ats_score}<span style="font-size:1.2rem;opacity:0.6;">/100</span></div>
       <p style="font-family:'EB Garamond',serif;font-size:0.95rem;color:rgba(240,230,208,0.7);margin-top:8px;">${tailored.tailor_notes || ''}</p>
@@ -5479,10 +5481,6 @@ let tailored;
     <div style="margin-top:20px;padding:20px 24px;border:1px solid rgba(201,168,76,0.2);border-radius:8px;">
       <div style="font-family:'Cinzel',serif;font-size:0.75rem;color:#c9a84c;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:12px;">✦ Cover Letter</div>
       <p style="font-family:'EB Garamond',serif;font-size:1rem;color:rgba(240,230,208,0.85);line-height:1.8;white-space:pre-line;">${tailored.cover_letter || ''}</p>
-    </div>
-    <div style="margin-top:20px;text-align:center;">
-      <button class="btn-pricing" style="border-color:rgba(201,168,76,0.5);color:var(--gold);" onclick="prepareInterview()">${isAr ? '🎙 استعد للمقابلة الشخصية' : '🎙 Prepare for the Interview'}</button>
-      <div id="interview-prep-container"></div>
     </div>`;
 
     // Keep job context available for the Interview Prep feature (form fields may get cleared/navigated away from)
@@ -5490,7 +5488,7 @@ let tailored;
     window._tailorCompany  = company;
     window._tailorJD       = jd;
 
-    window._cvHTML = cvHTML + atsBlock;
+    window._cvHTML = cvHTML; // pure CV only — matches what's saved and what gets downloaded
     window._cvName = cvDataFinal.name + ' — ' + jobTitle + ' at ' + company;
     window._cvData = tailored;
     window._currentTier = cvRow.tier;
@@ -5514,6 +5512,17 @@ let tailored;
 
     document.getElementById('cv-output').innerHTML = window._cvHTML;
     renderResult(window._cvHTML, cvRow.tier);
+
+    // Two separate buttons, outside the CV — click to reveal, not auto-displayed
+    document.getElementById('tailor-extras').innerHTML = `
+      <div style="margin-top:32px;text-align:center;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn-pricing" style="border-color:rgba(201,168,76,0.5);color:var(--gold);" onclick="document.getElementById('ats-reveal-container').style.display='block';this.style.display='none';">${isAr ? '📊 عرض تحليل الـ ATS وخطاب التقديم' : '📊 View ATS Score & Cover Letter'}</button>
+        <button class="btn-pricing" style="border-color:rgba(201,168,76,0.5);color:var(--gold);" onclick="prepareInterview()">${isAr ? '🎙 استعد للمقابلة الشخصية' : '🎙 Prepare for the Interview'}</button>
+      </div>
+      <div id="ats-reveal-container" style="display:none;">${atsRevealHTML}</div>
+      <div id="interview-prep-container"></div>`;
+
+    window._justTailored = true;
     showPage('result');
 
   } catch(e) {
@@ -5697,6 +5706,14 @@ function showPage(id) {
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+  // The ATS/Cover Letter/Interview buttons only belong on a freshly-tailored result;
+  // clear them whenever the result page is entered any other way (base generation, viewing
+  // a saved CV, retry, etc.) so they don't linger from a previous Tailor session.
+  if (id === 'result' && !window._justTailored) {
+    const extras = document.getElementById('tailor-extras');
+    if (extras) extras.innerHTML = '';
+  }
+  window._justTailored = false;
 }
 
 // ── FORM DATA ────────────────────────────────────────────────────
