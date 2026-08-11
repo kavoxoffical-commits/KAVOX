@@ -7405,7 +7405,13 @@ function downloadCoverLetter() {
   setTimeout(() => { printWindow.print(); }, 400);
 }
 function downloadCV(format) {
-  openPaymentModal(format);
+  // No real payment is being charged right now (site is in the "free for a limited time" period),
+  // so skip the payment modal entirely and download directly — still record the order for tracking.
+  if (window._cvName && window._currentTier) {
+    const email = document.getElementById('f-email')?.value?.trim() || '';
+    recordOrder(window._currentTier, window._selectedTemplate || '', window._cvName, email);
+  }
+  _doDownloadCV(format);
 }
 
 function _doDownloadCV(format) {
