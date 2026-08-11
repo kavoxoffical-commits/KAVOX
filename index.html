@@ -5394,7 +5394,7 @@ YOUR TASK:
 2. Reorder and emphasise skills that match the job requirements
 3. Rewrite bullet points to highlight relevant achievements (DO NOT invent new information). STRICT RULE ON NUMBERS: a specific number, percentage, or metric may ONLY appear if it already exists in the ORIGINAL CV DATA above. NEVER invent, estimate, or add a statistic that isn't already there — rephrasing for relevance is fine, adding fabricated numbers is not.
 4. Calculate ATS Score (0-100) based on keyword match against the job description
-5. Write a tailored Cover Letter (3 paragraphs) that references at least 2 SPECIFIC details from the ORIGINAL CV DATA (a real job title, employer, skill, or achievement) plus the company name "${company}" — a reader should be able to tell this was written for this candidate and this company, not a template. HARD BAN — these exact phrases (and their direct translation into ${cvOutputLang}) are FORBIDDEN, do not output them under any circumstance: 'results-driven professional', 'detail-oriented and results-driven', 'proven track record', 'unique blend of skills', 'strong believer in the power of', 'exceed/exceeding expectations', 'esteemed organization', 'meaningful impact', 'seasoned professional', 'dynamic professional', 'passionate about'. If a sentence you're about to write contains any of these, delete it and replace it with a sentence using a specific fact from the CV instead.
+5. Write a tailored Cover Letter (3 paragraphs) that references at least 2 SPECIFIC details from the ORIGINAL CV DATA (a real job title, employer, skill, or achievement) plus the company name "${company}" — a reader should be able to tell this was written for this candidate and this company, not a template. HARD BAN — these exact phrases (and their direct translation into ${cvOutputLang}) are FORBIDDEN, do not output them under any circumstance: 'results-driven professional', 'detail-oriented and results-driven', 'proven track record', 'unique blend of skills', 'strong believer in the power of', 'exceed/exceeding expectations', 'esteemed organization', 'meaningful impact', 'seasoned professional', 'dynamic professional', 'passionate about', 'unique understanding'. If a sentence you're about to write contains any of these, delete it and replace it with a sentence using a specific fact from the CV instead.
 6. Write a brief explanation of what you changed and why (2-3 sentences)
 
 Return ONLY valid JSON in this exact structure:
@@ -5653,10 +5653,14 @@ async function loadMyAccount() {
     const tailoredBadge = cv.job_title
       ? `<span style="display:inline-block;margin-left:8px;padding:2px 8px;border-radius:4px;background:rgba(201,168,76,0.15);color:var(--gold);font-size:0.72rem;font-family:'EB Garamond',serif;">Tailored: ${escHtml(cv.job_title)}${cv.company_name ? ' @ ' + escHtml(cv.company_name) : ''}</span>`
       : '';
+    // The badge already shows job/company — strip the " — Job @ Company" suffix from the
+    // name itself so the same info isn't shown twice right next to each other.
+    let displayName = cv.name || 'Untitled CV';
+    if (cv.job_title) displayName = displayName.replace(/\s*—\s*.+$/, '');
     return `
       <div style="background:linear-gradient(160deg,#112240 0%,#0d1b2e 100%); border:1px solid rgba(201,168,76,0.2); border-radius:8px; padding:20px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
         <div>
-          <div style="font-family:'Cinzel',serif; font-size:1rem; color:var(--gold); margin-bottom:4px;">${escHtml(cv.name || 'Untitled CV')}${tailoredBadge}</div>
+          <div style="font-family:'Cinzel',serif; font-size:1rem; color:var(--gold); margin-bottom:4px;">${escHtml(displayName)}${tailoredBadge}</div>
           <div style="font-family:'EB Garamond',serif; font-size:0.85rem; color:var(--text-muted);">${tierLabel} · ${date}</div>
         </div>
         <div style="display:flex; gap:10px;">
@@ -6031,7 +6035,9 @@ const CLICHE_REPLACEMENTS = [
   [/dynamic professional/gi, 'professional'],
   [/passionate about/gi, 'focused on'],
   [/drive business success/gi, 'support business growth'],
-  [/unique perspective/gi, 'perspective']
+  [/unique perspective/gi, 'perspective'],
+  [/unique understanding of the importance of/gi, 'clear understanding of'],
+  [/unique understanding/gi, 'clear understanding']
 ];
 
 function sanitizeGeneratedText(text) {
@@ -7110,7 +7116,7 @@ async function _doGenerateCV(tier) {
   const atsLangNote = cvLang !== 'English' ? ` IMPORTANT: Write the ats_report, cover_letter, and linkedin_summary in ${cvLang}, same language as the CV.` : '';
   const tierExtraFields = tier === 'pro' ? '' :
     tier === 'royal' ? `,"ats_report": "3-4 sentence ATS analysis. State the score explicitly in the format 'X/100' using a keyword-match percentage score (0-100), then list missing keywords and recommendations.${atsLangNote}"` :
-    `,"ats_report": "3-4 sentence ATS analysis. State the score explicitly in the format 'X/100' using a keyword-match percentage score (0-100).${atsLangNote}", "cover_letter": "Full cover letter (3 paragraphs, plain text only, no HTML), written in the CV's language (${cvLang}). MUST reference at least 2 SPECIFIC details actually present in this candidate's CV (a real job title, a real employer name, a real skill, or a real achievement from the experience section above) — a reader should be able to tell this was written for THIS person, not a template. HARD BAN — these exact phrases (and their direct translation into ${cvLang}) are FORBIDDEN, do not output them under any circumstance: 'results-driven professional', 'detail-oriented and results-driven', 'proven track record', 'unique blend of skills', 'strong believer in the power of', 'exceed/exceeding expectations', 'esteemed organization', 'meaningful impact', 'seasoned professional', 'dynamic professional', 'passionate about'. If a sentence you're about to write contains any of these, delete it and replace it with a sentence using a specific fact from the CV instead. Do not invent any number/statistic not already grounded in the CV data above.${atsLangNote}", "linkedin_summary": "LinkedIn About section (150 words max, plain text), written in the CV's language (${cvLang}). MUST reference at least 1 SPECIFIC detail from this candidate's actual experience or skills above (not a generic category). HARD BAN — these exact phrases (and their direct translation into ${cvLang}) are FORBIDDEN: 'results-driven', 'seasoned professional', 'proven track record', 'passionate about', 'unique perspective', 'drive business success'. If a sentence you're about to write contains any of these, delete it and replace it with a sentence using a specific fact from the CV instead. Do not invent any number/statistic not already grounded in the CV data above.${atsLangNote}"`;
+    `,"ats_report": "3-4 sentence ATS analysis. State the score explicitly in the format 'X/100' using a keyword-match percentage score (0-100).${atsLangNote}", "cover_letter": "Full cover letter (3 paragraphs, plain text only, no HTML), written in the CV's language (${cvLang}). MUST reference at least 2 SPECIFIC details actually present in this candidate's CV (a real job title, a real employer name, a real skill, or a real achievement from the experience section above) — a reader should be able to tell this was written for THIS person, not a template. HARD BAN — these exact phrases (and their direct translation into ${cvLang}) are FORBIDDEN, do not output them under any circumstance: 'results-driven professional', 'detail-oriented and results-driven', 'proven track record', 'unique blend of skills', 'strong believer in the power of', 'exceed/exceeding expectations', 'esteemed organization', 'meaningful impact', 'seasoned professional', 'dynamic professional', 'passionate about', 'unique understanding'. If a sentence you're about to write contains any of these, delete it and replace it with a sentence using a specific fact from the CV instead. Do not invent any number/statistic not already grounded in the CV data above.${atsLangNote}", "linkedin_summary": "LinkedIn About section (150 words max, plain text), written in the CV's language (${cvLang}). MUST reference at least 1 SPECIFIC detail from this candidate's actual experience or skills above (not a generic category). HARD BAN — these exact phrases (and their direct translation into ${cvLang}) are FORBIDDEN: 'results-driven', 'seasoned professional', 'proven track record', 'passionate about', 'unique perspective', 'drive business success', 'unique understanding'. If a sentence you're about to write contains any of these, delete it and replace it with a sentence using a specific fact from the CV instead. Do not invent any number/statistic not already grounded in the CV data above.${atsLangNote}"`;
 
   const langInstruction = {
     'English':    'Write ALL text values in English.',
