@@ -399,7 +399,7 @@
 
   /* CV mock card gets subtle depth via mouse-tracked tilt (applied via inline transform from JS) */
   .cv-mock {
-    transition: transform 0.25s ease-out;
+    transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
     transform-style: preserve-3d;
   }
 
@@ -454,7 +454,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    perspective: 900px; /* required for rotateX/rotateY tilt on .cv-mock to actually render as 3D */
+    perspective: 650px; /* closer perspective = more dramatic tilt */
   }
   .cv-mock {
     position: relative;
@@ -7995,7 +7995,7 @@ document.addEventListener('DOMContentLoaded', initGoldOrbs);
 
 // ── HERO SIGNATURE INTERACTIONS ────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  // Mouse-tracked tilt on the hero CV mock card (subtle depth, disabled on touch/reduced-motion)
+  // Mouse-tracked tilt on the hero CV mock card (bold depth effect, disabled on touch/reduced-motion)
   const mock = document.getElementById('heroCvMock');
   const heroSection = document.getElementById('page-hero');
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -8004,10 +8004,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const rect = heroSection.getBoundingClientRect();
       const px = (e.clientX - rect.left) / rect.width - 0.5;
       const py = (e.clientY - rect.top) / rect.height - 0.5;
-      mock.style.transform = `rotate(1.2deg) rotateY(${px * 10}deg) rotateX(${-py * 8}deg)`;
+      const rotY = px * 32;
+      const rotX = -py * 26;
+      mock.style.transform = `rotate(1.2deg) scale(1.04) rotateY(${rotY}deg) rotateX(${rotX}deg)`;
+      const shadowX = -px * 50;
+      const shadowY = 30 - py * 20;
+      mock.style.boxShadow = `${shadowX}px ${shadowY}px 80px rgba(0,0,0,0.6), 0 0 60px rgba(201,168,76,0.15), 0 0 0 1px rgba(201,168,76,0.05)`;
     });
     heroSection.addEventListener('mouseleave', () => {
-      mock.style.transform = 'rotate(1.2deg) rotateY(0) rotateX(0)';
+      mock.style.transform = 'rotate(1.2deg) scale(1) rotateY(0) rotateX(0)';
+      mock.style.boxShadow = '';
     });
   }
 
