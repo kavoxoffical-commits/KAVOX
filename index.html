@@ -1476,11 +1476,62 @@
   .tpl-tier-group { display: none; }
   .tpl-tier-group.active { display: block; }
 
-  /* ── CV GRID ── */
+  /* ── CV GRID → horizontal carousel (reduces vertical scroll, feels more premium) ── */
+  .cv-grid-wrap {
+    position: relative;
+    margin: 0 -6px;
+  }
+  .cv-grid-wrap::before, .cv-grid-wrap::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 12px;
+    width: 60px;
+    z-index: 3;
+    pointer-events: none;
+  }
+  .cv-grid-wrap::before { left: 0; background: linear-gradient(to right, var(--navy), transparent); }
+  .cv-grid-wrap::after  { right: 0; background: linear-gradient(to left, var(--navy), transparent); }
+
   .cv-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    display: flex;
     gap: 24px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scroll-behavior: smooth;
+    padding: 6px 6px 16px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .cv-grid::-webkit-scrollbar { display: none; }
+  .cv-grid .cv-card {
+    flex: 0 0 272px;
+    scroll-snap-align: start;
+  }
+
+  .cv-carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 4;
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: rgba(13,27,46,0.9);
+    border: 1px solid rgba(201,168,76,0.4);
+    color: var(--gold);
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .cv-carousel-arrow:hover { background: rgba(201,168,76,0.15); border-color: var(--gold); transform: translateY(-50%) scale(1.08); }
+  .cv-carousel-arrow.prev { left: -14px; }
+  .cv-carousel-arrow.next { right: -14px; }
+
+  @media (max-width: 720px) {
+    .cv-carousel-arrow { display: none; } /* touch swipe handles it on mobile */
+    .cv-grid-wrap::before, .cv-grid-wrap::after { width: 30px; }
   }
 
   /* ── CV CARD ── */
@@ -4185,7 +4236,10 @@
 
     <!-- ══ PRO TIER ══ -->
     <div class="tpl-tier-group active" id="tpl-group-pro">
-      <div class="cv-grid">
+      <div class="cv-grid-wrap">
+        <button class="cv-carousel-arrow prev" onclick="scrollTplCarousel('pro',-1)" aria-label="Previous templates">&#10094;</button>
+        <button class="cv-carousel-arrow next" onclick="scrollTplCarousel('pro',1)" aria-label="Next templates">&#10095;</button>
+        <div class="cv-grid" id="cv-grid-pro">
 
         <!-- 1: The Minimalist -->
         <div class="cv-card unlocked">
@@ -4429,11 +4483,15 @@
         </div>
 
       </div>
+      </div>
     </div>
 
     <!-- ══ ROYAL TIER ══ -->
     <div class="tpl-tier-group" id="tpl-group-royal">
-      <div class="cv-grid">
+      <div class="cv-grid-wrap">
+        <button class="cv-carousel-arrow prev" onclick="scrollTplCarousel('royal',-1)" aria-label="Previous templates">&#10094;</button>
+        <button class="cv-carousel-arrow next" onclick="scrollTplCarousel('royal',1)" aria-label="Next templates">&#10095;</button>
+        <div class="cv-grid" id="cv-grid-royal">
 
         <!-- 6: Royal Dark Mode -->
         <div class="cv-card locked">
@@ -4788,11 +4846,15 @@
         </div>
 
       </div>
+      </div>
     </div>
 
     <!-- ══ ELITE TIER ══ -->
     <div class="tpl-tier-group" id="tpl-group-elite">
-      <div class="cv-grid">
+      <div class="cv-grid-wrap">
+        <button class="cv-carousel-arrow prev" onclick="scrollTplCarousel('elite',-1)" aria-label="Previous templates">&#10094;</button>
+        <button class="cv-carousel-arrow next" onclick="scrollTplCarousel('elite',1)" aria-label="Next templates">&#10095;</button>
+        <div class="cv-grid" id="cv-grid-elite">
 
         <!-- 14: Charcoal Signature -->
         <div class="cv-card locked elite-locked">
@@ -5093,6 +5155,7 @@
           </div>
         </div>
 
+      </div>
       </div>
     </div>
 
@@ -8085,6 +8148,14 @@ function setActiveTier(tier, btn) {
   document.getElementById('tpl-heading').innerHTML = c.heading;
   document.getElementById('tpl-sub').innerHTML = c.sub;
   document.getElementById('page-templates').scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function scrollTplCarousel(tier, direction) {
+  const grid = document.getElementById('cv-grid-' + tier);
+  if (!grid) return;
+  const card = grid.querySelector('.cv-card');
+  const step = card ? card.getBoundingClientRect().width + 24 : 296; // card width + gap
+  grid.scrollBy({ left: step * direction * 2, behavior: 'smooth' });
 }
 </script>
 </body>
