@@ -327,6 +327,88 @@
       0 2px 4px rgba(0,0,0,0.5);
     max-width: 560px;
     position: relative; z-index: 2;
+    clip-path: inset(0 100% 0 0);
+    animation: inkReveal 1.4s cubic-bezier(0.65,0,0.35,1) forwards;
+    animation-delay: 0.15s;
+  }
+  @keyframes inkReveal {
+    to { clip-path: inset(0 0% 0 0); }
+  }
+
+  /* Signature moment: the quill-drawn ink line beneath the heading */
+  .hero-ink-svg {
+    position: relative;
+    z-index: 2;
+    display: block;
+    width: 100%;
+    max-width: 480px;
+    height: 26px;
+    margin-top: 6px;
+    overflow: visible;
+  }
+  .hero-ink-svg path {
+    fill: none;
+    stroke: var(--gold);
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 4px rgba(201,168,76,0.5));
+    stroke-dasharray: 480;
+    stroke-dashoffset: 480;
+    animation: inkDraw 1.3s cubic-bezier(0.65,0,0.35,1) forwards;
+    animation-delay: 0.25s;
+  }
+  .hero-ink-tip {
+    opacity: 0;
+    animation: quillTipIn 1.3s cubic-bezier(0.65,0,0.35,1) forwards;
+    animation-delay: 0.25s;
+  }
+  @keyframes inkDraw { to { stroke-dashoffset: 0; } }
+  @keyframes quillTipIn {
+    0% { opacity: 0; offset-distance: 0%; }
+    3% { opacity: 1; }
+    97% { opacity: 1; }
+    100% { opacity: 0; offset-distance: 100%; }
+  }
+  .hero-ink-tip {
+    offset-path: path('M4,16 Q60,4 130,15 T260,10 T400,16 T470,8');
+  }
+
+  /* Ambient drifting gold particles — continuous "alive" feel, not just on load */
+  .hero-particles {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .hero-particle {
+    position: absolute;
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: var(--gold);
+    opacity: 0;
+    box-shadow: 0 0 6px 1px rgba(201,168,76,0.5);
+    animation: particleDrift linear infinite;
+  }
+  @keyframes particleDrift {
+    0%   { transform: translateY(0) translateX(0); opacity: 0; }
+    10%  { opacity: 0.55; }
+    90%  { opacity: 0.35; }
+    100% { transform: translateY(-140px) translateX(30px); opacity: 0; }
+  }
+
+  /* CV mock card gets subtle depth via mouse-tracked tilt (applied via inline transform from JS) */
+  .cv-mock {
+    transition: transform 0.25s ease-out;
+    transform-style: preserve-3d;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-heading { clip-path: inset(0 0% 0 0); animation: none; }
+    .hero-ink-svg path { stroke-dashoffset: 0; animation: none; }
+    .hero-ink-tip { display: none; }
+    .hero-particle { display: none; }
+    .cv-mock { transition: none; }
   }
 
   .hero-sub {
@@ -1878,7 +1960,6 @@
     z-index: 0;
     animation: floatOrb ease-in-out infinite;
   }
-  }
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(16px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -2559,11 +2640,18 @@
 </video>
   <div class="hero-content fade-in">
     <div class="hero-halo"></div>
+    <div class="hero-particles" id="heroParticles"></div>
 
     <div class="hero-left">
       <div class="hero-eyebrow">AI-Powered Career Platform</div>
 
       <h1 class="hero-heading">Crafting Your<br>Professional Legacy</h1>
+
+      <svg class="hero-ink-svg" viewBox="0 0 480 26" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M4,16 Q60,4 130,15 T260,10 T400,16 T470,8"/>
+        <circle class="hero-ink-tip" r="3" fill="#f0e6d0"/>
+      </svg>
+
       <p class="hero-sub">Not another template. A CV written with the precision of a craft — tailored to you, and to the role you're after.</p>
 
       <div class="hero-cta">
@@ -2578,7 +2666,7 @@
     </div>
 
     <div class="hero-visual">
-      <div class="cv-mock" aria-hidden="true">
+      <div class="cv-mock" id="heroCvMock" aria-hidden="true">
         <div class="cv-mock-avatar"></div>
         <div class="cv-mock-name">Elena Voss</div>
         <div class="cv-mock-role">Senior Product Designer</div>
@@ -7903,6 +7991,42 @@ function initGoldOrbs() {
   });
 }
 document.addEventListener('DOMContentLoaded', initGoldOrbs);
+
+// ── HERO SIGNATURE INTERACTIONS ────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // Mouse-tracked tilt on the hero CV mock card (subtle depth, disabled on touch/reduced-motion)
+  const mock = document.getElementById('heroCvMock');
+  const heroSection = document.getElementById('page-hero');
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (mock && heroSection && !prefersReduced && window.matchMedia('(hover: hover)').matches) {
+    heroSection.addEventListener('mousemove', (e) => {
+      const rect = heroSection.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width - 0.5;
+      const py = (e.clientY - rect.top) / rect.height - 0.5;
+      mock.style.transform = `rotate(1.2deg) rotateY(${px * 10}deg) rotateX(${-py * 8}deg)`;
+    });
+    heroSection.addEventListener('mouseleave', () => {
+      mock.style.transform = 'rotate(1.2deg) rotateY(0) rotateX(0)';
+    });
+  }
+
+  // Ambient drifting gold particles in the hero background
+  const field = document.getElementById('heroParticles');
+  if (field && !prefersReduced) {
+    for (let i = 0; i < 14; i++) {
+      const p = document.createElement('div');
+      p.className = 'hero-particle';
+      const left = Math.random() * 100;
+      const duration = 6 + Math.random() * 8;
+      const delay = Math.random() * 8;
+      p.style.left = left + '%';
+      p.style.bottom = (Math.random() * 30) + '%';
+      p.style.animationDuration = duration + 's';
+      p.style.animationDelay = '-' + delay + 's';
+      field.appendChild(p);
+    }
+  }
+});
 async function saveOrderToSupabase(order) {
   if (!_sb) { initSupabase(); await new Promise(r => setTimeout(r, 800)); }
   if (!_sb) return;
