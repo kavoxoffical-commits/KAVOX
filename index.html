@@ -1547,6 +1547,26 @@
   .cv-carousel-arrow.prev { left: -14px; }
   .cv-carousel-arrow.next { right: -14px; }
 
+  /* Clickable tab-dots under the carousel — direct jump to any template, not just next/prev */
+  .cv-carousel-dots {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: 4px;
+  }
+  .cv-carousel-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: rgba(201,168,76,0.25);
+    border: 1px solid rgba(201,168,76,0.4);
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.25s;
+  }
+  .cv-carousel-dot:hover { background: rgba(201,168,76,0.5); }
+  .cv-carousel-dot.active { background: var(--gold); transform: scale(1.25); box-shadow: 0 0 8px rgba(201,168,76,0.6); }
+
   @media (max-width: 720px) {
     .cv-carousel-arrow { display: none; } /* touch swipe handles it on mobile */
     .cv-grid-wrap::before, .cv-grid-wrap::after { width: 30px; }
@@ -4465,6 +4485,7 @@
 
       </div>
       </div>
+      <div class="cv-carousel-dots" id="cv-dots-pro"></div>
     </div>
 
     <!-- ══ ROYAL TIER ══ -->
@@ -4828,6 +4849,7 @@
 
       </div>
       </div>
+      <div class="cv-carousel-dots" id="cv-dots-royal"></div>
     </div>
 
     <!-- ══ ELITE TIER ══ -->
@@ -5138,6 +5160,7 @@
 
       </div>
       </div>
+      <div class="cv-carousel-dots" id="cv-dots-elite"></div>
     </div>
 
     <div style="text-align:center; margin-top:32px;">
@@ -8156,6 +8179,45 @@ function scrollTplCarousel(tier, direction) {
   const step = card ? card.getBoundingClientRect().width + 24 : 296; // card width + gap
   grid.scrollBy({ left: step * direction * 2, behavior: 'smooth' });
 }
+
+// ── TEMPLATE CAROUSEL DOT-TABS ──────────────────────────────────────
+// Clickable dots (one per template) so it behaves like real tabs — jump directly
+// to any template, not just step forward/back — with the active dot tracking scroll.
+function initTplCarouselDots() {
+  ['pro', 'royal', 'elite'].forEach(tier => {
+    const grid = document.getElementById('cv-grid-' + tier);
+    const dotsWrap = document.getElementById('cv-dots-' + tier);
+    if (!grid || !dotsWrap) return;
+    const cards = grid.querySelectorAll('.cv-card');
+    if (cards.length === 0) return;
+
+    dotsWrap.innerHTML = '';
+    cards.forEach((card, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'cv-carousel-dot' + (i === 0 ? ' active' : '');
+      dot.setAttribute('aria-label', 'Go to template ' + (i + 1));
+      dot.onclick = () => card.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+      dotsWrap.appendChild(dot);
+    });
+
+    let scrollTimeout;
+    grid.addEventListener('scroll', () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        const gridRect = grid.getBoundingClientRect();
+        let closestIdx = 0, closestDist = Infinity;
+        cards.forEach((card, i) => {
+          const dist = Math.abs(card.getBoundingClientRect().left - gridRect.left);
+          if (dist < closestDist) { closestDist = dist; closestIdx = i; }
+        });
+        dotsWrap.querySelectorAll('.cv-carousel-dot').forEach((d, i) => {
+          d.classList.toggle('active', i === closestIdx);
+        });
+      }, 100);
+    });
+  });
+}
+document.addEventListener('DOMContentLoaded', initTplCarouselDots);
 </script>
 </body>
 </html>
