@@ -630,6 +630,24 @@
   }
   .footer-links a:hover { color: var(--gold); }
   .footer-sep { color: rgba(201,168,76,0.3); }
+  .footer-social {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+  .footer-social a {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    border: 1px solid rgba(201,168,76,0.3);
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(201,168,76,0.7);
+    transition: all 0.2s;
+  }
+  .footer-social a:hover { background: rgba(201,168,76,0.12); color: var(--gold); border-color: var(--gold); }
+  .footer-social svg { width: 15px; height: 15px; fill: currentColor; }
+  @media (max-width: 640px) {
+    .site-footer { flex-wrap: wrap; gap: 16px !important; }
+  }
 
   /* ── PATH SELECTION PAGE ── */
   #page-path {
@@ -1911,6 +1929,13 @@
     from { opacity: 0; transform: translateY(14px); }
     to   { opacity: 1; transform: translateY(0); }
   }
+  .page.leaving {
+    display: flex;
+    animation: pageOut 0.2s ease forwards;
+  }
+  @keyframes pageOut {
+    to { opacity: 0; transform: translateY(-10px); }
+  }
 
   /* Scroll reveal */
   .reveal {
@@ -2733,18 +2758,7 @@
     </div>
   </div>
 
-  <footer class="site-footer">
-    <span class="footer-logo">KAVOX</span>
-    <ul class="footer-links">
-      <li><a onclick="showPage('legal')">Legal</a></li>
-      <li><span class="footer-sep">|</span></li>
-      <li><a onclick="showPage('pricing')">Pricing</a></li>
-      <li><span class="footer-sep">|</span></li>
-      <li><a>Links</a></li>
-      <li><span class="footer-sep">|</span></li>
-      <li><a onclick="showPage('about')">Contact</a></li>
-    </ul>
-  </footer>
+  <footer class="site-footer" data-footer></footer>
 </div>
 
 <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
@@ -2818,14 +2832,7 @@
     <button class="back-link" onclick="showPage('hero')">Return to Home</button>
   </div>
 
-  <footer class="site-footer">
-    <span class="footer-logo">KAVOX</span>
-    <ul class="footer-links">
-      <li><a onclick="showPage('legal')">Legal</a></li><li><span class="footer-sep">|</span></li>
-      <li><a onclick="showPage('pricing')">Pricing</a></li><li><span class="footer-sep">|</span></li>
-      <li><a onclick="showPage('about')">Contact</a></li>
-    </ul>
-  </footer>
+  <footer class="site-footer" data-footer></footer>
 </div>
 
 <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
@@ -3126,19 +3133,12 @@
     </div>
 
     <div style="display:flex; gap:16px; justify-content:flex-end;">
-      <button class="btn-secondary" onclick="showPage('path')">Back</button>
+      <button class="btn-secondary" onclick="goBack('path')">Back</button>
       <button class="btn-primary" onclick="goToPricing()" style="padding:14px 40px;">Continue to Pricing →</button>
     </div>
   </div>
 
-  <footer class="site-footer">
-    <span class="footer-logo">KAVOX</span>
-    <ul class="footer-links">
-      <li><a onclick="showPage('legal')">Legal</a></li><li><span class="footer-sep">|</span></li>
-      <li><a onclick="showPage('pricing')">Pricing</a></li><li><span class="footer-sep">|</span></li>
-      <li><a onclick="showPage('about')">Contact</a></li>
-    </ul>
-  </footer>
+  <footer class="site-footer" data-footer></footer>
 </div>
 
 <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
@@ -3286,13 +3286,7 @@
 
     </div><!-- end pricing-container -->
 
-  <footer class="site-footer">
-    <span class="footer-logo">KAVOX</span>
-    <ul class="footer-links">
-      <li><a onclick="showPage('legal')">Legal</a></li><li><span class="footer-sep">|</span></li>
-      <li><a onclick="showPage('about')">About</a></li>
-    </ul>
-  </footer>
+  <footer class="site-footer" data-footer></footer>
 </div>
 
 <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
@@ -3325,10 +3319,7 @@
       <div id="loading-progress-bar" style="height:100%;width:0%;background:linear-gradient(to right,rgba(201,168,76,0.4),#c9a84c);border-radius:4px;transition:width 0.8s ease;"></div>
     </div>
   </div>
-  <footer class="site-footer">
-    <span class="footer-logo">KAVOX</span>
-    <ul class="footer-links"><li><a onclick="showPage('legal')">Legal</a></li><li><span class="footer-sep">|</span></li><li><a onclick="showPage('about')">Contact</a></li></ul>
-  </footer>
+  <footer class="site-footer" data-footer></footer>
 </div>
 
 <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
@@ -3353,10 +3344,7 @@
     </div>
     <div id="tailor-extras" style="max-width:800px;margin:0 auto;padding:0 20px;"></div>
   </div>
-  <footer class="site-footer">
-    <span class="footer-logo">KAVOX</span>
-    <ul class="footer-links"><li><a onclick="showPage('legal')">Legal</a></li><li><span class="footer-sep">|</span></li><li><a onclick="showPage('about')">Contact</a></li></ul>
-  </footer>
+  <footer class="site-footer" data-footer></footer>
 </div>
 
 <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
@@ -4112,14 +4100,7 @@
     </div>
 
   </div>
-  <footer class="site-footer">
-    <span class="footer-logo">KAVOX</span>
-    <ul class="footer-links">
-      <li><a onclick="showPage('legal')">Legal</a></li><li><span class="footer-sep">|</span></li>
-      <li><a onclick="showPage('pricing')">Pricing</a></li><li><span class="footer-sep">|</span></li>
-      <li><a onclick="showPage('about')">Contact</a></li>
-    </ul>
-  </footer>
+  <footer class="site-footer" data-footer></footer>
 </div>
 
 <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
@@ -5164,14 +5145,7 @@
     </div>
 
   </div>
-  <footer class="site-footer">
-    <span class="footer-logo">KAVOX</span>
-    <ul class="footer-links">
-      <li><a onclick="showPage('legal')">Legal</a></li><li><span class="footer-sep">|</span></li>
-      <li><a onclick="showPage('pricing')">Pricing</a></li><li><span class="footer-sep">|</span></li>
-      <li><a onclick="showPage('about')">Contact</a></li>
-    </ul>
-  </footer>
+  <footer class="site-footer" data-footer></footer>
 </div>
 
 
@@ -5270,14 +5244,7 @@
 
   </div>
 
-  <footer class="site-footer">
-    <span class="footer-logo">KAVOX</span>
-    <ul class="footer-links">
-      <li><a onclick="showPage('legal')">Legal</a></li><li><span class="footer-sep">|</span></li>
-      <li><a onclick="showPage('pricing')">Pricing</a></li><li><span class="footer-sep">|</span></li>
-      <li><a onclick="showPage('about')">About</a></li>
-    </ul>
-  </footer>
+  <footer class="site-footer" data-footer></footer>
 </div>
 
 <!-- ░░ LEGAL PAGE ░░ -->
@@ -5339,14 +5306,7 @@
     </div>
   </div>
 
-  <footer class="site-footer">
-    <span class="footer-logo">KAVOX</span>
-    <ul class="footer-links">
-      <li><a onclick="showPage('legal')">Legal</a></li><li><span class="footer-sep">|</span></li>
-      <li><a onclick="showPage('pricing')">Pricing</a></li><li><span class="footer-sep">|</span></li>
-      <li><a onclick="showPage('about')">About</a></li>
-    </ul>
-  </footer>
+  <footer class="site-footer" data-footer></footer>
 </div>
 <!-- ░░ TAILOR FOR A JOB PAGE ░░ -->
 <div id="page-tailor" class="page">
@@ -5382,10 +5342,7 @@
     <div id="tailor-error" style="display:none;text-align:center;color:#e57373;font-family:'EB Garamond',serif;font-size:0.95rem;margin-top:8px;"></div>
 
   </div>
-  <footer class="site-footer">
-    <span class="footer-logo">KAVOX</span>
-    <ul class="footer-links"><li><a onclick="showPage('legal')">Legal</a></li><li><span class="footer-sep">|</span></li><li><a onclick="showPage('about')">Contact</a></li></ul>
-  </footer>
+  <footer class="site-footer" data-footer></footer>
 </div>
 <!-- ░░ LOGIN / SIGN UP PAGE ░░ -->
 <div id="page-auth" class="page">
@@ -5439,10 +5396,7 @@
 
     </div>
   </div>
-  <footer class="site-footer">
-    <span class="footer-logo">KAVOX</span>
-    <ul class="footer-links"><li><a onclick="showPage('legal')">Terms</a></li><li><span class="footer-sep">|</span></li><li><a onclick="showPage('about')">About</a></li></ul>
-  </footer>
+  <footer class="site-footer" data-footer></footer>
 </div>
 
 <!-- ░░ "PLEASE CONFIRM YOUR EMAIL" PAGE ░░ -->
@@ -5458,10 +5412,7 @@
     <p class="confirm-text">We sent a confirmation link to your email. Click it to activate your account, then come back here and sign in.</p>
     <button class="btn-secondary" onclick="showPage('auth')" style="margin-top:16px;">Back to Login</button>
   </div>
-  <footer class="site-footer">
-    <span class="footer-logo">KAVOX</span>
-    <ul class="footer-links"><li><a onclick="showPage('about')">About</a></li></ul>
-  </footer>
+  <footer class="site-footer" data-footer></footer>
 </div>
 <!-- ░░ MY ACCOUNT PAGE ░░ -->
 <div id="page-account" class="page">
@@ -5495,10 +5446,7 @@
 
     <div id="account-cv-list" style="display:flex; flex-direction:column; gap:16px;"></div>
   </div>
-  <footer class="site-footer">
-    <span class="footer-logo">KAVOX</span>
-    <ul class="footer-links"><li><a onclick="showPage('about')">About</a></li></ul>
-  </footer>
+  <footer class="site-footer" data-footer></footer>
 </div>
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <!-- ░░ SCRIPTS ░░ -->
@@ -6027,13 +5975,26 @@ async function deleteSavedCV(cvId) {
 // ── PAGE NAVIGATION ──────────────────────────────────────────────
 const pages = ['hero','path','form','pricing','confirm','result','templates','about','tpl-picker','legal','auth','verify','account','tailor'];
 
-function showPage(id) {
-  pages.forEach(p => {
-    const el = document.getElementById('page-' + p);
-    if (el) el.classList.remove('active');
-  });
+// ── NAVIGATION HISTORY (so "Back" buttons return to where the user actually came from) ──
+let _navHistory = [];
+
+function showPage(id, opts) {
+  const skipHistory = opts && opts.skipHistory;
+  const current = document.querySelector('.page.active');
+  const currentId = current ? current.id.replace('page-', '') : null;
   const target = document.getElementById('page-' + id);
-  if (target) {
+  if (!target) return;
+
+  if (!skipHistory && currentId && currentId !== id) {
+    _navHistory.push(currentId);
+    if (_navHistory.length > 20) _navHistory.shift(); // cap growth
+  }
+
+  const doShow = () => {
+    pages.forEach(p => {
+      const el = document.getElementById('page-' + p);
+      if (el) el.classList.remove('active', 'leaving');
+    });
     target.classList.add('active');
     const fadeEls = target.querySelectorAll('.fade-in');
     fadeEls.forEach(el => {
@@ -6042,15 +6003,32 @@ function showPage(id) {
       el.style.animation = '';
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // The ATS/Cover Letter/Interview buttons only belong on a freshly-tailored result;
+    // clear them whenever the result page is entered any other way (base generation, viewing
+    // a saved CV, retry, etc.) so they don't linger from a previous Tailor session.
+    if (id === 'result' && !window._justTailored) {
+      const extras = document.getElementById('tailor-extras');
+      if (extras) extras.innerHTML = '';
+    }
+    window._justTailored = false;
+  };
+
+  // Smooth crossfade: fade the current page out, then swap and fade the new one in —
+  // applies to every page transition on the site from this single function.
+  if (current && current !== target && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    current.classList.add('leaving');
+    setTimeout(doShow, 200);
+  } else {
+    doShow();
   }
-  // The ATS/Cover Letter/Interview buttons only belong on a freshly-tailored result;
-  // clear them whenever the result page is entered any other way (base generation, viewing
-  // a saved CV, retry, etc.) so they don't linger from a previous Tailor session.
-  if (id === 'result' && !window._justTailored) {
-    const extras = document.getElementById('tailor-extras');
-    if (extras) extras.innerHTML = '';
-  }
-  window._justTailored = false;
+}
+
+// Generic "go back one step" — replaces hardcoded destinations on Back/Return buttons so
+// they return to wherever the user actually came from, not a guessed fixed page.
+function goBack(fallback) {
+  const prev = _navHistory.pop();
+  showPage(prev || fallback || 'hero', { skipHistory: true });
 }
 
 // ── FORM DATA ────────────────────────────────────────────────────
@@ -8055,6 +8033,27 @@ function initGoldOrbs() {
   });
 }
 document.addEventListener('DOMContentLoaded', initGoldOrbs);
+
+// ── UNIFIED SITE FOOTER ──────────────────────────────────────────────
+// Single source of truth: every [data-footer] element gets this same markup,
+// so any future footer edit (links, social icons) applies to all pages at once.
+function renderFooters() {
+  const html = `
+    <span class="footer-logo">KAVOX</span>
+    <ul class="footer-links">
+      <li><a onclick="showPage('pricing')">Pricing</a></li>
+      <li><span class="footer-sep">|</span></li>
+      <li><a onclick="showPage('templates')">Templates</a></li>
+      <li><span class="footer-sep">|</span></li>
+      <li><a onclick="showPage('legal')">Legal</a></li>
+      <li><span class="footer-sep">|</span></li>
+      <li><a onclick="showPage('about')">Contact</a></li>
+    </ul>
+    <div class="footer-social" id="footerSocial"></div>
+  `;
+  document.querySelectorAll('[data-footer]').forEach(el => { el.innerHTML = html; });
+}
+document.addEventListener('DOMContentLoaded', renderFooters);
 
 // ── HERO SIGNATURE INTERACTIONS ────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
