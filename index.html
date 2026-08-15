@@ -694,6 +694,11 @@
     background: linear-gradient(to right, transparent, var(--gold-border), transparent);
     pointer-events: none;
     z-index: 0;
+    animation: connectorPulse 3.5s ease-in-out infinite;
+  }
+  @keyframes connectorPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
   }
 
   .path-cards-wrapper {
@@ -2785,17 +2790,19 @@
 <!-- PAGE 2: PATH SELECTION                -->
 <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
 <div id="page-path" class="page">
-  <div class="path-section fade-in">
+  <div class="path-section fade-in" style="position:relative;">
+    <div class="hero-particles" id="pathParticles"></div>
     <div class="gold-ornament">
       <div class="ornament-diamond"></div>
     </div>
-    <p class="path-title">Choose Your Path to Excellence</p>
+    <p class="path-title reveal">Choose Your Path to Excellence</p>
 
     <div class="path-frame">
       <div class="path-frame-border"></div>
       <div class="path-cards-wrapper">
+        <div class="path-connector"></div>
         <!-- Architect -->
-        <div class="path-card">
+        <div class="path-card reveal">
           <div class="coin" onclick="selectPath('architect')">
             <div class="coin-icon">
               <!-- Crown + Quill — The Architect -->
@@ -2820,7 +2827,7 @@
         </div>
 
         <!-- Refiner -->
-        <div class="path-card">
+        <div class="path-card reveal">
           <div class="coin" onclick="selectPath('refiner')">
             <div class="coin-icon">
               <!-- Scroll + Wax Seal — The Refiner -->
@@ -8102,21 +8109,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Ambient drifting gold particles in the hero background
-  const field = document.getElementById('heroParticles');
-  if (field && !prefersReduced) {
-    for (let i = 0; i < 14; i++) {
-      const p = document.createElement('div');
-      p.className = 'hero-particle';
-      const left = Math.random() * 100;
-      const duration = 6 + Math.random() * 8;
-      const delay = Math.random() * 8;
-      p.style.left = left + '%';
-      p.style.bottom = (Math.random() * 30) + '%';
-      p.style.animationDuration = duration + 's';
-      p.style.animationDelay = '-' + delay + 's';
-      field.appendChild(p);
-    }
+  // Ambient drifting gold particles — populates every particle field on the site (hero, path, etc.)
+  const prefersReducedParticles = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!prefersReducedParticles) {
+    document.querySelectorAll('.hero-particles').forEach(field => {
+      for (let i = 0; i < 14; i++) {
+        const p = document.createElement('div');
+        p.className = 'hero-particle';
+        const left = Math.random() * 100;
+        const duration = 6 + Math.random() * 8;
+        const delay = Math.random() * 8;
+        p.style.left = left + '%';
+        p.style.bottom = (Math.random() * 30) + '%';
+        p.style.animationDuration = duration + 's';
+        p.style.animationDelay = '-' + delay + 's';
+        field.appendChild(p);
+      }
+    });
   }
 });
 async function saveOrderToSupabase(order) {
