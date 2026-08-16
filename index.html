@@ -261,6 +261,154 @@
     box-shadow: 0 0 8px rgba(201,168,76,0.6);
   }
 
+  /* ══════════════════════════════════════════════════════════════
+     CINEMATIC LANDING (experimental — pinned scroll storytelling,
+     Apple/Webflow-style). Lives entirely separate from the rest of
+     the site's page system so nothing else is touched by this.
+     ══════════════════════════════════════════════════════════════ */
+  #page-cinematic { display: none; }
+  #page-cinematic.active { display: block; }
+
+  .cine-track { position: relative; }
+
+  .cine-outer {
+    position: relative;
+    height: 220vh; /* scroll "room" the section gets before the next one takes over */
+  }
+  .cine-outer.short { height: 160vh; }
+
+  .cine-inner {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: var(--navy);
+  }
+
+  .cine-content {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+    padding: 0 40px;
+    text-align: center;
+    will-change: transform, opacity;
+  }
+
+  .cine-eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.6);
+    margin-bottom: 20px;
+  }
+
+  .cine-heading {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: clamp(2.4rem, 6vw, 5.2rem);
+    line-height: 1.1;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    text-shadow: 0 0 50px rgba(201,168,76,0.3);
+  }
+
+  .cine-sub {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.05rem, 1.8vw, 1.4rem);
+    color: rgba(240,230,208,0.7);
+    max-width: 620px;
+    margin: 22px auto 0;
+  }
+
+  .cine-bg-glow {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .cine-cards {
+    display: flex;
+    gap: 28px;
+    justify-content: center;
+    margin-top: 48px;
+    flex-wrap: wrap;
+  }
+  .cine-card {
+    width: 220px;
+    padding: 30px 24px;
+    background: linear-gradient(160deg, #112240 0%, #0d1b2e 100%);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 8px;
+    text-align: left;
+  }
+  .cine-card-num {
+    font-family: 'Cinzel', serif;
+    color: rgba(201,168,76,0.4);
+    font-size: 0.9rem;
+    margin-bottom: 14px;
+  }
+  .cine-card-title {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    font-size: 1.05rem;
+    margin-bottom: 8px;
+  }
+  .cine-card-desc {
+    font-family: 'EB Garamond', serif;
+    font-size: 0.92rem;
+    color: rgba(240,230,208,0.6);
+    line-height: 1.5;
+  }
+
+  .cine-progress-rail {
+    position: fixed;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .cine-progress-rail .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: rgba(201,168,76,0.25);
+    transition: all 0.3s;
+  }
+  .cine-progress-rail .dot.active {
+    background: var(--gold);
+    box-shadow: 0 0 8px rgba(201,168,76,0.6);
+    transform: scale(1.6);
+  }
+
+  .cine-exit-note {
+    position: fixed;
+    top: 16px; left: 16px;
+    z-index: 100;
+    font-family: 'EB Garamond', serif;
+    font-size: 0.8rem;
+    background: rgba(13,27,46,0.9);
+    border: 1px solid rgba(201,168,76,0.3);
+    color: rgba(240,230,208,0.7);
+    padding: 8px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+  .cine-exit-note:hover { color: var(--gold); border-color: var(--gold); }
+
+  @media (max-width: 760px) {
+    .cine-outer { height: 180vh; }
+    .cine-progress-rail { display: none; }
+  }
+
   /* ── HERO PAGE ── */
   #page-hero {
     align-items: center;
@@ -2774,6 +2922,66 @@
 <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
 <!-- PAGE 1: HERO                          -->
 <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+<!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+<!-- EXPERIMENTAL: CINEMATIC LANDING        -->
+<!-- Isolated preview page — does not affect the live site flow.   -->
+<!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+<div id="page-cinematic" class="page">
+  <div class="cine-exit-note" onclick="showPage('hero')">← Exit preview / back to live site</div>
+  <div class="cine-progress-rail" id="cineRail"></div>
+
+  <div class="cine-track">
+
+    <!-- Section 1: Hero -->
+    <div class="cine-outer" data-cine-section>
+      <div class="cine-inner">
+        <div class="cine-bg-glow" id="cineGlow1"></div>
+        <div class="cine-content" data-cine-content>
+          <p class="cine-eyebrow">AI-Powered Career Platform</p>
+          <h1 class="cine-heading">Crafting Your<br>Professional Legacy</h1>
+          <p class="cine-sub">Not another template. A CV written with the precision of a craft — tailored to you, and to the role you're after.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Path -->
+    <div class="cine-outer" data-cine-section>
+      <div class="cine-inner">
+        <div class="cine-content" data-cine-content>
+          <p class="cine-eyebrow">Two Ways to Begin</p>
+          <h2 class="cine-heading" style="font-size:clamp(2rem,4.5vw,3.4rem);">Choose Your Path</h2>
+          <div class="cine-cards">
+            <div class="cine-card">
+              <div class="cine-card-num">I.</div>
+              <div class="cine-card-title">The Architect</div>
+              <div class="cine-card-desc">Build a brand-new CV from the ground up, guided step by step.</div>
+            </div>
+            <div class="cine-card">
+              <div class="cine-card-num">II.</div>
+              <div class="cine-card-title">The Refiner</div>
+              <div class="cine-card-desc">Upload your existing CV and let KAVOX elevate it.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: CTA (short section, no fade dwell needed) -->
+    <div class="cine-outer short" data-cine-section>
+      <div class="cine-inner">
+        <div class="cine-content" data-cine-content>
+          <p class="cine-eyebrow">Ready When You Are</p>
+          <h2 class="cine-heading" style="font-size:clamp(1.8rem,4vw,2.8rem);">Begin Your Legacy</h2>
+          <div style="margin-top:32px;">
+            <button class="btn-primary" onclick="showPage('path')">Start Your Journey</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <div id="page-hero" class="page active">
  <video autoplay muted loop playsinline
   style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;opacity:0.18;pointer-events:none;">
@@ -5524,6 +5732,7 @@
   <footer class="site-footer" data-footer></footer>
 </div>
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
 <!-- ░░ SCRIPTS ░░ -->
 <script>
 // ── FREE TRIAL BANNER ──────────────────────────────────────────────
@@ -6048,7 +6257,7 @@ async function deleteSavedCV(cvId) {
   loadMyAccount();
 }
 // ── PAGE NAVIGATION ──────────────────────────────────────────────
-const pages = ['hero','path','form','pricing','confirm','result','templates','about','tpl-picker','legal','auth','verify','account','tailor'];
+const pages = ['hero','path','form','pricing','confirm','result','templates','about','tpl-picker','legal','auth','verify','account','tailor','cinematic'];
 
 // ── NAVIGATION HISTORY (so "Back" buttons return to where the user actually came from) ──
 let _navHistory = [];
@@ -6077,7 +6286,10 @@ function showPage(id, opts) {
       void el.offsetWidth;
       el.style.animation = '';
     });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollToTop();
+    if (id === 'cinematic' && typeof initCinematicScroll === 'function') {
+      requestAnimationFrame(initCinematicScroll);
+    }
 
     // The ATS/Cover Letter/Interview buttons only belong on a freshly-tailored result;
     // clear them whenever the result page is entered any other way (base generation, viewing
@@ -8129,6 +8341,81 @@ function renderFooters() {
   document.querySelectorAll('[data-footer]').forEach(el => { el.innerHTML = html; });
 }
 document.addEventListener('DOMContentLoaded', renderFooters);
+
+// ── SMOOTH SCROLL (Lenis) — used site-wide, including the cinematic page ──
+window._lenis = null;
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof Lenis === 'undefined') return; // fail silently if CDN didn't load — native scroll still works
+  const lenis = new Lenis({
+    duration: 1.1,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+  });
+  window._lenis = lenis;
+  function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+  requestAnimationFrame(raf);
+});
+
+function scrollToTop() {
+  if (window._lenis) window._lenis.scrollTo(0, { immediate: false });
+  else window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── CINEMATIC LANDING: pinned-scroll storytelling ──────────────────
+// Each .cine-outer is taller than the viewport; while its .cine-inner stays
+// pinned (position:sticky), we compute how far scrolled through that section
+// and fade/scale the content accordingly — the Apple/Webflow-style effect,
+// done with plain scroll math instead of WebGL/Canvas.
+function initCinematicScroll() {
+  const page = document.getElementById('page-cinematic');
+  if (!page) return;
+  const sections = Array.from(page.querySelectorAll('[data-cine-section]'));
+  const rail = document.getElementById('cineRail');
+  if (rail && rail.children.length === 0) {
+    sections.forEach((_, i) => {
+      const dot = document.createElement('div');
+      dot.className = 'dot' + (i === 0 ? ' active' : '');
+      rail.appendChild(dot);
+    });
+  }
+  const dots = rail ? Array.from(rail.children) : [];
+
+  function update() {
+    if (!page.classList.contains('active')) return;
+    const vh = window.innerHeight;
+    sections.forEach((sec, i) => {
+      const rect = sec.getBoundingClientRect();
+      const total = rect.height - vh; // scrollable room within this section
+      // progress: 0 when section just starts pinning, 1 when about to release
+      let progress = total > 0 ? (-rect.top) / total : 0;
+      progress = Math.max(0, Math.min(1, progress));
+
+      const content = sec.querySelector('[data-cine-content]');
+      if (content) {
+        // Fade in over the first 25%, hold, fade out over the last 25%
+        let opacity = 1;
+        if (progress < 0.22) opacity = progress / 0.22;
+        else if (progress > 0.78) opacity = (1 - progress) / 0.22;
+        opacity = Math.max(0, Math.min(1, opacity));
+        const scale = 0.94 + opacity * 0.06;
+        const translateY = (1 - opacity) * 24 * (progress > 0.5 ? -1 : 1);
+        content.style.opacity = opacity;
+        content.style.transform = `scale(${scale}) translateY(${translateY}px)`;
+      }
+
+      // Whichever section is most centered in the viewport drives the active dot
+      if (dots[i] && Math.abs(rect.top) < vh * 0.5 && rect.bottom > vh * 0.3) {
+        dots.forEach(d => d.classList.remove('active'));
+        dots[i].classList.add('active');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', update, { passive: true });
+  if (window._lenis) window._lenis.on('scroll', update);
+  window.addEventListener('resize', update);
+  update();
+}
+document.addEventListener('DOMContentLoaded', initCinematicScroll);
 
 // ── HERO SIGNATURE INTERACTIONS ────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
