@@ -1956,6 +1956,11 @@
     border-color: var(--gold);
     color: var(--gold);
     box-shadow: 0 0 12px rgba(201,168,76,0.3);
+    animation: dotPulse 2s ease-in-out infinite;
+  }
+  @keyframes dotPulse {
+    0%, 100% { box-shadow: 0 0 12px rgba(201,168,76,0.3); }
+    50% { box-shadow: 0 0 20px rgba(201,168,76,0.55); }
   }
   .progress-dot.done {
     background: rgba(201,168,76,0.15);
@@ -2900,9 +2905,10 @@
 <!-- PAGE 3: FORM                          -->
 <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
 <div id="page-form" class="page">
-  <div class="form-container fade-in">
+  <div class="form-container fade-in" style="position:relative;">
+    <div class="hero-particles" id="formParticles"></div>
 
-    <button class="back-link" onclick="showPage('path')">Return to Path Selection</button>
+    <button class="back-link" onclick="goBack('path')">Return to Path Selection</button>
 
     <!-- Progress -->
     <div class="progress-bar">
