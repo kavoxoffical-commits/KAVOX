@@ -2916,7 +2916,6 @@
   <li><a onclick="showPage('pricing')">Pricing</a></li>
   <li><a onclick="showPage('about')">About Us</a></li>
   <li><a id="nav-auth-link" onclick="showPage('auth')">Login</a></li>
-  <li><a onclick="showPage('cinematic')" style="color:#e5a5a5;">✦ Preview (New)</a></li>
 </ul>
 </nav>
 
@@ -2928,7 +2927,7 @@
 <!-- Isolated preview page — does not affect the live site flow.   -->
 <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
 <div id="page-cinematic" class="page">
-  <div class="cine-exit-note" onclick="showPage('hero')">← Exit preview / back to live site</div>
+  <div class="cine-exit-note" onclick="history.replaceState(null,'',window.location.pathname); showPage('hero')">← Exit preview / back to live site</div>
   <div class="cine-progress-rail" id="cineRail"></div>
 
   <div class="cine-track">
@@ -8417,6 +8416,14 @@ function initCinematicScroll() {
   update();
 }
 document.addEventListener('DOMContentLoaded', initCinematicScroll);
+
+// Private preview access: only reachable via a direct URL (#cinematic-preview), never linked
+// anywhere in the live site's nav/UI — a real visitor would never stumble onto it.
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.location.hash === '#cinematic-preview') {
+    showPage('cinematic');
+  }
+});
 
 // ── HERO SIGNATURE INTERACTIONS ────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
