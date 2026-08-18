@@ -8417,10 +8417,13 @@ function initCinematicScroll() {
 }
 document.addEventListener('DOMContentLoaded', initCinematicScroll);
 
-// Private preview access: only reachable via a direct URL (#cinematic-preview), never linked
+// Private preview access: only reachable via a direct URL (?preview=cinematic), never linked
 // anywhere in the live site's nav/UI — a real visitor would never stumble onto it.
+// Uses a query param, not a hash, because Supabase's auth client reads/clears the URL hash
+// on load (it's used for OAuth redirects) which was silently wiping a hash-based approach.
 document.addEventListener('DOMContentLoaded', () => {
-  if (window.location.hash === '#cinematic-preview') {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('preview') === 'cinematic') {
     showPage('cinematic');
   }
 });
