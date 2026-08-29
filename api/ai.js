@@ -131,7 +131,7 @@ export default async function handler(req, res) {
       if (!key) throw new Error('GEMINI_KEY not set');
       const fullPrompt = systemPrompt ? `${systemPrompt}\n\n---\n\n${prompt}` : prompt;
       const r = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -162,7 +162,7 @@ export default async function handler(req, res) {
           'X-Title': 'KAVOX CV Generator'
         },
         body: JSON.stringify({
-          model: 'google/gemini-2.0-flash-001',
+          model: 'google/gemini-2.5-flash',
           messages,
           max_tokens: 2048,
           temperature: 0.7
@@ -187,7 +187,7 @@ export default async function handler(req, res) {
           'Authorization': `Bearer ${key}`
         },
         body: JSON.stringify({
-          model: 'llama-3.3-70b-versatile',
+          model: 'openai/gpt-oss-120b',
           messages,
           max_tokens: 2048,
           temperature: 0.7
