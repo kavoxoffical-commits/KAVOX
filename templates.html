@@ -112,6 +112,9 @@
   .tpl-mock .light{background:rgba(255,255,255,.2) !important;}
   .tpl-mock .mt3{margin-top:3px}.tpl-mock .mt4{margin-top:4px}.tpl-mock .mt6{margin-top:6px}.tpl-mock .mt8{margin-top:8px}
   .tpl-mock .mb2{margin-bottom:2px}.tpl-mock .mb3{margin-bottom:3px}.tpl-mock .mb4{margin-bottom:4px}.tpl-mock .mb8{margin-bottom:8px}
+
+  body { opacity:0; transition:opacity .32s ease; }
+  body.kv-page-ready { opacity:1; }
 </style>
 </head>
 <body>
@@ -529,5 +532,22 @@ window.addEventListener('resize', () => {
 });
 </script>
 
+<script>
+(function(){
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){ document.body.classList.add('kv-page-ready'); });
+  });
+  document.addEventListener('click', function(e){
+    var link = e.target.closest('a');
+    if (!link) return;
+    var href = link.getAttribute('href');
+    if (!href || href.charAt(0) === '#' || href.indexOf('http') === 0 || href.indexOf('mailto:') === 0 || href.indexOf('tel:') === 0) return;
+    if (link.target === '_blank' || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+    e.preventDefault();
+    document.body.classList.remove('kv-page-ready');
+    setTimeout(function(){ window.location.href = href; }, 300);
+  });
+})();
+</script>
 </body>
 </html>
