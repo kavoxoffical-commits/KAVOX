@@ -8428,6 +8428,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// Deep-link from the new homepage's "Choose Your Path" cards (?path=architect / ?path=refiner):
+// pre-selects the path and jumps straight to the form, same as clicking the coin manually.
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const p = params.get('path');
+  if (p === 'architect' || p === 'refiner') {
+    selectPath(p);
+  }
+});
+
 // ── HERO SIGNATURE INTERACTIONS ────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   // Mouse-tracked tilt on the hero CV mock card (bold depth effect, disabled on touch/reduced-motion)
