@@ -67,9 +67,6 @@
   .fe-signature { max-width:900px; margin:0 auto; padding:0 24px 80px; opacity:0; transform:translateY(24px); }
   .fe-sig-box { border:1px solid rgba(255,255,255,.1); border-radius:20px; padding:48px; background:#0e0e10; }
   .fe-sig-label { font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:#8a8375; margin-bottom:24px; }
-
-  body { opacity:0; transition:opacity .32s ease; }
-  body.kv-page-ready { opacity:1; }
 </style>
 </head>
 <body>
@@ -91,7 +88,7 @@
   <div class="fe-eyebrow" id="feEyebrow">TWO PATHS</div>
   <h1 class="fe-title" id="feTitle">Start from zero,<br>or start from what you have.</h1>
   <p class="fe-sub" id="feSub">Not everyone is in the same place. Kavox gives you two honest starting points, and lets you pick the one that matches your situation.</p>
-  <a href="app.html" class="fe-hero-cta" id="feCta">Start for free &rarr;</a>
+  <a href="build.html" class="fe-hero-cta" id="feCta">Start for free &rarr;</a>
 </section>
 
 <section class="fe-signature" id="feSig">
@@ -137,7 +134,7 @@
 
 <section class="cta">
   <h2 id="ctaTitle">Ready to build<br>your CV?</h2>
-  <a href="app.html" class="cta-btn" id="ctaBtn">Start for free &rarr;</a>
+  <a href="build.html" class="cta-btn" id="ctaBtn">Start for free &rarr;</a>
 </section>
 
 <footer>
@@ -210,22 +207,5 @@ window.addEventListener('resize', () => {
 });
 </script>
 
-<script>
-(function(){
-  requestAnimationFrame(function(){
-    requestAnimationFrame(function(){ document.body.classList.add('kv-page-ready'); });
-  });
-  document.addEventListener('click', function(e){
-    var link = e.target.closest('a');
-    if (!link) return;
-    var href = link.getAttribute('href');
-    if (!href || href.charAt(0) === '#' || href.indexOf('http') === 0 || href.indexOf('mailto:') === 0 || href.indexOf('tel:') === 0) return;
-    if (link.target === '_blank' || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
-    e.preventDefault();
-    document.body.classList.remove('kv-page-ready');
-    setTimeout(function(){ window.location.href = href; }, 300);
-  });
-})();
-</script>
 </body>
 </html>
