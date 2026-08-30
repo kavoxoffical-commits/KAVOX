@@ -8,7 +8,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <style>
  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@500;600;700;800&display=swap');
- * { margin:0; padding:0; box-sizing:border-box; }
+ * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; }
+  a, button, input, textarea, select { -webkit-tap-highlight-color:transparent; }
+  a:focus, button:focus { outline:none; }
  html,body { background:#0a0a0c; color:#f5f2ea; font-family:'Inter',-apple-system,sans-serif; overflow-x:hidden; }
  h1,h2,h3 { font-family:'Playfair Display',serif; }
 
