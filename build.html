@@ -8,7 +8,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <style>
  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@500;600;700;800&display=swap');
- * { margin:0; padding:0; box-sizing:border-box; }
+ * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; }
+ a, button, input, textarea, select { -webkit-tap-highlight-color:transparent; }
+ a:focus, button:focus { outline:none; }
  html,body { background:#0a0a0c; color:#f5f2ea; font-family:'Inter',-apple-system,sans-serif; overflow-x:hidden; }
  h1,h2,h3 { font-family:'Playfair Display',serif; }
 
@@ -158,15 +160,7 @@
  </div>
  <div class="field-group">
  <label>Years of Experience</label>
- <select id="f-exp">
- <option value="">Select range</option>
- <option value="Fresh Graduate">Fresh Graduate / No Experience</option>
- <option>0 – 2 years</option>
- <option>3 – 5 years</option>
- <option>6 – 10 years</option>
- <option>10 – 15 years</option>
- <option>15+ years</option>
- </select>
+ <input id="f-exp" type="text" placeholder="e.g. 5 years, or Fresh Graduate" />
  </div>
  </div>
 
@@ -1110,7 +1104,7 @@ function goToPricing() {
     markError('f-title', 'Professional title is required');
 
   if (!exp)
-    markError('f-exp', 'Please select years of experience');
+    markError('f-exp', 'Please enter your years of experience');
 
   if (!industry)
     markError('f-industry', 'Target industry & role is required');
@@ -1128,7 +1122,7 @@ function goToPricing() {
   }
 
   // ── كل شيء تمام — روح للقوالب ────────────────────────────────
-  showPage('tpl-picker');
+  goToStep(2);
 }
 
 // ── مسح خطأ الحقل لما المستخدم يبدأ يكتب ─────────────────────
@@ -3350,7 +3344,7 @@ function goToStep(n) {
  }
  });
 }
-document.getElementById('toStep2').addEventListener('click', () => goToStep(2));
+document.getElementById('toStep2').addEventListener('click', () => goToPricing());
 document.getElementById('backTo1').addEventListener('click', () => goToStep(1));
 document.getElementById('skipStep2').addEventListener('click', () => { startGeneration(); });
 document.getElementById('generateCV').addEventListener('click', () => { startGeneration(); });
