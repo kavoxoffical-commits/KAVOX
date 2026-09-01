@@ -112,6 +112,17 @@
   .tpl-mock .light{background:rgba(255,255,255,.2) !important;}
   .tpl-mock .mt3{margin-top:3px}.tpl-mock .mt4{margin-top:4px}.tpl-mock .mt6{margin-top:6px}.tpl-mock .mt8{margin-top:8px}
   .tpl-mock .mb2{margin-bottom:2px}.tpl-mock .mb3{margin-bottom:3px}.tpl-mock .mb4{margin-bottom:4px}.tpl-mock .mb8{margin-bottom:8px}
+
+  .nav-toggle { display:none; background:none; border:none; cursor:pointer; padding:8px; flex-direction:column; gap:5px; z-index:60; }
+  .nav-toggle span { display:block; width:22px; height:2px; background:#f5f2ea; border-radius:2px; transition:transform .25s ease, opacity .25s ease; }
+  .nav-toggle.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+  .nav-toggle.open span:nth-child(2) { opacity:0; }
+  .nav-toggle.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+  .nav-mobile-menu { display:none; position:fixed; top:0; right:0; left:0; background:#0a0a0c; border-bottom:1px solid rgba(255,255,255,.08); padding:90px 24px 28px; flex-direction:column; gap:2px; z-index:45; transform:translateY(-12px); opacity:0; pointer-events:none; transition:transform .25s ease, opacity .25s ease; }
+  .nav-mobile-menu.open { display:flex; transform:translateY(0); opacity:1; pointer-events:auto; }
+  .nav-mobile-menu a { padding:16px 4px; font-size:15px; color:rgba(255,255,255,.75); text-decoration:none; border-bottom:1px solid rgba(255,255,255,.06); }
+  .nav-mobile-menu a:hover, .nav-mobile-menu a.active { color:#f5f2ea; }
+  @media (max-width:768px){ .nav-toggle{ display:flex; } }
 </style>
 </head>
 <body>
@@ -127,7 +138,11 @@
   <div class="nav-links">
     <a href="index.html#platform" class="nav-link">Platform</a><a href="templates.html" class="nav-link active">Templates</a><a href="pricing.html" class="nav-link">Pricing</a><a href="login.html" class="nav-link">Sign in</a>
   </div>
+  <button class="nav-toggle" id="navToggle" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
+<div class="nav-mobile-menu" id="navMobileMenu">
+    <a href="index.html#platform" class="nav-link">Platform</a><a href="templates.html" class="nav-link active">Templates</a><a href="pricing.html" class="nav-link">Pricing</a><a href="login.html" class="nav-link">Sign in</a>
+  </div>
 
 <section class="tpl-hero">
   <span class="tpl-eyebrow" id="teEyebrow">Twenty templates, three tiers</span>
@@ -529,5 +544,19 @@ window.addEventListener('resize', () => {
 });
 </script>
 
+<script>
+(function(){
+  var btn = document.getElementById('navToggle');
+  var menu = document.getElementById('navMobileMenu');
+  if (!btn || !menu) return;
+  btn.addEventListener('click', function(){
+    var isOpen = menu.classList.toggle('open');
+    btn.classList.toggle('open', isOpen);
+  });
+  menu.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){ menu.classList.remove('open'); btn.classList.remove('open'); });
+  });
+})();
+</script>
 </body>
 </html>
