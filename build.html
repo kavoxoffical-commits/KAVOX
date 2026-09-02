@@ -3330,10 +3330,12 @@ const step1 = document.getElementById('step1');
 const step2 = document.getElementById('step2');
 const fill = document.getElementById('stepBarFill');
 
-function goToStep(n) {
+function goToStep(n, opts) {
  const showing = n === 1 ? step1 : step2;
  const hiding = n === 1 ? step2 : step1;
  fill.style.width = (n === 1 ? '50%' : '100%');
+ document.getElementById('page-confirm').classList.remove('active');
+ document.getElementById('page-result').classList.remove('active');
  gsap.to(hiding, {
  opacity: 0, x: n === 1 ? 30 : -30, duration: 0.3, ease: 'power2.in',
  onComplete: () => {
@@ -3343,6 +3345,7 @@ function goToStep(n) {
  window.scrollTo({ top:0, behavior:'smooth' });
  }
  });
+ if (!(opts && opts.fromPopstate)) { history.pushState({ screen:'step' + n }, '', '#step' + n); }
 }
 document.getElementById('toStep2').addEventListener('click', () => goToPricing());
 document.getElementById('backTo1').addEventListener('click', () => goToStep(1));
@@ -3351,23 +3354,36 @@ document.getElementById('generateCV').addEventListener('click', () => { startGen
 
 /* ── Bridges the real pipeline's old full-page navigation (showPage) to this simple step-based form ── */
 /* note: currentPath is declared once, in the appended real-logic script below (defaults to 'architect' — no separate path-selection screen in this simplified form yet) */
-function showPage(name) {
+function showPage(name, opts) {
  const confirmEl = document.getElementById('page-confirm');
  const resultEl  = document.getElementById('page-result');
  if (name === 'confirm') {
    step1.classList.remove('active'); step2.classList.remove('active'); resultEl.classList.remove('active');
    confirmEl.classList.add('active');
    window.scrollTo({ top:0, behavior:'smooth' });
+   if (!(opts && opts.fromPopstate)) { history.pushState({ screen:'confirm' }, '', '#generating'); }
  } else if (name === 'result') {
    confirmEl.classList.remove('active');
    resultEl.classList.add('active');
    window.scrollTo({ top:0, behavior:'smooth' });
+   if (!(opts && opts.fromPopstate)) { history.pushState({ screen:'result' }, '', '#result'); }
  } else if (name === 'form' || name === 'hero') {
    confirmEl.classList.remove('active'); resultEl.classList.remove('active');
    step1.classList.add('active');
    window.scrollTo({ top:0, behavior:'smooth' });
+   if (!(opts && opts.fromPopstate)) { history.pushState({ screen:'step1' }, '', '#step1'); }
  }
 }
+
+/* ── Make browser back/forward move correctly between step1 → step2 → confirm → result ── */
+history.replaceState({ screen:'step1' }, '', '#step1');
+window.addEventListener('popstate', function(e){
+ const screen = (e.state && e.state.screen) || 'step1';
+ if (screen === 'step1') goToStep(1, { fromPopstate:true });
+ else if (screen === 'step2') goToStep(2, { fromPopstate:true });
+ else if (screen === 'confirm') showPage('confirm', { fromPopstate:true });
+ else if (screen === 'result') showPage('result', { fromPopstate:true });
+});
 
 function startGeneration() {
  const sel = document.getElementById('f-template');
