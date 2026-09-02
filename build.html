@@ -2775,6 +2775,11 @@ function _doDownloadCV(format) {
         div, p, ul, li { page-break-inside: avoid; }
         /* Remove any shadows for print */
         * { box-shadow: none !important; }
+        /* Fix: CSS Grid sidebar/column layouts (used by every template) do not reliably
+           paginate across multiple printed pages — content past page 1 can get clipped
+           entirely instead of flowing to page 2. Force these to stack as normal blocks
+           during print only; the on-screen result page is completely unaffected. */
+        [style*="grid-template-columns"] { display: block !important; }
         @page { size: A4; margin: 0; }
         @media print {
           html, body { width: 210mm; }
@@ -2799,24 +2804,7 @@ function _doDownloadCV(format) {
         ul { margin-left: 16pt; margin-top: 4pt; }
         li { margin-bottom: 2pt; }
         div { margin-bottom: 4pt; }
-      
-  /* ==== Unified minimalist form styling ==== */
-  .form-path-badge { display:none; }
-  .gold-line { display:none; }
-  .progress-bar { display:none !important; }
-  .progress-dot, .progress-line { display:none !important; }
-  .form-heading { font-size:clamp(28px,4.5vw,42px) !important; font-weight:700 !important; letter-spacing:-.03em !important; color:#f5f2ea !important; text-align:center; font-family:'Playfair Display',serif; text-transform:none !important; }
-  .form-desc { margin-top:12px !important; font-size:14.5px !important; color:rgba(255,255,255,.55) !important; text-align:center; font-weight:400 !important; text-transform:none !important; }
-  .field-group { margin-bottom:22px !important; }
-  .field-group label { display:block !important; font-size:12.5px !important; font-weight:600 !important; letter-spacing:.03em !important; color:rgba(255,255,255,.55) !important; margin-bottom:8px !important; text-transform:uppercase !important; font-family:'Inter',sans-serif !important; }
-  .field-group input, .field-group textarea, .field-group select {
-    width:100% !important; padding:14px 16px !important; border:1px solid rgba(255,255,255,.15) !important; border-radius:10px !important;
-    font-family:'Inter',sans-serif !important; font-size:14.5px !important; color:#f5f2ea !important; background:#151517 !important; outline:none !important;
-    box-shadow:none !important;
-  }
-  .field-group input:focus, .field-group textarea:focus, .field-group select:focus { border-color:#d8d0b8 !important; background:#1a1a1d !important; }
-  .field-group select option { background:#151517; }
-</style>
+      </style>
       </head><body>${content}</body></html>`
     ], { type: 'application/vnd.ms-word;charset=utf-8' });
     const url = URL.createObjectURL(blob);
