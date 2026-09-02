@@ -106,6 +106,9 @@
  .loading-bar-fill { height:100%; width:0%; background:linear-gradient(90deg,#ece6d6,#d8d0b8); transition:width .5s ease; }
  .result-actions { display:flex; flex-wrap:wrap; gap:14px; justify-content:center; margin:28px 0 40px; }
  #cv-output { max-width:820px; margin:0 auto; }
+ .extra-panel { border:1px solid rgba(255,255,255,.12); border-radius:14px; padding:28px; margin-top:18px; background:#0e0e10; }
+ .extra-panel-label { font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:#8a8375; margin-bottom:16px; }
+ .extra-panel-text { font-size:14.5px; line-height:1.8; color:rgba(255,255,255,.8); white-space:pre-line; margin-bottom:20px; }
 
  .form-footnote { text-align:center; margin-top:32px; font-size:12px; color:rgba(255,255,255,.35); }
 </style>
@@ -413,6 +416,58 @@
  <button class="btn-secondary" onclick="showPage('form')">Regenerate</button>
  </div>
  <div id="cv-output"></div>
+
+ <div id="extras-section" style="display:none; max-width:820px; margin:56px auto 0;">
+ <div style="display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin-bottom:24px;">
+ <button class="btn-secondary" id="btnShowLinkedIn" onclick="showLinkedInSummary()">LinkedIn Summary</button>
+ <button class="btn-secondary" id="btnShowCoverLetter" onclick="showCoverLetterOptions()">Cover Letter</button>
+ </div>
+
+ <div id="linkedin-panel" class="extra-panel" style="display:none;">
+ <div class="extra-panel-label">LinkedIn Summary</div>
+ <p class="extra-panel-text" id="linkedin-panel-text"></p>
+ <button class="btn-secondary" onclick="copyExtraText('linkedin-panel-text')">Copy Text</button>
+ </div>
+
+ <div id="coverletter-choice-panel" class="extra-panel" style="display:none;">
+ <div class="extra-panel-label">Cover Letter</div>
+ <p class="step-sub" style="margin:0 0 20px;">Use the general version already written for you, or tailor it to a specific job.</p>
+ <div style="display:flex; gap:14px; flex-wrap:wrap;">
+ <button class="btn-secondary" onclick="showGeneralCoverLetter()">Use as generated</button>
+ <button class="btn-secondary" onclick="showCoverLetterJobForm()">Tailor to a job</button>
+ </div>
+ </div>
+
+ <div id="coverletter-general-panel" class="extra-panel" style="display:none;">
+ <div class="extra-panel-label">Cover Letter</div>
+ <p class="extra-panel-text" id="coverletter-general-text"></p>
+ <button class="btn-secondary" onclick="copyExtraText('coverletter-general-text')">Copy Text</button>
+ </div>
+
+ <div id="coverletter-job-form-panel" class="extra-panel" style="display:none;">
+ <div class="extra-panel-label">Tailor Cover Letter to a Job</div>
+ <div class="field-group">
+ <label>Job Title</label>
+ <input id="cl-job-title" type="text" placeholder="e.g. Senior Product Manager" />
+ </div>
+ <div class="field-group">
+ <label>Company</label>
+ <input id="cl-company" type="text" placeholder="e.g. Acme Inc." />
+ </div>
+ <div class="field-group">
+ <label>Job Description</label>
+ <textarea id="cl-jd" rows="6" placeholder="Paste the job description here…"></textarea>
+ </div>
+ <div id="cl-tailor-error" style="display:none;color:#e57373;font-size:0.85rem;margin-bottom:12px;"></div>
+ <button class="btn-primary" id="cl-tailor-btn" onclick="generateTailoredCoverLetter()">Generate Tailored Cover Letter</button>
+ </div>
+
+ <div id="coverletter-tailored-panel" class="extra-panel" style="display:none;">
+ <div class="extra-panel-label">Tailored Cover Letter</div>
+ <p class="extra-panel-text" id="coverletter-tailored-text"></p>
+ <button class="btn-secondary" onclick="copyExtraText('coverletter-tailored-text')">Copy Text</button>
+ </div>
+ </div>
  </div>
 
 </div>
@@ -1654,19 +1709,7 @@ function buildCVFromTemplate(templateName, data, tier) {
       <p class="kv-summary" style="color:#444;">${d.ats_report}</p>
     </div>` : '';
 
-  const coverBlock = tier==='elite' && d.cover_letter ? `
-    <div class="kv-extra-block" style="border-color:rgba(201,168,76,0.2);">
-      ${sectionLabel('Cover Letter','#c9a84c','rgba(201,168,76,0.4)')}
-      <p class="kv-summary" style="color:#333;">${d.cover_letter}</p>
-    </div>` : '';
-
-  const linkedinBlock = tier==='elite' && d.linkedin_summary ? `
-    <div class="kv-extra-block" style="border-color:rgba(201,168,76,0.2);">
-      ${sectionLabel('LinkedIn Summary','#c9a84c','rgba(201,168,76,0.4)')}
-      <p class="kv-summary" style="color:#333;">${d.linkedin_summary}</p>
-    </div>` : '';
-
-  const extrasBlock = `<div class="kv-extras">${atsBlock}${coverBlock}${linkedinBlock}</div>`;
+  const extrasBlock = `<div class="kv-extras">${atsBlock}</div>`;
 
   // ══════════════════════════════════════════════
   // TEMPLATE 1: The Minimalist
@@ -2737,6 +2780,129 @@ function downloadCoverLetter() {
   printWindow.document.close();
   setTimeout(() => { printWindow.print(); }, 400);
 }
+// ── ELITE EXTRAS: Cover Letter / LinkedIn Summary (separate, opt-in, not embedded in the CV) ──
+function maybeShowExtraCards() {
+  const section = document.getElementById('extras-section');
+  const isElite = window._currentTier === 'elite';
+  const hasCover = !!(window._cvData && window._cvData.cover_letter);
+  const hasLinkedin = !!(window._cvData && window._cvData.linkedin_summary);
+  if (isElite && (hasCover || hasLinkedin)) {
+    section.style.display = 'block';
+    document.getElementById('btnShowLinkedIn').style.display = hasLinkedin ? 'inline-flex' : 'none';
+    document.getElementById('btnShowCoverLetter').style.display = hasCover ? 'inline-flex' : 'none';
+  } else {
+    section.style.display = 'none';
+  }
+}
+
+function hideAllExtraPanels() {
+  ['linkedin-panel','coverletter-choice-panel','coverletter-general-panel','coverletter-job-form-panel','coverletter-tailored-panel'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+}
+
+function showLinkedInSummary() {
+  hideAllExtraPanels();
+  document.getElementById('linkedin-panel-text').textContent = window._cvData.linkedin_summary || '';
+  document.getElementById('linkedin-panel').style.display = 'block';
+}
+
+function showCoverLetterOptions() {
+  hideAllExtraPanels();
+  document.getElementById('coverletter-choice-panel').style.display = 'block';
+}
+
+function showGeneralCoverLetter() {
+  hideAllExtraPanels();
+  document.getElementById('coverletter-general-text').textContent = window._cvData.cover_letter || '';
+  document.getElementById('coverletter-general-panel').style.display = 'block';
+}
+
+function showCoverLetterJobForm() {
+  hideAllExtraPanels();
+  document.getElementById('coverletter-job-form-panel').style.display = 'block';
+}
+
+function copyExtraText(elId) {
+  const text = document.getElementById(elId).textContent;
+  navigator.clipboard.writeText(text).catch(() => {});
+}
+
+async function generateTailoredCoverLetter() {
+  const jobTitle = document.getElementById('cl-job-title').value.trim();
+  const company  = document.getElementById('cl-company').value.trim();
+  const jd       = document.getElementById('cl-jd').value.trim();
+  const errorEl  = document.getElementById('cl-tailor-error');
+  errorEl.style.display = 'none';
+
+  if (!jobTitle || !company || !jd) {
+    errorEl.textContent = 'Please fill in all fields.';
+    errorEl.style.display = 'block';
+    return;
+  }
+  if (jd.length < 100) {
+    errorEl.textContent = 'Please paste a more complete job description (at least 100 characters).';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  const btn = document.getElementById('cl-tailor-btn');
+  btn.disabled = true;
+  btn.textContent = 'Generating…';
+
+  const cvOutputLang = (window._cvData && window._cvData.lang) || 'English';
+  const prompt = `You are KAVOX, an elite cover letter writer. Write a cover letter tailored to a specific job, based on this candidate's real CV data.
+Write the output in ${cvOutputLang}, matching the CV's language.
+
+CANDIDATE'S CV DATA:
+${JSON.stringify(window._cvData || {}, null, 2)}
+
+JOB DETAILS:
+- Job Title: ${jobTitle}
+- Company: ${company}
+- Job Description: ${jd}
+
+Write a cover letter (3 paragraphs, plain text only, no HTML) that references at least 2 SPECIFIC details from the candidate's real CV data above (a real job title, employer, skill, or achievement) plus the company name "${company}" — a reader should be able to tell this was written for this candidate and this company, not a template. STRICT RULE ON NUMBERS: a number or statistic may ONLY appear if it already exists in the CV data above — never invent one. HARD BAN — these exact phrases (and their direct translation into ${cvOutputLang}) are FORBIDDEN: 'results-driven professional', 'detail-oriented and results-driven', 'proven track record', 'unique blend of skills', 'strong believer in the power of', 'exceed/exceeding expectations', 'esteemed organization', 'meaningful impact', 'seasoned professional', 'dynamic professional', 'passionate about', 'unique understanding'. If a sentence you're about to write contains any of these, delete it and replace it with a sentence using a specific fact from the CV instead.
+
+Return ONLY valid JSON in this exact structure: {"cover_letter": "the full cover letter text here"}`;
+
+  for (let i = 0; i < API_PROVIDERS.length; i++) {
+    const provider = API_PROVIDERS[(currentProviderIndex + i) % API_PROVIDERS.length];
+    try {
+      const rawText = await callProvider(provider, prompt, { language: cvOutputLang }, 'coverletter-' + Date.now());
+      if (!rawText) throw new Error('EMPTY');
+      currentProviderIndex = (currentProviderIndex + i + 1) % API_PROVIDERS.length;
+
+      let parsed;
+      try {
+        const clean = rawText.replace(/```json/gi,'').replace(/```/g,'').trim();
+        parsed = JSON.parse(clean);
+      } catch(e) {
+        const match = rawText.match(/\{[\s\S]*\}/);
+        if (!match) throw new Error('PARSE_FAIL');
+        parsed = JSON.parse(match[0]);
+      }
+
+      let letter = parsed.cover_letter || '';
+      letter = sanitizeGeneratedText(letter);
+
+      btn.disabled = false;
+      btn.textContent = 'Generate Tailored Cover Letter';
+      hideAllExtraPanels();
+      document.getElementById('coverletter-tailored-text').textContent = letter;
+      document.getElementById('coverletter-tailored-panel').style.display = 'block';
+      return;
+    } catch (e) {
+      continue;
+    }
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Generate Tailored Cover Letter';
+  errorEl.textContent = 'All servers are busy right now. Please try again in a few minutes.';
+  errorEl.style.display = 'block';
+}
+
 function downloadCV(format) {
   // No real payment is being charged right now (site is in the "free for a limited time" period),
   // so skip the payment modal entirely and download directly — still record the order for tracking.
@@ -3355,6 +3521,8 @@ function showPage(name, opts) {
    resultEl.classList.add('active');
    window.scrollTo({ top:0, behavior:'smooth' });
    if (!(opts && opts.fromPopstate)) { history.pushState({ screen:'result' }, '', '#result'); }
+   hideAllExtraPanels();
+   maybeShowExtraCards();
  } else if (name === 'form' || name === 'hero') {
    confirmEl.classList.remove('active'); resultEl.classList.remove('active');
    step1.classList.add('active');
