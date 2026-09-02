@@ -472,7 +472,7 @@
     </div>
     <div class="footer-col">
       <h4>Company</h4>
-      <a>About</a><a>Contact</a><a>kavoxoffical@gmail.com</a>
+      <a href="index.html#about">About</a><a href="mailto:kavoxoffical@gmail.com">Contact</a><a href="mailto:kavoxoffical@gmail.com">kavoxoffical@gmail.com</a>
     </div>
     <div class="footer-col">
       <h4>Legal</h4>
@@ -563,6 +563,14 @@ window.addEventListener('resize', () => {
     a.addEventListener('click', closeMenu);
   });
 })();
+
+document.querySelectorAll('.tpl-card').forEach(function(card){
+  card.style.cursor = 'pointer';
+  card.addEventListener('click', function(){
+    var nameEl = card.querySelector('.name');
+    var name = nameEl ? nameEl.textContent : '';
+    var slug = name.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+    window.location.href = 'build.html?template=' + encodeURIComponent(slug);
+  });
+});
 </script>
-</body>
-</html>
