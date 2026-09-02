@@ -639,6 +639,9 @@ document.querySelectorAll('.faq-item').forEach(item => {
     document.body.classList.remove('kv-page-ready');
     setTimeout(function(){ window.location.href = href; }, 300);
   });
+  window.addEventListener('pageshow', function(e){
+    if (e.persisted) { document.body.classList.add('kv-page-ready'); }
+  });
 })();
 </script>
 <script>
