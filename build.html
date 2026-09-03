@@ -109,6 +109,13 @@
  .extra-panel { border:1px solid rgba(255,255,255,.12); border-radius:14px; padding:28px; margin-top:18px; background:#0e0e10; }
  .extra-panel-label { font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:#8a8375; margin-bottom:16px; }
  .extra-panel-text { font-size:14.5px; line-height:1.8; color:rgba(255,255,255,.8); white-space:pre-line; margin-bottom:20px; }
+ .kv-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:80; align-items:center; justify-content:center; padding:24px; }
+ .kv-modal-overlay.open { display:flex; }
+ .kv-modal-box { background:#0e0e10; border:1px solid rgba(255,255,255,.12); border-radius:16px; padding:32px; max-width:440px; width:100%; }
+ .kv-modal-title { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:#f5f2ea; margin-bottom:14px; }
+ .kv-modal-desc { font-size:14px; line-height:1.7; color:rgba(255,255,255,.6); white-space:pre-line; margin-bottom:26px; }
+ .kv-modal-actions { display:flex; gap:12px; flex-wrap:wrap; }
+ .kv-modal-actions .btn-primary, .kv-modal-actions .btn-secondary { flex:1; text-align:center; }
 
  .form-footnote { text-align:center; margin-top:32px; font-size:12px; color:rgba(255,255,255,.35); }
 </style>
@@ -466,6 +473,17 @@
  <div class="extra-panel-label">Tailored Cover Letter</div>
  <p class="extra-panel-text" id="coverletter-tailored-text"></p>
  <button class="btn-secondary" onclick="copyExtraText('coverletter-tailored-text')">Copy Text</button>
+ </div>
+ </div>
+ </div>
+
+ <div id="modal-weak-content" class="kv-modal-overlay">
+ <div class="kv-modal-box">
+ <h3 id="weak-modal-title" class="kv-modal-title"></h3>
+ <p id="weak-modal-desc" class="kv-modal-desc"></p>
+ <div class="kv-modal-actions">
+ <button class="btn-secondary" id="weak-modal-back-btn" onclick="closeWeakContentModal()"></button>
+ <button class="btn-primary" id="weak-modal-continue-btn"></button>
  </div>
  </div>
  </div>
