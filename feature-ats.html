@@ -136,7 +136,37 @@
   </div>
 </section>
 
-<section class="fe-detail-section">
+<section class="fe-detail-section" id="atsToolSection" style="padding-top:60px;">
+  <div class="fe-detail-inner" style="max-width:820px;">
+    <h2 style="margin-bottom:14px;">Try it yourself</h2>
+    <p class="step-sub" style="margin:0 0 32px;color:rgba(255,255,255,.55);font-size:14.5px;">Paste your CV text and a job description below to see a real, calculated match score — no sign-up needed.</p>
+
+    <div class="field-group">
+      <label>Your CV text</label>
+      <textarea id="atsCvText" rows="7" placeholder="Paste your CV text here…" style="width:100%;padding:14px 16px;border:1px solid rgba(255,255,255,.15);border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;color:#f5f2ea;background:#151517;outline:none;resize:vertical;"></textarea>
+    </div>
+    <div class="field-group">
+      <label>Job description</label>
+      <textarea id="atsJdText" rows="7" placeholder="Paste the job description here…" style="width:100%;padding:14px 16px;border:1px solid rgba(255,255,255,.15);border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;color:#f5f2ea;background:#151517;outline:none;resize:vertical;"></textarea>
+    </div>
+    <div id="atsToolError" style="display:none;color:#e57373;font-size:13.5px;margin-bottom:14px;"></div>
+    <button class="fe-hero-cta" id="atsToolBtn" onclick="calcStandaloneATS()" style="border:none;cursor:pointer;font-family:inherit;">Calculate My Score</button>
+
+    <div id="atsToolResult" style="display:none;margin-top:36px;border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:28px;background:#0e0e10;">
+      <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:18px;">
+        <span id="atsScoreNum" style="font-family:'Playfair Display',serif;font-size:44px;font-weight:700;color:#ece6d6;"></span>
+        <span style="font-size:13px;color:rgba(255,255,255,.5);">match score</span>
+      </div>
+      <div style="height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;margin-bottom:22px;">
+        <div id="atsScoreBar" style="height:100%;background:linear-gradient(90deg,#ece6d6,#d8d0b8);width:0%;transition:width .6s ease;"></div>
+      </div>
+      <div style="font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:#8a8375;margin-bottom:12px;">Missing keywords</div>
+      <div id="atsMissingList" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+    </div>
+  </div>
+</section>
+
+<section class="fe-detail-section" style="background:#0a0a0c;">
   <div class="fe-detail-inner">
     <h2 id="feDetailTitle">What ATS-safe means here</h2>
     <div class="fe-points">
@@ -251,6 +281,74 @@ window.addEventListener('resize', () => {
     a.addEventListener('click', closeMenu);
   });
 })();
+</script>
+
+<script>
+const ATS_STOPWORDS = new Set(['the','a','an','and','or','but','if','then','for','to','of','in','on','at','by','with','from',
+  'is','are','was','were','be','been','being','this','that','these','those','it','its','as','we','you','your','our',
+  'will','can','may','must','should','would','could','have','has','had','do','does','did','not','no','all','any',
+  'each','other','such','also','into','about','over','under','more','most','some','than','their','them','they',
+  'who','what','which','when','where','why','how','job','role','position','company','team','looking','ideal',
+  'candidate','experience','years','plus','including','etc','across','work','working']);
+
+const ATS_STOPWORDS_AR = new Set(['في','من','على','إلى','و','أو','التي','الذي','هذا','هذه','ذلك','تلك','مع','عن','كل','بعض',
+  'هو','هي','هم','نحن','أنت','انت','لا','لم','لن','قد','كان','تكون','يكون','ما','لديك','لدينا','نحو','ضمن','خلال',
+  'الشركة','الوظيفة','المرشح','الفريق','سنوات','خبرة','دور','منصب','يبحث','نبحث','مطلوب']);
+
+function normalize(w) {
+  return w.length > 4 && w.endsWith('s') && !w.endsWith('ss') ? w.slice(0, -1) : w;
+}
+
+function extractKeywords(text) {
+  if (!text) return [];
+  const raw = text.toLowerCase().match(/[\p{L}][\p{L}\p{N}+#]*(?:\.[\p{L}\p{N}+#]+)*/gu) || [];
+  const words = raw.filter(w => w.length > 2 && !ATS_STOPWORDS.has(w) && !ATS_STOPWORDS_AR.has(w));
+  return [...new Set(words.map(normalize))];
+}
+
+function calcStandaloneATS() {
+  const cvText = document.getElementById('atsCvText').value.trim();
+  const jdText = document.getElementById('atsJdText').value.trim();
+  const errorEl = document.getElementById('atsToolError');
+  errorEl.style.display = 'none';
+
+  if (!cvText || !jdText) {
+    errorEl.textContent = 'Please paste both your CV text and the job description.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  const keywords = extractKeywords(jdText);
+  if (keywords.length === 0) {
+    errorEl.textContent = 'Could not extract meaningful keywords from that job description — try pasting more of it.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  const cvNorm = normalize(cvText.toLowerCase());
+  const matched = keywords.filter(k => cvNorm.includes(k));
+  const missing = keywords.filter(k => !cvNorm.includes(k));
+  const score = Math.min(Math.round((matched.length / keywords.length) * 100), 100);
+
+  document.getElementById('atsScoreNum').textContent = score + '%';
+  document.getElementById('atsScoreBar').style.width = score + '%';
+
+  const missingList = document.getElementById('atsMissingList');
+  missingList.innerHTML = '';
+  if (missing.length === 0) {
+    missingList.innerHTML = '<span style="font-size:13px;color:rgba(255,255,255,.5);">None — great match.</span>';
+  } else {
+    missing.slice(0, 25).forEach(function(kw) {
+      const span = document.createElement('span');
+      span.textContent = kw;
+      span.style.cssText = 'font-size:11.5px;padding:6px 13px;border-radius:999px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.12);';
+      missingList.appendChild(span);
+    });
+  }
+
+  document.getElementById('atsToolResult').style.display = 'block';
+  document.getElementById('atsToolResult').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
 </script>
 </body>
 </html>
