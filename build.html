@@ -527,14 +527,14 @@
     
 
     document.getElementById('comparison-tbody').innerHTML = [
-      ['AI CV Generation','✓','✓','✓'],
-      ['PDF & Word Download','✓','✓','✓'],
+      ['AI CV Generation','✦','✦','✦'],
+      ['PDF & Word Download','✦','✦','✦'],
       ['Templates','5','13','20'],
-      ['ATS Report','—','✓','✓'],
-      ['Cover Letter','—','—','✓'],
-      ['LinkedIn Summary','—','—','✓'],
-      ['Unlimited Versions','—','✓','✓'],
-      ['All Languages','✓','✓','✓'],
+      ['ATS Report','—','✦','✦'],
+      ['Cover Letter','—','—','✦'],
+      ['LinkedIn Summary','—','—','✦'],
+      ['Unlimited Versions','—','✦','✦'],
+      ['All Languages','✦','✦','✦'],
     ].map(([feat,p,r,e],i)=>`
       <tr style="border-bottom:1px solid rgba(201,168,76,0.08);${i%2===0?'background:rgba(255,255,255,0.01);':''}">
         <td style="padding:10px 16px;color:rgba(240,230,208,0.65);">${feat}</td>
@@ -555,7 +555,7 @@
       ['Can I regenerate my CV?','Yes — use the Regenerate button on the result page to generate a fresh version with the same details at any time.'],
     ].map(([q,a])=>`
       <div style="border:1px solid rgba(201,168,76,0.2);border-radius:8px;padding:16px 20px;background:rgba(201,168,76,0.03);">
-        <div style="font-family:'Cinzel',serif;font-size:0.82rem;color:var(--gold);margin-bottom:8px;letter-spacing:0.05em;">${q}</div>
+        <div style="font-family:'Cinzel',serif;font-size:0.82rem;color:var(--gold);margin-bottom:8px;letter-spacing:0.05em;">✦ ${q}</div>
         <div style="font-family:'EB Garamond',serif;font-size:0.97rem;color:var(--text-muted);line-height:1.7;">${a}</div>
       </div>`).join('');
     
@@ -862,14 +862,14 @@ let tailored;
     // Build the two reveal buttons (content stays hidden until clicked, and lives OUTSIDE #cv-output
     // so it's never included in the PDF/Word download of the actual CV document)
     const atsRevealHTML = `<div style="margin-top:32px;padding:20px 24px;border:1px solid rgba(201,168,76,0.35);border-radius:8px;background:rgba(201,168,76,0.04);">
-      <div style="font-family:'Cinzel',serif;font-size:0.75rem;color:#c9a84c;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:12px;">ATS Score</div>
+      <div style="font-family:'Cinzel',serif;font-size:0.75rem;color:#c9a84c;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:12px;">✦ ATS Score</div>
       <div style="font-family:'Cinzel',serif;font-size:3rem;color:#c9a84c;font-weight:700;">${tailored.ats_score}<span style="font-size:1.2rem;opacity:0.6;">/100</span></div>
       <p style="font-family:'EB Garamond',serif;font-size:0.95rem;color:rgba(240,230,208,0.7);margin-top:8px;">${tailored.tailor_notes || ''}</p>
       ${mismatchBlock}
       ${missingBlock}
     </div>
     <div style="margin-top:20px;padding:20px 24px;border:1px solid rgba(201,168,76,0.2);border-radius:8px;">
-      <div style="font-family:'Cinzel',serif;font-size:0.75rem;color:#c9a84c;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:12px;">Cover Letter</div>
+      <div style="font-family:'Cinzel',serif;font-size:0.75rem;color:#c9a84c;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:12px;">✦ Cover Letter</div>
       <p style="font-family:'EB Garamond',serif;font-size:1rem;color:rgba(240,230,208,0.85);line-height:1.8;white-space:pre-line;">${tailored.cover_letter || ''}</p>
     </div>`;
 
@@ -952,7 +952,7 @@ let tailored;
 
     status.style.display = 'block';
     status.style.color = 'var(--gold)';
-    status.textContent = 'Message sent successfully. We\'ll get back to you soon.';
+    status.textContent = '✦ Message sent successfully. We\'ll get back to you soon.';
     document.getElementById('contact-name').value = '';
     document.getElementById('contact-email').value = '';
     document.getElementById('contact-msg').value = '';
@@ -1035,7 +1035,7 @@ async function loadMyAccount() {
     return;
   }
 
-  const tierLabels = { pro: 'Pro', royal: '♛ Royal', elite: '◈ Elite' };
+  const tierLabels = { pro: '✦ Pro', royal: '♛ Royal', elite: '◈ Elite' };
 
   listEl.innerHTML = cvs.map(cv => {
     const date = new Date(cv.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -1261,7 +1261,7 @@ function selectTemplate(templateName, tier, price, priceNote) {
 
   // Tier config
   const tierConfig = {
-    pro:   { icon: '', tag: 'Pro Tier', desc: '5 Pro templates · PDF &amp; Word download · ATS-optimised formatting' },
+    pro:   { icon: '✦', tag: 'Pro Tier', desc: '✦ 5 Pro templates · PDF &amp; Word download · ATS-optimised formatting' },
     royal: { icon: '♛', tag: 'Royal Tier', desc: '♛ 8 premium templates · Unlimited CVs · ATS deep-analysis report · Priority queue' },
     elite: { icon: '◈', tag: 'Elite Tier', desc: '◈ 20 templates unlocked · Cover letter · LinkedIn optimisation · Multi-language CV' }
   };
@@ -1401,7 +1401,7 @@ function onTemplateChange(select) {
       bg: 'rgba(255,255,255,0.06)',
       border: '1px solid rgba(201,168,76,0.3)',
       color: '#c9a84c',
-      icon: '',
+      icon: '✦',
       label: 'Pro — $5 one-time',
       msg: 'This template is included in the <strong>Pro</strong> plan and above.'
     },
@@ -2223,7 +2223,7 @@ function buildCVFromTemplate(templateName, data, tier) {
   if (templateName === 'The Royal Parchment') {
     return baseStyles + `<div class="kv-cv" ${dir} style="background:#fdf6e3;color:#2c1a00;">
       <div style="padding:28px 34px;border-bottom:2px solid #8b6914;text-align:center;">
-        <div style="font-size:8pt;letter-spacing:0.3em;text-transform:uppercase;color:#8b6914;margin-bottom:6px;">Curriculum Vitae </div>
+        <div style="font-size:8pt;letter-spacing:0.3em;text-transform:uppercase;color:#8b6914;margin-bottom:6px;">✦ Curriculum Vitae ✦</div>
         <div style="font-size:22pt;font-weight:700;color:#2c1a00;margin-bottom:4px;">${d.name}</div>
         <div style="font-size:9.5pt;color:#8b6914;letter-spacing:0.14em;text-transform:uppercase;">${d.title}</div>
         <div style="font-size:8.5pt;color:#a08040;margin-top:6px;">${[d.email,d.phone,d.location].filter(Boolean).join(' · ')}</div>
@@ -2251,11 +2251,11 @@ function buildCVFromTemplate(templateName, data, tier) {
   if (templateName === 'The Celestial Signature') {
     return baseStyles + `<div class="kv-cv" ${dir} style="background:linear-gradient(160deg,#0d1b2e 0%,#050c1a 100%);color:#e0eaff;">
       <div style="padding:30px 32px 18px;text-align:center;border-bottom:1px solid rgba(201,168,76,0.25);">
-        <div style="font-size:7pt;letter-spacing:0.35em;color:rgba(201,168,76,0.6);margin-bottom:8px;"></div>
+        <div style="font-size:7pt;letter-spacing:0.35em;color:rgba(201,168,76,0.6);margin-bottom:8px;">✦ ✦ ✦</div>
         <div style="font-size:22pt;font-weight:700;color:#c9a84c;letter-spacing:0.07em;margin-bottom:4px;">${d.name}</div>
         <div style="font-size:9.5pt;color:rgba(224,234,255,0.6);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:6px;">${d.title}</div>
         <div style="font-size:8.5pt;color:rgba(224,234,255,0.35);">${[d.email,d.phone,d.location].filter(Boolean).join(' · ')}</div>
-        <div style="font-size:7pt;letter-spacing:0.35em;color:rgba(201,168,76,0.6);margin-top:8px;"></div>
+        <div style="font-size:7pt;letter-spacing:0.35em;color:rgba(201,168,76,0.6);margin-top:8px;">✦ ✦ ✦</div>
       </div>
       <div style="padding:14px 32px;border-bottom:1px solid rgba(201,168,76,0.15);">
         <p class="kv-summary" style="color:rgba(224,234,255,0.75);text-align:center;font-style:italic;">${d.summary||''}</p>
@@ -2736,12 +2736,25 @@ function generateCV(tier) {
 function renderResult(cvHTML, tier) {
   const output = document.getElementById('cv-output');
   output.innerHTML = cvHTML;
+  output.contentEditable = 'true';
+  output.spellcheck = false;
+  output.style.outline = 'none';
+  output.style.cursor = 'text';
+
+  let editHint = document.getElementById('cv-edit-hint');
+  if (!editHint) {
+    editHint = document.createElement('div');
+    editHint.id = 'cv-edit-hint';
+    editHint.style.cssText = 'max-width:820px;margin:0 auto 14px;text-align:center;font-size:12.5px;color:rgba(255,255,255,.45);';
+    editHint.textContent = 'Click any text on your CV to edit it directly.';
+    output.parentNode.insertBefore(editHint, output);
+  }
 
   // Show/hide tier badges on result page
   document.querySelectorAll('.tier-badge').forEach(el => el.remove());
 
   const badges = {
-    pro:   { label: 'Pro CV', color: '#c9a84c' },
+    pro:   { label: '✦ Pro CV', color: '#c9a84c' },
     royal: { label: '♛ Royal CV + ATS Report', color: '#e2c97e' },
     elite: { label: '◈ Elite CV + Cover Letter + LinkedIn + ATS', color: '#f5e6b0' }
   };
@@ -2969,6 +2982,10 @@ Return ONLY valid JSON in this exact structure: {"cover_letter": "the full cover
 }
 
 function downloadCV(format) {
+  // Capture any edits the user made directly on the CV before exporting
+  const output = document.getElementById('cv-output');
+  if (output) window._cvHTML = output.innerHTML;
+
   // No real payment is being charged right now (site is in the "free for a limited time" period),
   // so skip the payment modal entirely and download directly — still record the order for tracking.
   if (window._cvName && window._currentTier) {
