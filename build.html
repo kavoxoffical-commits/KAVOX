@@ -137,8 +137,18 @@
  <div class="form-step active" id="step1">
  <div class="step-head">
  <span class="step-eyebrow">Step 1 of 2</span>
- <h1 class="step-title">Build Your Legacy</h1>
- <p class="step-sub">Provide your professional details below and our AI will craft an elite CV tailored to your ambitions.</p>
+ <h1 class="step-title" id="form-heading">Build Your Legacy</h1>
+ <p class="step-sub" id="form-desc">Provide your professional details below and our AI will craft an elite CV tailored to your ambitions.</p>
+ </div>
+
+ <div id="upload-zone-wrapper" style="display:none; margin-bottom:32px;">
+ <div class="field-group">
+ <label>Paste Your Existing CV</label>
+ <textarea id="f-existing-cv" rows="10" placeholder="Paste the full text of your current CV here…" style="width:100%;padding:14px 16px;border:1px solid rgba(255,255,255,.15);border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;color:#f5f2ea;background:#151517;outline:none;resize:vertical;"></textarea>
+ </div>
+ <div id="refiner-error" style="display:none;color:#e57373;font-size:13px;margin-bottom:14px;"></div>
+ <button class="btn-secondary" id="refiner-extract-btn" onclick="extractExistingCV()" type="button">Fill the Form From My CV</button>
+ <p class="step-sub" style="margin-top:12px;font-size:13px;">Or skip this and fill the fields below yourself.</p>
  </div>
 
  <div class="field-row">
@@ -3068,24 +3078,96 @@ function _doDownloadCV(format) {
 function selectPath(path) {
   currentPath = path;
   const isRefiner = path === 'refiner';
-  const badge = document.getElementById('path-badge-text');
   const heading = document.getElementById('form-heading');
   const desc = document.getElementById('form-desc');
   const uploadZone = document.getElementById('upload-zone-wrapper');
 
   if (isRefiner) {
-    badge.textContent = 'The Refiner';
     heading.textContent = 'Elevate Your Story';
-    desc.textContent = 'Upload your existing CV and share the details below. Our AI will refine and elevate your narrative to elite standards.';
+    desc.textContent = 'Paste your existing CV below and share any extra details. Our AI will refine and elevate your narrative to elite standards.';
     uploadZone.style.display = 'block';
   } else {
-    badge.textContent = 'The Architect';
     heading.textContent = 'Build Your Legacy';
     desc.textContent = 'Provide your professional details below and our AI will craft an elite CV tailored to your ambitions.';
     uploadZone.style.display = 'none';
   }
+}
 
-  showPage('form');
+async function extractExistingCV() {
+  const cvText = document.getElementById('f-existing-cv').value.trim();
+  const errorEl = document.getElementById('refiner-error');
+  errorEl.style.display = 'none';
+
+  if (!cvText || cvText.length < 100) {
+    errorEl.textContent = 'Please paste more of your CV (at least 100 characters) so the details can be extracted accurately.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  const btn = document.getElementById('refiner-extract-btn');
+  btn.disabled = true;
+  btn.textContent = 'Reading your CV…';
+
+  const prompt = `Extract structured information from this CV text. Do not invent or add anything not present in the text — leave a field as an empty string "" if it is genuinely not mentioned.
+
+CV TEXT:
+${cvText}
+
+Return ONLY valid JSON in this exact structure:
+{"name":"","email":"","phone":"","location":"","title":"","years_experience":"","industry_role":"","achievements":"","education":"","skills":"","linkedin":"","portfolio":""}
+
+For "achievements", combine the real work experience, responsibilities, and accomplishments described in the CV into one plain-text passage (not JSON, not a list) preserving all specific facts, numbers, and employer names exactly as written. For "skills", provide a comma-separated list.`;
+
+  for (let i = 0; i < API_PROVIDERS.length; i++) {
+    const provider = API_PROVIDERS[(currentProviderIndex + i) % API_PROVIDERS.length];
+    try {
+      const rawText = await callProvider(provider, prompt, {}, 'refiner-extract-' + Date.now());
+      if (!rawText) throw new Error('EMPTY');
+      currentProviderIndex = (currentProviderIndex + i + 1) % API_PROVIDERS.length;
+
+      let parsed;
+      try {
+        const clean = rawText.replace(/```json/gi,'').replace(/```/g,'').trim();
+        parsed = JSON.parse(clean);
+      } catch(e) {
+        const match = rawText.match(/\{[\s\S]*\}/);
+        if (!match) throw new Error('PARSE_FAIL');
+        parsed = JSON.parse(match[0]);
+      }
+
+      const setIfPresent = (id, val) => {
+        if (val) document.getElementById(id).value = val;
+      };
+      setIfPresent('f-name', parsed.name);
+      setIfPresent('f-email', parsed.email);
+      setIfPresent('f-phone', parsed.phone);
+      setIfPresent('f-location', parsed.location);
+      setIfPresent('f-title', parsed.title);
+      setIfPresent('f-exp', parsed.years_experience);
+      setIfPresent('f-industry', parsed.industry_role);
+      setIfPresent('f-achievements', parsed.achievements);
+      setIfPresent('f-education', parsed.education);
+      setIfPresent('f-skills', parsed.skills);
+      setIfPresent('f-linkedin', parsed.linkedin);
+      setIfPresent('f-portfolio', parsed.portfolio);
+
+      btn.disabled = false;
+      btn.textContent = 'Fill the Form From My CV';
+      errorEl.style.color = '#ece6d6';
+      errorEl.textContent = 'Done — your details have been filled in below. Review and edit anything before continuing.';
+      errorEl.style.display = 'block';
+      document.getElementById('f-name').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    } catch (e) {
+      continue;
+    }
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Fill the Form From My CV';
+  errorEl.style.color = '#e57373';
+  errorEl.textContent = 'All servers are busy right now. Please try again in a few minutes, or fill the fields in manually.';
+  errorEl.style.display = 'block';
 }
 
 // ── GOLDEN DUST CANVAS ───────────────────────────────────────────
@@ -3413,6 +3495,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
   if (params.get('preview') === 'cinematic') {
     showPage('cinematic');
+  }
+  const p = params.get('path');
+  if (p === 'architect' || p === 'refiner') {
+    selectPath(p);
   }
 });
 
