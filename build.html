@@ -101,9 +101,14 @@
  .btn-actions-right { display:flex; align-items:center; gap:18px; }
  .btn-secondary { background:none; border:1px solid rgba(255,255,255,.2); color:#f5f2ea; border-radius:999px; padding:14px 32px; font-family:inherit; font-size:13.5px; font-weight:600; cursor:pointer; }
  .btn-secondary:hover { border-color:#d8d0b8; }
- .loading-wrap { max-width:520px; margin:80px auto; text-align:center; }
- .loading-bar-track { width:100%; height:3px; background:rgba(255,255,255,.1); border-radius:3px; margin-top:28px; overflow:hidden; }
- .loading-bar-fill { height:100%; width:0%; background:linear-gradient(90deg,#ece6d6,#d8d0b8); transition:width .5s ease; }
+  .loading-wrap { max-width:520px; margin:110px auto; text-align:center; }
+ .loading-spinner { width:64px; height:64px; margin:0 auto 32px; border-radius:50%; border:2px solid rgba(201,168,76,.15); border-top-color:#c9a84c; animation:kv-spin 1s linear infinite; }
+ @keyframes kv-spin { to { transform:rotate(360deg); } }
+ .loading-bar-track { position:relative; width:100%; height:6px; background:rgba(255,255,255,.08); border-radius:99px; margin-top:32px; overflow:hidden; }
+ .loading-bar-fill { position:relative; height:100%; width:0%; border-radius:99px; background:linear-gradient(90deg,#c9a84c,#ece6d6); transition:width .6s ease; overflow:hidden; }
+ .loading-bar-fill::after { content:''; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent); width:60px; animation:kv-shimmer 1.4s ease-in-out infinite; }
+ @keyframes kv-shimmer { 0% { transform:translateX(-80px); } 100% { transform:translateX(320px); } }
+ .loading-pct { margin-top:14px; font-family:'Cinzel',serif; font-size:12px; letter-spacing:.15em; color:#c9a84c; }
  .result-actions { display:flex; flex-wrap:wrap; gap:14px; justify-content:center; margin:28px 0 40px; }
  #cv-output { max-width:820px; margin:0 auto; }
  .extra-panel { border:1px solid rgba(255,255,255,.12); border-radius:14px; padding:28px; margin-top:18px; background:#0e0e10; }
@@ -414,10 +419,12 @@
  <!-- ============ LOADING (bridges old showPage('confirm')) ============ -->
  <div class="form-step" id="page-confirm">
  <div class="loading-wrap">
+ <div class="loading-spinner"></div>
  <span class="step-eyebrow">Please wait</span>
  <h1 class="step-title" style="font-size:28px;">Crafting your CV</h1>
  <p class="step-sub" id="loading-status-msg">Connecting to AI servers…</p>
  <div class="loading-bar-track"><div class="loading-bar-fill" id="loading-progress-bar"></div></div>
+ <div class="loading-pct" id="loading-progress-pct">10%</div>
  </div>
  </div>
 
@@ -2763,8 +2770,13 @@ function renderResult(cvHTML, tier) {
 function updateLoadingStatus(msg, progressPct) {
   const statusEl = document.getElementById('loading-status-msg');
   const barEl    = document.getElementById('loading-progress-bar');
+  const pctEl    = document.getElementById('loading-progress-pct');
   if (statusEl) statusEl.innerHTML = msg;
-  if (barEl && progressPct !== undefined) barEl.style.width = Math.min(progressPct, 98) + '%';
+  if (progressPct !== undefined) {
+    const clamped = Math.min(progressPct, 98);
+    if (barEl) barEl.style.width = clamped + '%';
+    if (pctEl) pctEl.textContent = Math.round(clamped) + '%';
+  }
 }
 
 // ── DOWNLOAD COVER LETTER (ELITE) ────────────────────────────────
