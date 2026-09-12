@@ -233,6 +233,16 @@ function translateAuthError(msg) {
 }
 
 initSupabase();
+
+// If already signed in, skip straight to the account page instead of showing the login form again.
+(async function(){
+  await initSupabase();
+  if (!_sb) return;
+  const { data } = await _sb.auth.getSession();
+  if (data && data.session && data.session.user) {
+    window.location.href = 'account.html';
+  }
+})();
 </script>
 
 </body>
