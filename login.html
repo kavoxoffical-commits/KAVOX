@@ -113,9 +113,11 @@ async function initSupabase() {
     if (!cfg.supabaseUrl || !cfg.supabaseKey) { console.warn('Supabase env vars missing from config'); return; }
     const { createClient } = window.supabase;
     _sb = createClient(cfg.supabaseUrl, cfg.supabaseKey);
-    _sb.auth.onAuthStateChange(async (event) => {
+    _sb.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN') {
-        window.location.href = 'build.html';
+        const meta = (session && session.user && session.user.user_metadata) || {};
+        const needsOnboarding = !meta.display_name && !meta.onboarding_skipped;
+        window.location.href = needsOnboarding ? 'account.html' : 'build.html';
       }
     });
   } catch(e) { console.warn('Supabase init failed:', e); }
@@ -126,7 +128,7 @@ async function signInWithGoogle() {
   if (!_sb) await initSupabase();
   const { error } = await _sb.auth.signInWithOAuth({
     provider: 'google',
-    options: { redirectTo: window.location.origin + '/build.html' }
+    options: { redirectTo: window.location.origin + '/login.html' }
   });
   if (error) {
     const el = document.getElementById('auth-error');
@@ -234,13 +236,16 @@ function translateAuthError(msg) {
 
 initSupabase();
 
-// If already signed in, skip straight to the account page instead of showing the login form again.
+// If already signed in when landing here directly (not via a fresh OAuth/OTP sign-in),
+// skip the login form and go straight to the right place.
 (async function(){
   await initSupabase();
   if (!_sb) return;
   const { data } = await _sb.auth.getSession();
   if (data && data.session && data.session.user) {
-    window.location.href = 'account.html';
+    const meta = data.session.user.user_metadata || {};
+    const needsOnboarding = !meta.display_name && !meta.onboarding_skipped;
+    window.location.href = needsOnboarding ? 'account.html' : 'build.html';
   }
 })();
 </script>

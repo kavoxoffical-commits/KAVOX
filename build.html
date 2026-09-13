@@ -432,6 +432,35 @@
  </div>
 
  <!-- ============ RESULT (bridges old showPage('result')) ============ -->
+ <div class="form-step" id="page-tailor">
+ <div class="step-head">
+ <span class="step-eyebrow">Tailor for a Job</span>
+ <h1 class="step-title">Re-tailor This CV</h1>
+ <p class="step-sub">Paste the job details below — our AI will rewrite your CV and cover letter to match, and score it against this specific job.</p>
+ </div>
+
+ <div class="field-row">
+ <div class="field-group">
+ <label>Job Title</label>
+ <input id="tailor-job-title" type="text" placeholder="e.g. Senior Product Manager" />
+ </div>
+ <div class="field-group">
+ <label>Company</label>
+ <input id="tailor-company" type="text" placeholder="e.g. Acme Inc." />
+ </div>
+ </div>
+
+ <div class="field-group">
+ <label>Job Description</label>
+ <textarea id="tailor-jd" rows="10" placeholder="Paste the full job description here…" style="width:100%;padding:14px 16px;border:1px solid rgba(255,255,255,.15);border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;color:#f5f2ea;background:#151517;outline:none;resize:vertical;"></textarea>
+ </div>
+
+ <div id="tailor-error" style="display:none;color:#e57373;font-size:13px;margin-bottom:14px;"></div>
+
+ <button class="btn-primary" onclick="runTailorCV()" type="button">Tailor My CV</button>
+ <button class="btn-secondary" onclick="window.location.href='account.html'" type="button" style="margin-left:10px;">Cancel</button>
+ </div>
+
  <div class="form-step" id="page-result">
  <div class="step-head">
  <span class="step-eyebrow">Your CV is ready</span>
@@ -3473,6 +3502,10 @@ document.addEventListener('DOMContentLoaded', () => {
   if (viewId) {
     viewSavedCV(viewId);
   }
+  const tailorId = params.get('tailor');
+  if (tailorId) {
+    openTailorPage(tailorId);
+  }
 });
 
 // ── HERO SIGNATURE INTERACTIONS ────────────────────────────────────
@@ -3652,23 +3685,29 @@ document.getElementById('generateCV').addEventListener('click', () => { startGen
 function showPage(name, opts) {
  const confirmEl = document.getElementById('page-confirm');
  const resultEl  = document.getElementById('page-result');
+ const tailorEl  = document.getElementById('page-tailor');
  if (name === 'confirm') {
-   step1.classList.remove('active'); step2.classList.remove('active'); resultEl.classList.remove('active');
+   step1.classList.remove('active'); step2.classList.remove('active'); resultEl.classList.remove('active'); tailorEl.classList.remove('active');
    confirmEl.classList.add('active');
    window.scrollTo({ top:0, behavior:'smooth' });
    if (!(opts && opts.fromPopstate)) { history.pushState({ screen:'confirm' }, '', '#generating'); }
  } else if (name === 'result') {
-   confirmEl.classList.remove('active');
+   confirmEl.classList.remove('active'); tailorEl.classList.remove('active');
    resultEl.classList.add('active');
    window.scrollTo({ top:0, behavior:'smooth' });
    if (!(opts && opts.fromPopstate)) { history.pushState({ screen:'result' }, '', '#result'); }
    hideAllExtraPanels();
    maybeShowExtraCards();
  } else if (name === 'form' || name === 'hero') {
-   confirmEl.classList.remove('active'); resultEl.classList.remove('active');
+   confirmEl.classList.remove('active'); resultEl.classList.remove('active'); tailorEl.classList.remove('active');
    step1.classList.add('active');
    window.scrollTo({ top:0, behavior:'smooth' });
    if (!(opts && opts.fromPopstate)) { history.pushState({ screen:'step1' }, '', '#step1'); }
+ } else if (name === 'tailor') {
+   step1.classList.remove('active'); step2.classList.remove('active'); confirmEl.classList.remove('active'); resultEl.classList.remove('active');
+   tailorEl.classList.add('active');
+   window.scrollTo({ top:0, behavior:'smooth' });
+   if (!(opts && opts.fromPopstate)) { history.pushState({ screen:'tailor' }, '', '#tailor'); }
  }
 }
 
