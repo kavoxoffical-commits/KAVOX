@@ -555,6 +555,7 @@
 </footer>
 
 <script>
+let _sb = null; // Supabase client — declared here so nothing that reads it earlier in this script throws
 // ── FREE TRIAL BANNER ──────────────────────────────────────────────
 function closeBanner() {
   const banner = document.getElementById('free-trial-banner');
@@ -3163,6 +3164,7 @@ For "achievements", combine the real work experience, responsibilities, and acco
 // ── GOLDEN DUST CANVAS ───────────────────────────────────────────
 (function () {
   const canvas = document.getElementById('dust-canvas');
+  if (!canvas) return; // this decorative canvas isn't on this page — skip silently instead of crashing
   const ctx = canvas.getContext('2d');
 
   let W, H, particles = [];
@@ -3314,8 +3316,6 @@ function escHtml(s) {
 }
 
 // ── SUPABASE CORE ──────────────────────────────────────────────────
-let _sb = null;
-
 async function initSupabase() {
   if (_sb) return;
   try {
