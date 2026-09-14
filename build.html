@@ -909,10 +909,10 @@ let tailored;
     document.getElementById('tailor-extras').innerHTML = `
       <div style="margin-top:32px;text-align:center;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
         <button class="btn-pricing" style="border-color:rgba(201,168,76,0.5);color:var(--gold);" onclick="document.getElementById('ats-reveal-container').style.display='block';this.style.display='none';">${isAr ? '📊 عرض تحليل الـ ATS وخطاب التقديم' : '📊 View ATS Score & Cover Letter'}</button>
-        <button class="btn-pricing" style="border-color:rgba(201,168,76,0.5);color:var(--gold);" onclick="prepareInterview()">${isAr ? '🎙 استعد للمقابلة الشخصية' : '🎙 Prepare for the Interview'}</button>
+        <button class="btn-pricing" style="border-color:rgba(201,168,76,0.5);color:var(--gold);" onclick="prepareInterview('interview-prep-container-tailor')">${isAr ? '🎙 استعد للمقابلة الشخصية' : '🎙 Prepare for the Interview'}</button>
       </div>
       <div id="ats-reveal-container" style="display:none;">${atsRevealHTML}</div>
-      <div id="interview-prep-container"></div>`;
+      <div id="interview-prep-container-tailor"></div>`;
 
     window._justTailored = true;
     showPage('result');
@@ -1527,8 +1527,8 @@ function calculateATSScore(cvDataFinal, jobDescription) {
 // ── INTERVIEW PREP ──────────────────────────────────────────────────
 // Generates likely interview questions for the specific job (grounded in the actual JD)
 // plus suggested answers grounded in the candidate's actual CV — not generic interview advice.
-async function prepareInterview() {
-  const container = document.getElementById('interview-prep-container');
+async function prepareInterview(containerId) {
+  const container = document.getElementById(containerId || 'interview-prep-container');
   const cvData = window._cvData;
   const jobTitle = window._tailorJobTitle;
   const company  = window._tailorCompany;
