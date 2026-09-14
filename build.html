@@ -476,14 +476,7 @@
 
  <div id="extras-section" style="display:none; max-width:820px; margin:56px auto 0;">
  <div style="display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin-bottom:24px;">
- <button class="btn-secondary" id="btnShowLinkedIn" onclick="showLinkedInSummary()">LinkedIn Summary</button>
  <button class="btn-secondary" id="btnShowCoverLetter" onclick="showCoverLetterOptions()">Cover Letter</button>
- </div>
-
- <div id="linkedin-panel" class="extra-panel" style="display:none;">
- <div class="extra-panel-label">LinkedIn Summary</div>
- <p class="extra-panel-text" id="linkedin-panel-text"></p>
- <button class="btn-secondary" onclick="copyExtraText('linkedin-panel-text')">Copy Text</button>
  </div>
 
  <div id="coverletter-choice-panel" class="extra-panel" style="display:none;">
@@ -2842,18 +2835,16 @@ function maybeShowExtraCards() {
   const section = document.getElementById('extras-section');
   const isElite = window._currentTier === 'elite';
   const hasCover = !!(window._cvData && window._cvData.cover_letter);
-  const hasLinkedin = !!(window._cvData && window._cvData.linkedin_summary);
-  if (isElite && (hasCover || hasLinkedin)) {
+  if (isElite && hasCover) {
     section.style.display = 'block';
-    document.getElementById('btnShowLinkedIn').style.display = hasLinkedin ? 'inline-flex' : 'none';
-    document.getElementById('btnShowCoverLetter').style.display = hasCover ? 'inline-flex' : 'none';
+    document.getElementById('btnShowCoverLetter').style.display = 'inline-flex';
   } else {
     section.style.display = 'none';
   }
 }
 
 function hideAllExtraPanels() {
-  ['linkedin-panel','coverletter-choice-panel','coverletter-general-panel','coverletter-job-form-panel','coverletter-tailored-panel'].forEach(id => {
+  ['coverletter-choice-panel','coverletter-general-panel','coverletter-job-form-panel','coverletter-tailored-panel'].forEach(id => {
     document.getElementById(id).style.display = 'none';
   });
 }
