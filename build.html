@@ -3507,6 +3507,18 @@ document.addEventListener('DOMContentLoaded', () => {
   if (tailorId) {
     openTailorPage(tailorId);
   }
+  const preTier = params.get('tier');
+  if (preTier === 'pro' || preTier === 'royal' || preTier === 'elite') {
+    const sel = document.getElementById('f-template');
+    if (sel) {
+      for (let i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].getAttribute('data-tier') === preTier) {
+          sel.selectedIndex = i;
+          break;
+        }
+      }
+    }
+  }
 });
 
 // ── HERO SIGNATURE INTERACTIONS ────────────────────────────────────
