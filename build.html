@@ -2644,6 +2644,8 @@ RULES:
   showPage('confirm');
   updateLoadingStatus('Connecting to AI servers…', 10);
 
+  const MAX_PASSES = 2; // if all 3 providers fail once, automatically try all 3 again before giving up
+  for (let pass = 0; pass < MAX_PASSES; pass++) {
   for (let i = 0; i < API_PROVIDERS.length; i++) {
     const provider = API_PROVIDERS[(currentProviderIndex + i) % API_PROVIDERS.length];
     try {
@@ -2707,6 +2709,11 @@ RULES:
       updateLoadingStatus(`Switching to backup server…`, 30 + (i * 20));
       await new Promise(r => setTimeout(r, 1000));
     }
+  }
+  if (pass < MAX_PASSES - 1) {
+    updateLoadingStatus('Servers are busy — retrying…', 15);
+    await new Promise(r => setTimeout(r, 2500));
+  }
   }
 
   document.getElementById('cv-output').innerHTML = `
