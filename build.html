@@ -1756,7 +1756,7 @@ function buildCVFromTemplate(templateName, data, tier) {
   // TEMPLATE 1: The Minimalist
   // ══════════════════════════════════════════════
   if (templateName === 'The Minimalist') {
-    return baseStyles + `<div class="kv-cv" ${dir} style="display:grid;grid-template-columns:220px 1fr;min-height:800px;">
+    return baseStyles + `<div class="kv-cv" ${dir} style="display:grid;grid-template-columns:220px 1fr;min-height:auto;">
       <div style="background:#1e2d3d;color:#f0e6d0;padding:28px 18px;">
         <div style="width:70px;height:70px;border-radius:50%;background:rgba(201,168,76,0.2);border:2px solid #c9a84c;margin:0 auto 14px;"></div>
         <div style="font-size:13pt;font-weight:700;color:#c9a84c;text-align:center;margin-bottom:3px;">${d.name}</div>
@@ -1812,7 +1812,7 @@ function buildCVFromTemplate(templateName, data, tier) {
   }
 
   if (templateName === 'The Modern Slate') {
-    return baseStyles + `<div class="kv-cv" ${dir} style="display:grid;grid-template-columns:200px 1fr;min-height:800px;">
+    return baseStyles + `<div class="kv-cv" ${dir} style="display:grid;grid-template-columns:200px 1fr;min-height:auto;">
       <div style="background:#1e2d3d;color:#f0e6d0;padding:24px 16px;">
         <div style="width:68px;height:68px;border-radius:50%;border:2.5px solid #c9a84c;background:rgba(201,168,76,0.15);margin:0 auto 12px;"></div>
         <div style="font-size:12pt;font-weight:700;color:#c9a84c;text-align:center;margin-bottom:2px;">${d.name}</div>
@@ -1937,7 +1937,7 @@ function buildCVFromTemplate(templateName, data, tier) {
   }
 
   if (templateName === 'The Visionary') {
-    return baseStyles + `<div class="kv-cv" ${dir} style="display:grid;grid-template-columns:200px 1fr;min-height:800px;">
+    return baseStyles + `<div class="kv-cv" ${dir} style="display:grid;grid-template-columns:200px 1fr;min-height:auto;">
       <div style="background:#4a1d96;color:#f0e6d0;padding:24px 16px;">
         <div style="width:68px;height:68px;border-radius:50%;border:2.5px solid #c9a84c;background:rgba(201,168,76,0.1);margin:0 auto 12px;"></div>
         <div style="font-size:11pt;font-weight:700;color:#c9a84c;text-align:center;margin-bottom:2px;">${d.name}</div>
@@ -2043,7 +2043,7 @@ function buildCVFromTemplate(templateName, data, tier) {
   }
 
   if (templateName === 'Sapphire Showcase') {
-    return baseStyles + `<div class="kv-cv" ${dir} style="display:grid;grid-template-columns:210px 1fr;min-height:800px;">
+    return baseStyles + `<div class="kv-cv" ${dir} style="display:grid;grid-template-columns:210px 1fr;min-height:auto;">
       <div style="background:#001233;color:#e8f0ff;padding:26px 16px;">
         <div style="width:66px;height:66px;border-radius:50%;border:2px solid #c9a84c;background:rgba(201,168,76,0.1);margin:0 auto 14px;"></div>
         <div style="font-size:12pt;font-weight:700;color:#c9a84c;text-align:center;margin-bottom:2px;">${d.name}</div>
