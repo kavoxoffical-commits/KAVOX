@@ -978,6 +978,11 @@ function closeWeakContentModal(e) {
   document.getElementById('modal-weak-content').classList.remove('open');
 }
 
+document.addEventListener('keydown', function(e) {
+  if (e.key !== 'Escape') return;
+  document.querySelectorAll('.kv-modal-overlay.open').forEach(m => m.classList.remove('open'));
+});
+
 // ── PAYMENT MODAL ─────────────────────────────────────────────────
 window._pendingDownloadFormat = null;
 
@@ -1868,7 +1873,13 @@ function collectOptionalData() {
     const start   = (e.querySelector('.we-start') || {}).value || '';
     const end     = (e.querySelector('.we-end') || {}).value || '';
     const desc    = (e.querySelector('.we-desc') || {}).value || '';
-    if (title || company) workEntries.push({ title:title.trim(), company:company.trim(), dates:(start+' - '+end).trim(), desc:desc.trim() });
+    if (title || company) {
+      let dates = '';
+      if (start && end) dates = start.trim() + ' - ' + end.trim();
+      else if (start) dates = start.trim();
+      else if (end) dates = end.trim();
+      workEntries.push({ title:title.trim(), company:company.trim(), dates:dates, desc:desc.trim() });
+    }
   });
   const projectEntries = [];
   document.querySelectorAll('.project-entry').forEach(function(e) {
@@ -2271,7 +2282,52 @@ function generateCV(tier) {
 }
 
 // ── RENDER RESULT WITH TIER FEATURES ─────────────────────────────
+
+// ── FORM DRAFT AUTO-SAVE (survives accidental refresh / back button) ──────
+(function () {
+  const DRAFT_KEY = 'kavox_form_draft_v1';
+  const fieldIds = ['f-name','f-email','f-phone','f-location','f-title','f-exp',
+                     'f-industry','f-achievements','f-education','f-skills',
+                     'f-linkedin','f-portfolio'];
+
+  function saveDraft() {
+    try {
+      const draft = {};
+      fieldIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) draft[id] = el.value;
+      });
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    } catch (e) { /* localStorage unavailable — fail silently, not critical */ }
+  }
+
+  function restoreDraft() {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return;
+      const draft = JSON.parse(raw);
+      fieldIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && draft[id]) el.value = draft[id];
+      });
+    } catch (e) { /* corrupt draft — ignore */ }
+  }
+
+  window._clearFormDraft = function () {
+    try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
+  };
+
+  document.addEventListener('DOMContentLoaded', function () {
+    restoreDraft();
+    fieldIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('input', saveDraft);
+    });
+  });
+})();
+
 function renderResult(cvHTML, tier) {
+  if (window._clearFormDraft) window._clearFormDraft();
   const output = document.getElementById('cv-output');
   output.innerHTML = cvHTML;
   output.contentEditable = 'true';
@@ -3213,6 +3269,10 @@ document.getElementById('generateCV').addEventListener('click', () => { startGen
 /* note: currentPath is declared once, in the appended real-logic script below (defaults to 'architect' — no separate path-selection screen in this simplified form yet) */
 function showPage(name, opts) {
  const confirmEl = document.getElementById('page-confirm');
+ if (name === 'form' || name === 'result') {
+   const genBtn = document.getElementById('generateCV');
+   if (genBtn) genBtn.disabled = false; // reset the double-click guard whenever we leave the loading page
+ }
  const resultEl  = document.getElementById('page-result');
  const tailorEl  = document.getElementById('page-tailor');
  if (name === 'confirm') {
@@ -3251,6 +3311,9 @@ window.addEventListener('popstate', function(e){
 });
 
 function startGeneration() {
+ const genBtn = document.getElementById('generateCV');
+ if (genBtn && genBtn.disabled) return; // guard against double-click / double-submit
+ if (genBtn) genBtn.disabled = true;
  const sel = document.getElementById('f-template');
  const opt = sel.options[sel.selectedIndex];
  const tier = (opt && opt.getAttribute('data-tier')) || 'pro';
