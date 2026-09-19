@@ -1294,14 +1294,11 @@ function buildCVFromTemplate(templateName, data, tier) {
     return `<div class="kv-section-label" style="color:${color};border-bottom-color:${borderColor};">${label}</div>`;
   }
 
-  // ── EXTRAS (ATS / Cover / LinkedIn) ───────────────────────────
-  const atsBlock = (tier==='royal'||tier==='elite') && d.ats_report ? `
-    <div class="kv-extra-block" style="border-color:rgba(201,168,76,0.35);background:rgba(201,168,76,0.04);">
-      ${sectionLabel('ATS Optimisation Report','#c9a84c','rgba(201,168,76,0.5)')}
-      <p class="kv-summary" style="color:#444;">${d.ats_report}</p>
-    </div>` : '';
-
-  const extrasBlock = `<div class="kv-extras">${atsBlock}</div>`;
+  // ── EXTRAS (Cover / LinkedIn only — the real ATS match score lives in the
+  //    separate "Tailor to a Job" feature, which compares against an actual job
+  //    description; this general CV has no job to score against, so we no longer
+  //    print a fabricated ATS number here) ───────────────────────────
+  const extrasBlock = `<div class="kv-extras"></div>`;
 
   // ══════════════════════════════════════════════
   // TEMPLATE 1: The Minimalist
@@ -2066,10 +2063,10 @@ async function _doGenerateCV(tier) {
   });
 
   // ── TIER EXTRA FIELDS ──────────────────────────────────────────
-  const atsLangNote = cvLang !== 'English' ? ` IMPORTANT: Write the ats_report, cover_letter, and linkedin_summary in ${cvLang}, same language as the CV.` : '';
+  const atsLangNote = cvLang !== 'English' ? ` IMPORTANT: Write the cover_letter and linkedin_summary in ${cvLang}, same language as the CV.` : '';
   const tierExtraFields = tier === 'pro' ? '' :
-    tier === 'royal' ? `,"ats_report": "3-4 sentence ATS analysis. State the score explicitly in the format 'X/100' using a keyword-match percentage score (0-100), then list missing keywords and recommendations.${atsLangNote}"` :
-    `,"ats_report": "3-4 sentence ATS analysis. State the score explicitly in the format 'X/100' using a keyword-match percentage score (0-100).${atsLangNote}", "cover_letter": "Full cover letter (3 paragraphs, plain text only, no HTML), written in the CV's language (${cvLang}). MUST reference at least 2 SPECIFIC details actually present in this candidate's CV (a real job title, a real employer name, a real skill, or a real achievement from the experience section above) — a reader should be able to tell this was written for THIS person, not a template. HARD BAN — these exact phrases (and their direct translation into ${cvLang}) are FORBIDDEN, do not output them under any circumstance: 'results-driven professional', 'detail-oriented and results-driven', 'proven track record', 'unique blend of skills', 'strong believer in the power of', 'exceed/exceeding expectations', 'esteemed organization', 'meaningful impact', 'seasoned professional', 'dynamic professional', 'passionate about', 'unique understanding'. If a sentence you're about to write contains any of these, delete it and replace it with a sentence using a specific fact from the CV instead. Do not invent any number/statistic not already grounded in the CV data above.${atsLangNote}", "linkedin_summary": "LinkedIn About section (150 words max, plain text), written in the CV's language (${cvLang}). MUST reference at least 1 SPECIFIC detail from this candidate's actual experience or skills above (not a generic category). HARD BAN — these exact phrases (and their direct translation into ${cvLang}) are FORBIDDEN: 'results-driven', 'seasoned professional', 'proven track record', 'passionate about', 'unique perspective', 'drive business success', 'unique understanding'. If a sentence you're about to write contains any of these, delete it and replace it with a sentence using a specific fact from the CV instead. Do not invent any number/statistic not already grounded in the CV data above.${atsLangNote}"`;
+    tier === 'royal' ? '' :
+    `,"cover_letter": "Full cover letter (3 paragraphs, plain text only, no HTML), written in the CV's language (${cvLang}). MUST reference at least 2 SPECIFIC details actually present in this candidate's CV (a real job title, a real employer name, a real skill, or a real achievement from the experience section above) — a reader should be able to tell this was written for THIS person, not a template. HARD BAN — these exact phrases (and their direct translation into ${cvLang}) are FORBIDDEN, do not output them under any circumstance: 'results-driven professional', 'detail-oriented and results-driven', 'proven track record', 'unique blend of skills', 'strong believer in the power of', 'exceed/exceeding expectations', 'esteemed organization', 'meaningful impact', 'seasoned professional', 'dynamic professional', 'passionate about', 'unique understanding'. If a sentence you're about to write contains any of these, delete it and replace it with a sentence using a specific fact from the CV instead. Do not invent any number/statistic not already grounded in the CV data above.${atsLangNote}", "linkedin_summary": "LinkedIn About section (150 words max, plain text), written in the CV's language (${cvLang}). MUST reference at least 1 SPECIFIC detail from this candidate's actual experience or skills above (not a generic category). HARD BAN — these exact phrases (and their direct translation into ${cvLang}) are FORBIDDEN: 'results-driven', 'seasoned professional', 'proven track record', 'passionate about', 'unique perspective', 'drive business success', 'unique understanding'. If a sentence you're about to write contains any of these, delete it and replace it with a sentence using a specific fact from the CV instead. Do not invent any number/statistic not already grounded in the CV data above.${atsLangNote}"`;
 
   const langInstruction = {
     'English':    'Write ALL text values in English.',
