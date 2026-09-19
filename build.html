@@ -485,6 +485,7 @@
  <div id="extras-section" style="display:none; max-width:820px; margin:56px auto 0;">
  <div style="display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin-bottom:24px;">
  <button class="btn-secondary" id="btnShowCoverLetter" onclick="showCoverLetterOptions()">Cover Letter</button>
+ <button class="btn-secondary" id="btnShowLinkedIn" style="display:none;" onclick="showLinkedInSummary()">LinkedIn Optimisation</button>
  </div>
 
  <div id="coverletter-choice-panel" class="extra-panel" style="display:none;">
@@ -500,6 +501,12 @@
  <div class="extra-panel-label">Cover Letter</div>
  <p class="extra-panel-text" id="coverletter-general-text"></p>
  <button class="btn-secondary" onclick="copyExtraText('coverletter-general-text')">Copy Text</button>
+ </div>
+
+ <div id="linkedin-panel" class="extra-panel" style="display:none;">
+ <div class="extra-panel-label">LinkedIn — About Section</div>
+ <p class="extra-panel-text" id="linkedin-panel-text"></p>
+ <button class="btn-secondary" onclick="copyExtraText('linkedin-panel-text')">Copy Text</button>
  </div>
 
  <div id="coverletter-job-form-panel" class="extra-panel" style="display:none;">
@@ -591,117 +598,11 @@ const API_PROVIDERS = [
   { name: 'Groq',       providerKey: 'groq' }
 ];
 let currentProviderIndex = 0;
-// ── LOGIN & SIGN UP ──────────────────────────────────────────────
-async function signInWithGoogle() {
-  if (!_sb) await initSupabase();
-  const { error } = await _sb.auth.signInWithOAuth({
-    provider: 'google',
-    options: { redirectTo: 'https://kavox-zeta.vercel.app' }
-  });
-  if (error) {
-    const el = document.getElementById('auth-error');
-    if (el) { el.textContent = 'Google sign-in failed: ' + error.message; el.style.display = 'block'; }
-  }
-}
 
- let _otpEmail = '';
 
-function goBackToEmailStep() {
-  document.getElementById('auth-step-code').style.display = 'none';
-  document.getElementById('auth-step-email').style.display = 'flex';
-  document.getElementById('auth-code').value = '';
-  const codeErr = document.getElementById('auth-code-error');
-  if (codeErr) codeErr.style.display = 'none';
-}
 
-async function handleSendCode(isResend) {
-  const emailInput = document.getElementById('auth-email');
-  const email = isResend ? _otpEmail : emailInput.value.trim();
-  const errorEl = document.getElementById('auth-error');
-  errorEl.style.display = 'none';
 
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    errorEl.textContent = 'Please enter a valid email address.';
-    errorEl.style.display = 'block';
-    return;
-  }
 
-  if (!_sb) { await initSupabase(); }
-  if (!_sb) {
-    errorEl.textContent = 'Connection error, please try again shortly.';
-    errorEl.style.display = 'block';
-    return;
-  }
-
-  const sendBtn = document.getElementById('auth-send-btn');
-  if (sendBtn) { sendBtn.disabled = true; sendBtn.textContent = 'Sending...'; }
-
-  const { error } = await _sb.auth.signInWithOtp({
-    email,
-    options: { shouldCreateUser: true }
-  });
-
-  if (sendBtn) { sendBtn.disabled = false; sendBtn.textContent = 'Continue with Email'; }
-
-  if (error) {
-    errorEl.textContent = translateAuthError(error.message);
-    errorEl.style.display = 'block';
-    return;
-  }
-
-  _otpEmail = email;
-  document.getElementById('auth-email-display').textContent = email;
-  document.getElementById('auth-step-email').style.display = 'none';
-  document.getElementById('auth-step-code').style.display = 'flex';
-  document.getElementById('auth-code').value = '';
-  document.getElementById('auth-code').focus();
-}
-
-async function handleVerifyCode() {
-  const code = document.getElementById('auth-code').value.trim();
-  const errorEl = document.getElementById('auth-code-error');
-  errorEl.style.display = 'none';
-
-  if (!code || code.length !== 6) {
-    errorEl.textContent = 'Please enter the 6-digit code.';
-    errorEl.style.display = 'block';
-    return;
-  }
-
-  if (!_sb) { await initSupabase(); }
-  if (!_sb) {
-    errorEl.textContent = 'Connection error, please try again shortly.';
-    errorEl.style.display = 'block';
-    return;
-  }
-
-  const verifyBtn = document.getElementById('auth-verify-btn');
-  if (verifyBtn) { verifyBtn.disabled = true; verifyBtn.textContent = 'Verifying...'; }
-
-  const { data, error } = await _sb.auth.verifyOtp({
-    email: _otpEmail,
-    token: code,
-    type: 'email'
-  });
-
-  if (verifyBtn) { verifyBtn.disabled = false; verifyBtn.textContent = 'Verify & Continue'; }
-
-  if (error) {
-    errorEl.textContent = translateAuthError(error.message);
-    errorEl.style.display = 'block';
-    return;
-  }
-
-  updateAuthUI();
-  showPage('account');
-}
-
-function translateAuthError(msg) {
-  if (msg.includes('expired')) return 'This code has expired. Please request a new one.';
-  if (msg.includes('Invalid') || msg.includes('invalid')) return 'Incorrect code. Please check and try again.';
-  if (msg.includes('rate limit') || msg.includes('Too many')) return 'Too many attempts. Please wait a moment and try again.';
-  return 'An error occurred: ' + msg;
-}
  // ── TAILOR CV ─────────────────────────────────────────────────────
 let _tailorCvId = null;
 
@@ -927,227 +828,15 @@ let tailored;
     errorEl.style.display = 'block';
   }
 }
- async function handleContactSubmit() {
-  const name = document.getElementById('contact-name').value.trim();
-  const email = document.getElementById('contact-email').value.trim();
-  const msg = document.getElementById('contact-msg').value.trim();
-  const status = document.getElementById('contact-status');
-  const btn = document.querySelector('[onclick="handleContactSubmit()"]');
 
-  if (!name || !email || !msg) {
-    status.style.display = 'block';
-    status.style.color = '#e57373';
-    status.textContent = 'Please fill in all fields.';
-    return;
-  }
 
-  btn.textContent = 'SENDING…';
-  btn.disabled = true;
-  status.style.display = 'none';
-
-  try {
-    const r = await fetch('/api/contact', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, message: msg })
-    });
-    const data = await r.json();
-    if (!r.ok) throw new Error(data.error || 'Failed');
-
-    status.style.display = 'block';
-    status.style.color = 'var(--gold)';
-    status.textContent = '✦ Message sent successfully. We\'ll get back to you soon.';
-    document.getElementById('contact-name').value = '';
-    document.getElementById('contact-email').value = '';
-    document.getElementById('contact-msg').value = '';
-  } catch(e) {
-    status.style.display = 'block';
-    status.style.color = '#e57373';
-    status.textContent = 'Failed to send. Please email us at kavoxoffical@gmail.com';
-  }
-
-  btn.textContent = 'SEND MESSAGE';
-  btn.disabled = false;
-}
-async function handleSignOut() {
-  if (_sb) await _sb.auth.signOut();
-  updateAuthUI();
-  showPage('hero');
-}
-
-// ── UPDATE NAV LINK BASED ON LOGIN STATE ─────────────────────────
-async function updateAuthUI() {
-  if (!_sb) await initSupabase();
-  if (!_sb) return;
-  const { data } = await _sb.auth.getUser();
-  const navLink = document.getElementById('nav-auth-link');
-  if (!navLink) return;
-  if (data && data.user) {
-    navLink.textContent = 'My Account';
-    navLink.setAttribute('href', 'account.html');
-    navLink.removeAttribute('onclick');
-  } else {
-    navLink.textContent = 'Login';
-    navLink.setAttribute('href', 'login.html');
-    navLink.removeAttribute('onclick');
-  }
-}
-
-// Update state on page load
-document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(updateAuthUI, 1000);
-});
-
-// ── MY ACCOUNT PAGE: LOAD SAVED CVs ──────────────────────────────
-async function loadMyAccount() {
-  const loadingEl = document.getElementById('account-loading');
-  const emptyEl   = document.getElementById('account-empty');
-  const listEl    = document.getElementById('account-cv-list');
-
-  loadingEl.style.display = 'block';
-  emptyEl.style.display = 'none';
-  listEl.innerHTML = '';
-
-  if (!_sb) await initSupabase();
-  if (!_sb) { loadingEl.style.display = 'none'; return; }
-
-  const { data: userData } = await _sb.auth.getUser();
-  if (!userData || !userData.user) {
-    // Not logged in, redirect to login page
-    showPage('auth');
-    return;
-  }
-// عرض الإيميل والأفاتار
-  const email = userData.user.email || '';
-  const emailEl = document.getElementById('account-email');
-  const avatarEl = document.getElementById('account-avatar');
-  if (emailEl) emailEl.textContent = email;
-  if (avatarEl) avatarEl.textContent = email ? email[0].toUpperCase() : '?';
-  const { data: cvs, error } = await _sb
-    .from('cvs')
-    .select('id, name, language, tier, cv_html, created_at, job_title, company_name')
-    .eq('user_id', userData.user.id)
-    .order('created_at', { ascending: false });
-
-  loadingEl.style.display = 'none';
-
-  if (error) {
-    listEl.innerHTML = '<p style="color:#e57373; text-align:center; font-family:\'EB Garamond\',serif;">Error loading your saved CVs, please try again.</p>';
-    return;
-  }
-
-  if (!cvs || cvs.length === 0) {
-    emptyEl.style.display = 'block';
-    return;
-  }
-
-  const tierLabels = { pro: '✦ Pro', royal: '♛ Royal', elite: '◈ Elite' };
-
-  listEl.innerHTML = cvs.map(cv => {
-    const date = new Date(cv.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-    const tierLabel = tierLabels[cv.tier] || cv.tier || '';
-    const tailoredBadge = cv.job_title
-      ? `<span style="display:inline-block;margin-left:8px;padding:2px 8px;border-radius:4px;background:rgba(201,168,76,0.15);color:var(--gold);font-size:0.72rem;font-family:'EB Garamond',serif;">Tailored: ${escHtml(cv.job_title)}${cv.company_name ? ' @ ' + escHtml(cv.company_name) : ''}</span>`
-      : '';
-    // The badge already shows job/company — strip the " — Job @ Company" suffix from the
-    // name itself so the same info isn't shown twice right next to each other.
-    let displayName = cv.name || 'Untitled CV';
-    if (cv.job_title) displayName = displayName.replace(/\s*—\s*.+$/, '');
-    return `
-      <div style="background:linear-gradient(160deg,#131316 0%,#0a0a0c 100%); border:1px solid rgba(201,168,76,0.2); border-radius:8px; padding:20px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
-        <div>
-          <div style="font-family:'Cinzel',serif; font-size:1rem; color:var(--gold); margin-bottom:4px;">${escHtml(displayName)}${tailoredBadge}</div>
-          <div style="font-family:'EB Garamond',serif; font-size:0.85rem; color:var(--text-muted);">${tierLabel} · ${date}</div>
-        </div>
-        <div style="display:flex; gap:10px;">
-   <button class="btn-pricing" onclick="viewSavedCV('${cv.id}')">View</button>
-          <button class="btn-pricing" style="border-color:rgba(201,168,76,0.5);color:var(--gold);" onclick="openTailorPage('${cv.id}')">Tailor for a Job</button>
-          <button class="btn-pricing" style="border-color:rgba(229,115,115,0.4); color:#e57373;" onclick="deleteSavedCV('${cv.id}')">Delete</button>
-        </div>
-      </div>`;
-  }).join('');
-}
 
 // ── VIEW SAVED CV ON RESULT PAGE ─────────────────────────────────
-async function viewSavedCV(cvId) {
-  if (!_sb) await initSupabase();
-  const { data, error } = await _sb.from('cvs').select('cv_html, tier').eq('id', cvId).single();
-  if (error || !data) { alert('Could not open this CV.'); return; }
-  window._cvHTML = data.cv_html;
-  window._cvName = 'CV';
-  document.getElementById('cv-output').innerHTML = data.cv_html;
-  showPage('result');
-}
 
 // ── DELETE SAVED CV ───────────────────────────────────────────────
-async function deleteSavedCV(cvId) {
-  if (!confirm('Are you sure you want to delete this CV? This action cannot be undone.')) return;
-  if (!_sb) await initSupabase();
-  const { error } = await _sb.from('cvs').delete().eq('id', cvId);
-  if (error) { alert('Could not delete this CV, please try again.'); return; }
-  loadMyAccount();
-}
-// ── PAGE NAVIGATION ──────────────────────────────────────────────
-const pages = ['hero','path','form','pricing','confirm','result','templates','about','tpl-picker','legal','auth','verify','account','tailor','cinematic'];
-
-// ── NAVIGATION HISTORY (so "Back" buttons return to where the user actually came from) ──
-let _navHistory = [];
-
-function showPage(id, opts) {
-  const skipHistory = opts && opts.skipHistory;
-  const current = document.querySelector('.page.active');
-  const currentId = current ? current.id.replace('page-', '') : null;
-  const target = document.getElementById('page-' + id);
-  if (!target) return;
-
-  if (!skipHistory && currentId && currentId !== id) {
-    _navHistory.push(currentId);
-    if (_navHistory.length > 20) _navHistory.shift(); // cap growth
-  }
-
-  const doShow = () => {
-    pages.forEach(p => {
-      const el = document.getElementById('page-' + p);
-      if (el) el.classList.remove('active', 'leaving');
-    });
-    target.classList.add('active');
-    const fadeEls = target.querySelectorAll('.fade-in');
-    fadeEls.forEach(el => {
-      el.style.animation = 'none';
-      void el.offsetWidth;
-      el.style.animation = '';
-    });
-    scrollToTop();
-    if (id === 'cinematic' && typeof initCinematicScroll === 'function') {
-      requestAnimationFrame(initCinematicScroll);
-    }
-
-    // The ATS/Cover Letter/Interview buttons only belong on a freshly-tailored result;
-    // clear them whenever the result page is entered any other way (base generation, viewing
-    // a saved CV, retry, etc.) so they don't linger from a previous Tailor session.
-    if (id === 'result' && !window._justTailored) {
-      const extras = document.getElementById('tailor-extras');
-      if (extras) extras.innerHTML = '';
-    }
-    window._justTailored = false;
-  };
-
-  // Smooth crossfade: fade the current page out, then swap and fade the new one in —
-  // applies to every page transition on the site from this single function.
-  if (current && current !== target && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    current.classList.add('leaving');
-    setTimeout(doShow, 200);
-  } else {
-    doShow();
-  }
-}
 
 // Generic "go back one step" — replaces hardcoded destinations on Back/Return buttons so
 // they return to wherever the user actually came from, not a guessed fixed page.
-function goBack(fallback) {
-  const prev = _navHistory.pop();
-  showPage(prev || fallback || 'hero', { skipHistory: true });
-}
 
 // ── FORM DATA ────────────────────────────────────────────────────
 let currentPath = 'architect';
@@ -1239,78 +928,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// ── TEMPLATE PICKER ──────────────────────────────────────────────
-function switchPickerTab(tier, btn) {
-  document.querySelectorAll('.picker-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.picker-tier-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('picker-panel-' + tier).classList.add('active');
-}
 
-// Called when user clicks "Select" on a template card
-function selectTemplate(templateName, tier, price, priceNote) {
-  // Store selection globally
-  window._selectedTemplate = templateName;
-  window._selectedTier = tier;
 
-  // Sync template to form dropdown immediately
-  const select = document.getElementById('f-template');
-  if (select) {
-    for (let i = 0; i < select.options.length; i++) {
-      if (select.options[i].text === templateName) {
-        select.selectedIndex = i;
-        onTemplateChange(select);
-        break;
-      }
-    }
-  }
 
-  // Tier config
-  const tierConfig = {
-    pro:   { icon: '✦', tag: 'Pro Tier', desc: '✦ 5 Pro templates · PDF &amp; Word download · ATS-optimised formatting' },
-    royal: { icon: '♛', tag: 'Royal Tier', desc: '♛ 8 premium templates · Unlimited CVs · ATS deep-analysis report · Priority queue' },
-    elite: { icon: '◈', tag: 'Elite Tier', desc: '◈ 20 templates unlocked · Cover letter · LinkedIn optimisation · Multi-language CV' }
-  };
-  const cfg = tierConfig[tier] || tierConfig.pro;
-
-  document.getElementById('modal-tier-icon').textContent = cfg.icon;
-  document.getElementById('modal-tier-tag').textContent = cfg.tag;
-  document.getElementById('modal-tier-title').textContent = templateName;
-  document.getElementById('modal-tier-price').textContent = price;
-  document.getElementById('modal-tier-note').textContent = priceNote === 'one-time' ? 'one-time payment' : priceNote + ' subscription';
-  document.getElementById('modal-tier-desc').innerHTML = cfg.desc;
-
-  document.getElementById('modal-tier').classList.add('open');
-}
-
-function closeTierModal(e) {
-  if (e && e.target !== document.getElementById('modal-tier')) return;
-  document.getElementById('modal-tier').classList.remove('open');
-}
-
-function confirmTierAndGenerate() {
-  document.getElementById('modal-tier').classList.remove('open');
-  // If template not in dropdown options, inject it temporarily
-  const select = document.getElementById('f-template');
-  let found = false;
-  for (let i = 0; i < select.options.length; i++) {
-    if (select.options[i].text === window._selectedTemplate) {
-      select.selectedIndex = i;
-      found = true;
-      break;
-    }
-  }
-  if (!found && window._selectedTemplate) {
-    // Add a temporary option
-    const opt = document.createElement('option');
-    opt.value = window._selectedTemplate;
-    opt.text = window._selectedTemplate;
-    opt.setAttribute('data-temp', '1');
-    select.appendChild(opt);
-    select.value = window._selectedTemplate;
-  }
-  generateCV(window._selectedTier);
-}
 
 // ── CV STRENGTH CHECK (before spending a daily generation) ─────────
 // Catches the most common cause of a generic/weak result: too little real detail
@@ -1361,83 +981,9 @@ function closeWeakContentModal(e) {
 // ── PAYMENT MODAL ─────────────────────────────────────────────────
 window._pendingDownloadFormat = null;
 
-function openPaymentModal(format) {
-  window._pendingDownloadFormat = format;
-  const tier = window._currentTier || 'pro';
-  const tierPrices = { pro: { price: '$5', note: 'one-time · instant download' }, royal: { price: '$9', note: '/month · cancel anytime' }, elite: { price: '$19', note: '/month · cancel anytime' } };
-  const p = tierPrices[tier] || tierPrices.pro;
 
-  document.getElementById('pay-modal-title').textContent = format === 'pdf' ? 'Download PDF' : 'Download Word (.docx)';
-  document.getElementById('pay-modal-price').textContent = p.price;
-  document.getElementById('pay-modal-note').textContent = p.note;
-  document.getElementById('pay-modal-desc').textContent = 'Your elite CV is ready. Complete payment to unlock your download.';
 
-  document.getElementById('modal-payment').classList.add('open');
-}
 
-function closePaymentModal(e) {
-  if (e && e.target !== document.getElementById('modal-payment')) return;
-  document.getElementById('modal-payment').classList.remove('open');
-}
-
-function handlePayment(method) {
-  // TODO: integrate real payment gateway here
-  // For now: close modal and proceed with download (demo mode)
-  closePaymentModal();
-  // Record the order in Supabase
-  if (window._cvName && window._currentTier) {
-    const email = document.getElementById('f-email')?.value?.trim() || '';
-    recordOrder(window._currentTier, window._selectedTemplate || '', window._cvName, email);
-  }
-  if (window._pendingDownloadFormat) {
-    _doDownloadCV(window._pendingDownloadFormat);
-    window._pendingDownloadFormat = null;
-  }
-  return false;
-}
-
-// ── TEMPLATE TIER NOTICE ─────────────────────────────────────────
-function onTemplateChange(select) {
-  const notice = document.getElementById('template-tier-notice');
-  const selected = select.options[select.selectedIndex];
-  const tier = selected?.getAttribute('data-tier');
-
-  const config = {
-    pro: {
-      bg: 'rgba(255,255,255,0.06)',
-      border: '1px solid rgba(201,168,76,0.3)',
-      color: '#c9a84c',
-      icon: '✦',
-      label: 'Pro — $5 one-time',
-      msg: 'This template is included in the <strong>Pro</strong> plan and above.'
-    },
-    royal: {
-      bg: 'rgba(201,168,76,0.08)',
-      border: '1px solid rgba(201,168,76,0.5)',
-      color: '#e2c97e',
-      icon: '♛',
-      label: 'Royal — $9/month',
-      msg: 'This template requires the <strong>Royal</strong> plan or Elite.'
-    },
-    elite: {
-      bg: 'rgba(201,168,76,0.13)',
-      border: '1px solid #c9a84c',
-      color: '#f5e6b0',
-      icon: '◈',
-      label: 'Elite — $19/month',
-      msg: 'This template is <strong>exclusive to Elite</strong> — the highest tier.'
-    }
-  };
-
-  if (!tier || !config[tier]) { notice.style.display = 'none'; return; }
-
-  const c = config[tier];
-  notice.style.display = 'block';
-  notice.style.background = c.bg;
-  notice.style.border = c.border;
-  notice.style.color = c.color;
-  notice.innerHTML = `<span style="font-size:1.1em;">${c.icon}</span> <strong>${c.label}</strong> — ${c.msg}`;
-}
 
 // ── CV LAYOUT SYSTEM PROMPT ───────────────────────────────────────
 const CV_SYSTEM_PROMPT = `You are an expert Frontend Engineer and UI/UX Designer specializing in bulletproof, pixel-perfect Resume/CV templates. Rules: (1) NEVER use absolute positioning for structural elements — use CSS Grid for layout, Flexbox for inner elements. (2) Use Logical Properties for RTL/LTR support: margin-inline-start/end, padding-inline-start, text-align:start. (3) Apply word-break:break-word and overflow-wrap:anywhere to all text containers. Use relative units (rem/em/clamp) never fixed px for heights. (4) Maintain premium whitespace and bulletproof structure whether a section has 1 or 20 items.`;
@@ -1759,8 +1305,8 @@ function buildCVFromTemplate(templateName, data, tier) {
     return baseStyles + `<div class="kv-cv" ${dir} style="display:grid;grid-template-columns:220px 1fr;min-height:auto;">
       <div style="background:#1e2d3d;color:#f0e6d0;padding:28px 18px;">
         <div style="width:70px;height:70px;border-radius:50%;background:rgba(201,168,76,0.2);border:2px solid #c9a84c;margin:0 auto 14px;"></div>
-        <div style="font-size:13pt;font-weight:700;color:#c9a84c;text-align:center;margin-bottom:3px;">${d.name}</div>
-        <div style="font-size:9pt;color:rgba(240,230,208,0.7);text-align:center;margin-bottom:14px;">${d.title}</div>
+        <div style="font-size:13pt;font-weight:700;color:#c9a84c;text-align:center;margin-bottom:3px;">${escHtml(d.name)}</div>
+        <div style="font-size:9pt;color:rgba(240,230,208,0.7);text-align:center;margin-bottom:14px;">${escHtml(d.title)}</div>
         ${sectionLabel(d.labels?.contact||'Contact','#c9a84c','rgba(201,168,76,0.4)')}
         <div style="font-size:9pt;color:rgba(240,230,208,0.8);line-height:1.9;">${d.email||''}<br>${d.phone||''}<br>${d.location||''}</div>
         ${contactLinks(d,'rgba(201,168,76,0.7)','8.5pt')}
@@ -1786,8 +1332,8 @@ function buildCVFromTemplate(templateName, data, tier) {
   if (templateName === 'The Executive Clean') {
     return baseStyles + `<div class="kv-cv" ${dir}>
       <div style="background:#1a1a2e;padding:22px 28px;">
-        <div style="font-size:20pt;font-weight:700;color:#fff;margin-bottom:3px;text-align:start;">${d.name}</div>
-        <div style="font-size:10pt;color:#c9a84c;letter-spacing:0.1em;margin-bottom:8px;">${d.title}</div>
+        <div style="font-size:20pt;font-weight:700;color:#fff;margin-bottom:3px;text-align:start;">${escHtml(d.name)}</div>
+        <div style="font-size:10pt;color:#c9a84c;letter-spacing:0.1em;margin-bottom:8px;">${escHtml(d.title)}</div>
         <div style="display:flex;flex-wrap:wrap;gap:16px;font-size:9pt;color:rgba(255,255,255,0.55);">
           ${[d.email,d.phone,d.location].filter(Boolean).map(x=>`<span>${x}</span>`).join('')}
         </div>
@@ -1815,8 +1361,8 @@ function buildCVFromTemplate(templateName, data, tier) {
     return baseStyles + `<div class="kv-cv" ${dir} style="display:grid;grid-template-columns:200px 1fr;min-height:auto;">
       <div style="background:#1e2d3d;color:#f0e6d0;padding:24px 16px;">
         <div style="width:68px;height:68px;border-radius:50%;border:2.5px solid #c9a84c;background:rgba(201,168,76,0.15);margin:0 auto 12px;"></div>
-        <div style="font-size:12pt;font-weight:700;color:#c9a84c;text-align:center;margin-bottom:2px;">${d.name}</div>
-        <div style="font-size:8.5pt;color:rgba(240,230,208,0.65);text-align:center;margin-bottom:14px;">${d.title}</div>
+        <div style="font-size:12pt;font-weight:700;color:#c9a84c;text-align:center;margin-bottom:2px;">${escHtml(d.name)}</div>
+        <div style="font-size:8.5pt;color:rgba(240,230,208,0.65);text-align:center;margin-bottom:14px;">${escHtml(d.title)}</div>
         <div style="height:1px;background:rgba(201,168,76,0.3);margin-bottom:12px;"></div>
         ${sectionLabel(d.labels?.contact||'Contact','#c9a84c','rgba(201,168,76,0.3)')}
         <div style="font-size:8.5pt;color:rgba(240,230,208,0.75);line-height:1.9;">${d.email||''}<br>${d.phone||''}<br>${d.location||''}</div>
@@ -1842,8 +1388,8 @@ function buildCVFromTemplate(templateName, data, tier) {
   if (templateName === 'The Classic Serif') {
     return baseStyles + `<div class="kv-cv" ${dir} style="background:#fdfaf5;">
       <div style="text-align:center;padding:28px 32px 14px;border-bottom:2px solid #1a1a1a;">
-        <div style="font-size:22pt;font-weight:700;color:#1a1a1a;margin-bottom:4px;">${d.name}</div>
-        <div style="font-size:10pt;color:#555;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px;">${d.title}</div>
+        <div style="font-size:22pt;font-weight:700;color:#1a1a1a;margin-bottom:4px;">${escHtml(d.name)}</div>
+        <div style="font-size:10pt;color:#555;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px;">${escHtml(d.title)}</div>
         <div style="font-size:9pt;color:#777;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">${[d.email,d.phone,d.location].filter(Boolean).join(' · ')}</div>
       </div>
       <div style="padding:12px 32px 8px;border-bottom:1px solid #ccc;">
@@ -1871,8 +1417,8 @@ function buildCVFromTemplate(templateName, data, tier) {
       <div style="background:#2d5be3;padding:20px 28px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
         <div style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.5);flex-shrink:0;"></div>
         <div>
-          <div style="font-size:18pt;font-weight:700;color:#fff;margin-bottom:3px;">${d.name}</div>
-          <div style="font-size:9.5pt;color:rgba(255,255,255,0.8);">${d.title}</div>
+          <div style="font-size:18pt;font-weight:700;color:#fff;margin-bottom:3px;">${escHtml(d.name)}</div>
+          <div style="font-size:9.5pt;color:rgba(255,255,255,0.8);">${escHtml(d.title)}</div>
           <div style="font-size:8.5pt;color:rgba(255,255,255,0.55);margin-top:4px;">${[d.email,d.phone,d.location].filter(Boolean).join(' · ')}</div>
         </div>
       </div>
@@ -1899,8 +1445,8 @@ function buildCVFromTemplate(templateName, data, tier) {
   if (templateName === 'Royal Dark Mode') {
     return baseStyles + `<div class="kv-cv" ${dir} style="background:#0d1b2e;color:#f0e6d0;padding:32px 36px;">
       <div style="text-align:center;margin-bottom:18px;">
-        <div style="font-size:22pt;font-weight:700;color:#c9a84c;margin-bottom:4px;">${d.name}</div>
-        <div style="font-size:10pt;color:rgba(240,230,208,0.7);letter-spacing:0.15em;text-transform:uppercase;">${d.title}</div>
+        <div style="font-size:22pt;font-weight:700;color:#c9a84c;margin-bottom:4px;">${escHtml(d.name)}</div>
+        <div style="font-size:10pt;color:rgba(240,230,208,0.7);letter-spacing:0.15em;text-transform:uppercase;">${escHtml(d.title)}</div>
         <div style="font-size:9pt;color:rgba(240,230,208,0.45);margin-top:6px;">${[d.email,d.phone,d.location].filter(Boolean).join(' · ')}</div>
       </div>
       <div style="height:1px;background:linear-gradient(to right,transparent,#c9a84c,transparent);margin-bottom:14px;"></div>
@@ -1919,8 +1465,8 @@ function buildCVFromTemplate(templateName, data, tier) {
   if (templateName === 'Crimson Career') {
     return baseStyles + `<div class="kv-cv" ${dir} style="background:#fff;">
       <div style="background:#8b1a1a;padding:22px 28px;">
-        <div style="font-size:20pt;font-weight:700;color:#fff;text-align:start;margin-bottom:3px;">${d.name}</div>
-        <div style="font-size:9.5pt;color:rgba(255,255,255,0.75);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">${d.title}</div>
+        <div style="font-size:20pt;font-weight:700;color:#fff;text-align:start;margin-bottom:3px;">${escHtml(d.name)}</div>
+        <div style="font-size:9.5pt;color:rgba(255,255,255,0.75);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;">${escHtml(d.title)}</div>
         <div style="font-size:8.5pt;color:rgba(255,255,255,0.5);">${[d.email,d.phone,d.location].filter(Boolean).join(' · ')}</div>
       </div>
       <div style="padding:20px 28px;">
@@ -1940,8 +1486,8 @@ function buildCVFromTemplate(templateName, data, tier) {
     return baseStyles + `<div class="kv-cv" ${dir} style="display:grid;grid-template-columns:200px 1fr;min-height:auto;">
       <div style="background:#4a1d96;color:#f0e6d0;padding:24px 16px;">
         <div style="width:68px;height:68px;border-radius:50%;border:2.5px solid #c9a84c;background:rgba(201,168,76,0.1);margin:0 auto 12px;"></div>
-        <div style="font-size:11pt;font-weight:700;color:#c9a84c;text-align:center;margin-bottom:2px;">${d.name}</div>
-        <div style="font-size:8.5pt;color:rgba(240,230,208,0.65);text-align:center;margin-bottom:14px;">${d.title}</div>
+        <div style="font-size:11pt;font-weight:700;color:#c9a84c;text-align:center;margin-bottom:2px;">${escHtml(d.name)}</div>
+        <div style="font-size:8.5pt;color:rgba(240,230,208,0.65);text-align:center;margin-bottom:14px;">${escHtml(d.title)}</div>
         <div style="height:1px;background:rgba(201,168,76,0.3);margin-bottom:12px;"></div>
         ${sectionLabel(d.labels?.contact||'Contact','#c9a84c','rgba(201,168,76,0.3)')}
         <div style="font-size:8.5pt;color:rgba(240,230,208,0.75);line-height:1.9;margin-bottom:12px;">${d.email||''}<br>${d.phone||''}<br>${d.location||''}</div>
@@ -1967,8 +1513,8 @@ function buildCVFromTemplate(templateName, data, tier) {
     return baseStyles + `<div class="kv-cv" ${dir} style="background:#0a0a0a;color:#e8e8e8;padding:36px 40px;">
       <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;border-bottom:1px solid rgba(201,168,76,0.5);padding-bottom:16px;margin-bottom:18px;">
         <div>
-          <div style="font-size:22pt;font-weight:700;color:#c9a84c;margin-bottom:3px;text-align:start;">${d.name}</div>
-          <div style="font-size:10pt;color:rgba(232,232,232,0.6);letter-spacing:0.15em;text-transform:uppercase;">${d.title}</div>
+          <div style="font-size:22pt;font-weight:700;color:#c9a84c;margin-bottom:3px;text-align:start;">${escHtml(d.name)}</div>
+          <div style="font-size:10pt;color:rgba(232,232,232,0.6);letter-spacing:0.15em;text-transform:uppercase;">${escHtml(d.title)}</div>
         </div>
         <div style="font-size:9pt;color:rgba(232,232,232,0.4);line-height:1.9;text-align:end;">${d.email||''}<br>${d.phone||''}<br>${d.location||''}</div>
       </div>
@@ -1988,8 +1534,8 @@ function buildCVFromTemplate(templateName, data, tier) {
     return baseStyles + `<div class="kv-cv" ${dir} style="background:#fff;">
       <div style="background:#1a1a2e;padding:20px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
         <div>
-          <div style="font-size:19pt;font-weight:700;color:#c9a84c;margin-bottom:3px;text-align:start;">${d.name}</div>
-          <div style="font-size:9.5pt;color:rgba(240,230,208,0.7);letter-spacing:0.1em;text-transform:uppercase;">${d.title}</div>
+          <div style="font-size:19pt;font-weight:700;color:#c9a84c;margin-bottom:3px;text-align:start;">${escHtml(d.name)}</div>
+          <div style="font-size:9.5pt;color:rgba(240,230,208,0.7);letter-spacing:0.1em;text-transform:uppercase;">${escHtml(d.title)}</div>
           <div style="font-size:8.5pt;color:rgba(240,230,208,0.45);margin-top:5px;">${[d.email,d.phone,d.location].filter(Boolean).join(' · ')}</div>
         </div>
       </div>
@@ -2017,8 +1563,8 @@ function buildCVFromTemplate(templateName, data, tier) {
       <div style="background:#1a1a2e;height:10px;"></div>
       <div style="padding:18px 28px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
         <div>
-          <div style="font-size:19pt;font-weight:700;color:#1a1a2e;text-align:start;margin-bottom:3px;">${d.name}</div>
-          <div style="font-size:9.5pt;color:#c9a84c;letter-spacing:0.12em;text-transform:uppercase;">${d.title}</div>
+          <div style="font-size:19pt;font-weight:700;color:#1a1a2e;text-align:start;margin-bottom:3px;">${escHtml(d.name)}</div>
+          <div style="font-size:9.5pt;color:#c9a84c;letter-spacing:0.12em;text-transform:uppercase;">${escHtml(d.title)}</div>
         </div>
         <div style="font-size:9pt;color:#777;line-height:1.9;text-align:end;">${d.email||''}<br>${d.phone||''}<br>${d.location||''}</div>
       </div>
@@ -2046,8 +1592,8 @@ function buildCVFromTemplate(templateName, data, tier) {
     return baseStyles + `<div class="kv-cv" ${dir} style="display:grid;grid-template-columns:210px 1fr;min-height:auto;">
       <div style="background:#001233;color:#e8f0ff;padding:26px 16px;">
         <div style="width:66px;height:66px;border-radius:50%;border:2px solid #c9a84c;background:rgba(201,168,76,0.1);margin:0 auto 14px;"></div>
-        <div style="font-size:12pt;font-weight:700;color:#c9a84c;text-align:center;margin-bottom:2px;">${d.name}</div>
-        <div style="font-size:8.5pt;color:rgba(232,240,255,0.6);text-align:center;margin-bottom:14px;">${d.title}</div>
+        <div style="font-size:12pt;font-weight:700;color:#c9a84c;text-align:center;margin-bottom:2px;">${escHtml(d.name)}</div>
+        <div style="font-size:8.5pt;color:rgba(232,240,255,0.6);text-align:center;margin-bottom:14px;">${escHtml(d.title)}</div>
         <div style="height:1px;background:rgba(201,168,76,0.35);margin-bottom:12px;"></div>
         ${sectionLabel(d.labels?.contact||'Contact','#c9a84c','rgba(201,168,76,0.35)')}
         <div style="font-size:8.5pt;color:rgba(232,240,255,0.7);line-height:1.9;margin-bottom:12px;">${d.email||''}<br>${d.phone||''}<br>${d.location||''}</div>
@@ -2074,8 +1620,8 @@ function buildCVFromTemplate(templateName, data, tier) {
     return baseStyles + `<div class="kv-cv" ${dir} style="background:#111;color:#e8e8e8;">
       <div style="background:#000;border-bottom:2px solid #c9a84c;padding:22px 30px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px;">
         <div>
-          <div style="font-size:20pt;font-weight:700;color:#c9a84c;text-align:start;margin-bottom:3px;">${d.name}</div>
-          <div style="font-size:9.5pt;color:rgba(232,232,232,0.65);letter-spacing:0.14em;text-transform:uppercase;">${d.title}</div>
+          <div style="font-size:20pt;font-weight:700;color:#c9a84c;text-align:start;margin-bottom:3px;">${escHtml(d.name)}</div>
+          <div style="font-size:9.5pt;color:rgba(232,232,232,0.65);letter-spacing:0.14em;text-transform:uppercase;">${escHtml(d.title)}</div>
         </div>
         <div style="font-size:8.5pt;color:rgba(232,232,232,0.4);line-height:1.9;text-align:end;">${d.email||''}<br>${d.phone||''}<br>${d.location||''}</div>
       </div>
@@ -2104,8 +1650,8 @@ function buildCVFromTemplate(templateName, data, tier) {
       <div style="border:1.5px solid rgba(201,168,76,0.4);padding:22px 26px;margin-bottom:18px;">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
           <div>
-            <div style="font-size:22pt;font-weight:700;color:#c9a84c;margin-bottom:4px;text-align:start;">${d.name}</div>
-            <div style="font-size:9.5pt;color:rgba(232,232,232,0.6);letter-spacing:0.16em;text-transform:uppercase;">${d.title}</div>
+            <div style="font-size:22pt;font-weight:700;color:#c9a84c;margin-bottom:4px;text-align:start;">${escHtml(d.name)}</div>
+            <div style="font-size:9.5pt;color:rgba(232,232,232,0.6);letter-spacing:0.16em;text-transform:uppercase;">${escHtml(d.title)}</div>
             <div style="font-size:8.5pt;color:rgba(232,232,232,0.4);margin-top:6px;">${[d.email,d.phone,d.location].filter(Boolean).join(' · ')}</div>
           </div>
           <div style="width:70px;height:70px;border-radius:50%;border:2px solid rgba(201,168,76,0.5);background:rgba(201,168,76,0.08);flex-shrink:0;"></div>
@@ -2127,8 +1673,8 @@ function buildCVFromTemplate(templateName, data, tier) {
   if (templateName === 'The Obsidian Scroll') {
     return baseStyles + `<div class="kv-cv" ${dir} style="background:#0c0c0c;color:#e8e8e8;padding:32px 36px;">
       <div style="border:2px solid #c9a84c;padding:16px 22px;margin-bottom:22px;text-align:center;">
-        <div style="font-size:21pt;font-weight:700;color:#c9a84c;margin-bottom:4px;">${d.name}</div>
-        <div style="font-size:9.5pt;color:rgba(232,232,232,0.6);letter-spacing:0.18em;text-transform:uppercase;">${d.title}</div>
+        <div style="font-size:21pt;font-weight:700;color:#c9a84c;margin-bottom:4px;">${escHtml(d.name)}</div>
+        <div style="font-size:9.5pt;color:rgba(232,232,232,0.6);letter-spacing:0.18em;text-transform:uppercase;">${escHtml(d.title)}</div>
         <div style="font-size:8.5pt;color:rgba(232,232,232,0.4);margin-top:6px;">${[d.email,d.phone,d.location].filter(Boolean).join(' · ')}</div>
       </div>
       <p class="kv-summary" style="color:rgba(232,232,232,0.75);text-align:center;font-style:italic;margin-bottom:18px;">${d.summary||''}</p>
@@ -2147,8 +1693,8 @@ function buildCVFromTemplate(templateName, data, tier) {
     return baseStyles + `<div class="kv-cv" ${dir} style="background:#03081a;color:#e0eaff;">
       <div style="background:linear-gradient(135deg,#0a1f5c,#1a3a8f);padding:24px 30px;text-align:center;">
         <div style="color:#c9a84c;font-size:9pt;opacity:0.7;margin-bottom:10px;">◆ ◈ ◆ ◈ ◆</div>
-        <div style="font-size:21pt;font-weight:700;color:#fff;margin-bottom:4px;">${d.name}</div>
-        <div style="font-size:9.5pt;color:#c9a84c;letter-spacing:0.2em;text-transform:uppercase;">${d.title}</div>
+        <div style="font-size:21pt;font-weight:700;color:#fff;margin-bottom:4px;">${escHtml(d.name)}</div>
+        <div style="font-size:9.5pt;color:#c9a84c;letter-spacing:0.2em;text-transform:uppercase;">${escHtml(d.title)}</div>
         <div style="font-size:8.5pt;color:rgba(255,255,255,0.45);margin-top:6px;">${[d.email,d.phone,d.location].filter(Boolean).join(' · ')}</div>
         <div style="color:#c9a84c;font-size:9pt;opacity:0.7;margin-top:10px;">◆ ◈ ◆ ◈ ◆</div>
       </div>
@@ -2178,8 +1724,8 @@ function buildCVFromTemplate(templateName, data, tier) {
         <div style="width:80px;height:80px;border-radius:50%;border:2px solid #c9a84c;background:rgba(201,168,76,0.06);margin:0 auto 14px;display:flex;align-items:center;justify-content:center;">
           <span style="font-size:24pt;font-weight:700;color:#c9a84c;">${(d.name||'').charAt(0)}</span>
         </div>
-        <div style="font-size:22pt;font-weight:700;color:#c9a84c;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">${d.name}</div>
-        <div style="font-size:9.5pt;color:rgba(232,232,232,0.55);letter-spacing:0.22em;text-transform:uppercase;margin-bottom:8px;">${d.title}</div>
+        <div style="font-size:22pt;font-weight:700;color:#c9a84c;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">${escHtml(d.name)}</div>
+        <div style="font-size:9.5pt;color:rgba(232,232,232,0.55);letter-spacing:0.22em;text-transform:uppercase;margin-bottom:8px;">${escHtml(d.title)}</div>
         <div style="font-size:8.5pt;color:rgba(232,232,232,0.35);">${[d.email,d.phone,d.location].filter(Boolean).join(' · ')}</div>
       </div>
       <div style="padding:14px 30px;border-bottom:1px solid rgba(201,168,76,0.2);">
@@ -2206,8 +1752,8 @@ function buildCVFromTemplate(templateName, data, tier) {
     return baseStyles + `<div class="kv-cv" ${dir} style="background:#faf8f4;">
       <div style="border:1.5px solid #1a1a1a;margin:18px;padding:20px 24px;">
         <div style="text-align:center;border-bottom:1px solid #c9a84c;padding-bottom:14px;margin-bottom:14px;">
-          <div style="font-size:21pt;font-weight:700;color:#1a1a1a;letter-spacing:0.06em;margin-bottom:4px;">${d.name}</div>
-          <div style="font-size:9.5pt;color:#c9a84c;letter-spacing:0.18em;text-transform:uppercase;">${d.title}</div>
+          <div style="font-size:21pt;font-weight:700;color:#1a1a1a;letter-spacing:0.06em;margin-bottom:4px;">${escHtml(d.name)}</div>
+          <div style="font-size:9.5pt;color:#c9a84c;letter-spacing:0.18em;text-transform:uppercase;">${escHtml(d.title)}</div>
           <div style="font-size:8.5pt;color:#888;margin-top:6px;">${[d.email,d.phone,d.location].filter(Boolean).join(' · ')}</div>
         </div>
         <p class="kv-summary" style="color:#444;text-align:justify;margin-bottom:14px;">${d.summary||''}</p>
@@ -2230,8 +1776,8 @@ function buildCVFromTemplate(templateName, data, tier) {
     return baseStyles + `<div class="kv-cv" ${dir} style="background:#fdf6e3;color:#2c1a00;">
       <div style="padding:28px 34px;border-bottom:2px solid #8b6914;text-align:center;">
         <div style="font-size:8pt;letter-spacing:0.3em;text-transform:uppercase;color:#8b6914;margin-bottom:6px;">✦ Curriculum Vitae ✦</div>
-        <div style="font-size:22pt;font-weight:700;color:#2c1a00;margin-bottom:4px;">${d.name}</div>
-        <div style="font-size:9.5pt;color:#8b6914;letter-spacing:0.14em;text-transform:uppercase;">${d.title}</div>
+        <div style="font-size:22pt;font-weight:700;color:#2c1a00;margin-bottom:4px;">${escHtml(d.name)}</div>
+        <div style="font-size:9.5pt;color:#8b6914;letter-spacing:0.14em;text-transform:uppercase;">${escHtml(d.title)}</div>
         <div style="font-size:8.5pt;color:#a08040;margin-top:6px;">${[d.email,d.phone,d.location].filter(Boolean).join(' · ')}</div>
       </div>
       <div style="padding:14px 34px;border-bottom:1px solid rgba(139,105,20,0.3);">
@@ -2258,8 +1804,8 @@ function buildCVFromTemplate(templateName, data, tier) {
     return baseStyles + `<div class="kv-cv" ${dir} style="background:linear-gradient(160deg,#0d1b2e 0%,#050c1a 100%);color:#e0eaff;">
       <div style="padding:30px 32px 18px;text-align:center;border-bottom:1px solid rgba(201,168,76,0.25);">
         <div style="font-size:7pt;letter-spacing:0.35em;color:rgba(201,168,76,0.6);margin-bottom:8px;">✦ ✦ ✦</div>
-        <div style="font-size:22pt;font-weight:700;color:#c9a84c;letter-spacing:0.07em;margin-bottom:4px;">${d.name}</div>
-        <div style="font-size:9.5pt;color:rgba(224,234,255,0.6);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:6px;">${d.title}</div>
+        <div style="font-size:22pt;font-weight:700;color:#c9a84c;letter-spacing:0.07em;margin-bottom:4px;">${escHtml(d.name)}</div>
+        <div style="font-size:9.5pt;color:rgba(224,234,255,0.6);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:6px;">${escHtml(d.title)}</div>
         <div style="font-size:8.5pt;color:rgba(224,234,255,0.35);">${[d.email,d.phone,d.location].filter(Boolean).join(' · ')}</div>
         <div style="font-size:7pt;letter-spacing:0.35em;color:rgba(201,168,76,0.6);margin-top:8px;">✦ ✦ ✦</div>
       </div>
@@ -2289,29 +1835,8 @@ function buildCVFromTemplate(templateName, data, tier) {
 
 
 // ── OPTIONAL SECTIONS JS ─────────────────────────────────────────
-function toggleOptional(id) {
-  document.getElementById(id).classList.toggle('open');
-}
 
 let _wec = 0;
-function addWorkEntry() {
-  const n = ++_wec;
-  const el = document.createElement('div');
-  el.className = 'work-entry';
-  el.id = 'we-' + n;
-  el.innerHTML =
-    '<button type="button" class="work-entry-remove" onclick="removeOptEntry(\'we-' + n + '\')">✕</button>' +
-    '<div class="field-row">' +
-      '<div class="field-group"><label>Job Title</label><input type="text" class="we-title" placeholder="e.g. Senior Manager"/></div>' +
-      '<div class="field-group"><label>Company</label><input type="text" class="we-company" placeholder="e.g. Aramco"/></div>' +
-    '</div>' +
-    '<div class="field-row">' +
-      '<div class="field-group"><label>Start</label><input type="text" class="we-start" placeholder="2020"/></div>' +
-      '<div class="field-group"><label>End</label><input type="text" class="we-end" placeholder="2023 or Present"/></div>' +
-    '</div>' +
-    '<div class="field-group"><label>Responsibilities / Achievements</label><textarea class="we-desc" style="min-height:70px;" placeholder="Describe what you did..."></textarea></div>';
-  document.getElementById('work-entries-container').appendChild(el);
-}
 
 let _pec = 0;
 function addProjectEntry() {
@@ -2851,16 +2376,18 @@ function maybeShowExtraCards() {
   const section = document.getElementById('extras-section');
   const isElite = window._currentTier === 'elite';
   const hasCover = !!(window._cvData && window._cvData.cover_letter);
-  if (isElite && hasCover) {
+  const hasLinkedIn = !!(window._cvData && window._cvData.linkedin_summary);
+  if (isElite && (hasCover || hasLinkedIn)) {
     section.style.display = 'block';
-    document.getElementById('btnShowCoverLetter').style.display = 'inline-flex';
+    document.getElementById('btnShowCoverLetter').style.display = hasCover ? 'inline-flex' : 'none';
+    document.getElementById('btnShowLinkedIn').style.display = hasLinkedIn ? 'inline-flex' : 'none';
   } else {
     section.style.display = 'none';
   }
 }
 
 function hideAllExtraPanels() {
-  ['coverletter-choice-panel','coverletter-general-panel','coverletter-job-form-panel','coverletter-tailored-panel'].forEach(id => {
+  ['coverletter-choice-panel','coverletter-general-panel','coverletter-job-form-panel','coverletter-tailored-panel','linkedin-panel'].forEach(id => {
     document.getElementById(id).style.display = 'none';
   });
 }
@@ -3605,23 +3132,6 @@ window._stripePrices = {
 };
 
 // ── TIER SELECTOR ─────────────────────────────────────────────────
-const tierContent = {
-  pro:   { eyebrow: 'Pro Tier — $5',   heading: 'Clean &amp; Professional', sub: 'ATS-friendly designs that open doors at top companies worldwide.' },
-  royal: { eyebrow: 'Royal Tier — $9', heading: 'Dark, Gold &amp; Commanding', sub: 'Bold premium templates built for executives and global leaders.' },
-  elite: { eyebrow: 'Elite Tier — $19',heading: 'Maximum Luxury', sub: 'Exclusive masterpieces — each a one-of-a-kind work of art.' }
-};
-
-function setActiveTier(tier, btn) {
-  document.querySelectorAll('.tpl-tier-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.tpl-tier-group').forEach(g => g.classList.remove('active'));
-  document.getElementById('tpl-group-' + tier).classList.add('active');
-  const c = tierContent[tier];
-  document.getElementById('tpl-eyebrow').innerHTML = c.eyebrow;
-  document.getElementById('tpl-heading').innerHTML = c.heading;
-  document.getElementById('tpl-sub').innerHTML = c.sub;
-  document.getElementById('page-templates').scrollTo({ top: 0, behavior: 'smooth' });
-}
 
 function scrollTplCarousel(tier, direction) {
   const grid = document.getElementById('cv-grid-' + tier);
