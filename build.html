@@ -2347,8 +2347,8 @@ function renderResult(cvHTML, tier) {
 
   const badges = {
     pro:   { label: '✦ Pro CV', color: '#c9a84c' },
-    royal: { label: '♛ Royal CV + ATS Report', color: '#e2c97e' },
-    elite: { label: '◈ Elite CV + Cover Letter + LinkedIn + ATS', color: '#f5e6b0' }
+    royal: { label: '♛ Royal CV', color: '#e2c97e' },
+    elite: { label: '◈ Elite CV + Cover Letter + LinkedIn', color: '#f5e6b0' }
   };
 
   const b = badges[tier];
@@ -2383,7 +2383,7 @@ function renderResult(cvHTML, tier) {
       <button class="btn-primary" onclick="downloadCV('pdf')" style="padding:14px 36px;">⬇ Download PDF</button>
       <button class="btn-secondary" onclick="downloadCV('docx')" style="padding:14px 36px;">⬇ Download Word</button>
       ${tier === 'elite' ? '<button class="btn-secondary" onclick="downloadCoverLetter()" style="padding:14px 28px;">⬇ Cover Letter</button>' : ''}
-      <button class="btn-secondary" onclick="showPage('form')" style="padding:14px 28px;">Regenerate</button>
+      <button class="btn-secondary" onclick="goToStep(2)" style="padding:14px 28px;">Regenerate</button>
       <button class="btn-secondary" onclick="showPage('hero')" style="padding:14px 28px;">Start Over</button>
     `;
   }
