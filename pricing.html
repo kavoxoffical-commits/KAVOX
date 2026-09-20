@@ -46,7 +46,7 @@
 
   /* ---------- Pricing cards ---------- */
   .pricing-section { padding:40px 24px 140px; background:#0a0a0c; }
-  .pricing-grid { max-width:1180px; margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); gap:16px; align-items:stretch; }
+  .pricing-grid { max-width:900px; margin:0 auto; display:grid; grid-template-columns:repeat(3,1fr); gap:16px; align-items:stretch; }
   @media (max-width:1050px){ .pricing-grid{ grid-template-columns:repeat(2,1fr); } }
   @media (max-width:620px){ .pricing-grid{ grid-template-columns:1fr; } }
 
@@ -151,22 +151,6 @@
 <section class="pricing-section">
   <div class="pricing-grid">
 
-    <div class="price-card" id="cardFree">
-      <span class="price-tier">Free</span>
-      <p class="price-desc">Build and download a clean, ATS-friendly CV — no card required.</p>
-      <div class="price-amount-row">
-        <span class="price-amount">$0</span>
-        <span class="price-cycle">/ forever</span>
-      </div>
-      <a href="build.html" class="price-btn">Get started</a>
-      <ul class="price-feats">
-        <li class="price-feat">✓&nbsp; AI-generated CV from your info</li>
-        <li class="price-feat">✓&nbsp; Core ATS-safe templates</li>
-        <li class="price-feat">✓&nbsp; PDF export, print-ready</li>
-        <li class="price-feat">✓&nbsp; Daily generation limit shared with all plans</li>
-      </ul>
-    </div>
-
     <div class="price-card" id="cardPro">
       <span class="price-tier">Pro</span>
       <p class="price-desc">Unlock 5 additional templates with a single one-time payment.</p>
@@ -176,7 +160,6 @@
       </div>
       <a href="build.html?tier=pro" class="price-btn">Choose Pro</a>
       <ul class="price-feats">
-        <li class="price-feat">✓&nbsp; Everything in Free</li>
         <li class="price-feat">✓&nbsp; 5 Pro templates, unlocked for good</li>
         <li class="price-feat">✓&nbsp; Cliché-free, fabrication-checked writing</li>
         <li class="price-feat">✓&nbsp; CV saved to your account across devices</li>
@@ -229,7 +212,7 @@
 
     <div class="faq-item">
       <button class="faq-q"><span>Can I cancel anytime?</span><span class="plus">+</span></button>
-      <div class="faq-a"><p>Yes. Plans are month-to-month with no lock-in — cancel from your account and keep access until the end of the billing period. After that, CVs made with Royal or Elite templates/features are no longer downloadable — export what you need before your plan ends.</p></div>
+      <div class="faq-a"><p>Yes. Plans are month-to-month with no lock-in — cancel from your account and keep access until the end of the billing period.</p></div>
     </div>
 
     <div class="faq-item">
@@ -242,10 +225,6 @@
       <div class="faq-a"><p>On Royal and Elite, it's a real keyword-match calculation against the job description you paste in — not an AI guess. You'll see exactly which keywords are missing.</p></div>
     </div>
 
-    <div class="faq-item">
-      <button class="faq-q"><span>Do I need a card for the Free plan?</span><span class="plus">+</span></button>
-      <div class="faq-a"><p>No. Free gives you a real, downloadable CV with no payment details required.</p></div>
-    </div>
   </div>
 </section>
 
