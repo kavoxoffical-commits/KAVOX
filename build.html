@@ -157,9 +157,10 @@
  </div>
  <div id="refiner-error" style="display:none;color:#e57373;font-size:13px;margin-bottom:14px;"></div>
  <button class="btn-secondary" id="refiner-extract-btn" onclick="extractExistingCV()" type="button">Fill the Form From My CV</button>
- <p class="step-sub" style="margin-top:12px;font-size:13px;">Or skip this and fill the fields below yourself.</p>
+ <p class="step-sub" style="margin-top:12px;font-size:13px;">Or <a href="#" onclick="document.getElementById('manual-fields-wrapper').style.display='block'; this.parentElement.style.display='none'; return false;" style="color:#c9a84c;">skip this and fill the fields below yourself</a>.</p>
  </div>
 
+ <div id="manual-fields-wrapper">
  <div class="field-row">
  <div class="field-group">
  <label>Full Name</label>
@@ -218,6 +219,7 @@
  <div class="form-actions">
  <span></span>
  <button class="btn-primary" id="toStep2">Continue →</button>
+ </div>
  </div>
  </div>
 
@@ -895,10 +897,23 @@ function goToPricing() {
   if (!industry)
     markError('f-industry', 'Target industry & role is required');
 
+  function looksLikeGibberish(text) {
+    const words = text.trim().split(/\s+/).filter(Boolean);
+    if (words.length < 6) return true; // too few real "words" for a genuine description
+    const letters = text.replace(/[^\p{L}]/gu, '');
+    if (letters.length > 15) {
+      const uniqueRatio = new Set(letters.toLowerCase()).size / letters.length;
+      if (uniqueRatio < 0.18) return true; // heavy repetition, e.g. "aaaaaaaaa" or "asdasdasd"
+    }
+    return false;
+  }
+
   if (!achieve)
     markError('f-achievements', 'Please describe your achievements and experience');
   else if (achieve.length < 60)
     markError('f-achievements', 'Please provide more detail (at least 60 characters) — richer detail produces a better CV');
+  else if (looksLikeGibberish(achieve))
+    markError('f-achievements', 'This doesn\'t look like a real description — please describe your actual achievements and experience');
 
   // ── لو في أخطاء — اسكرول للأول ──────────────────────────────
   if (errors.length > 0) {
@@ -913,6 +928,11 @@ function goToPricing() {
 
 // ── مسح خطأ الحقل لما المستخدم يبدأ يكتب ─────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('f-template')?.addEventListener('change', function(){
+    this.classList.remove('field-invalid');
+    const err = document.getElementById('template-select-error');
+    if (err) err.remove();
+  });
   ['f-name','f-email','f-phone','f-location','f-title','f-exp','f-industry','f-achievements'].forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
@@ -2668,15 +2688,18 @@ function selectPath(path) {
   const heading = document.getElementById('form-heading');
   const desc = document.getElementById('form-desc');
   const uploadZone = document.getElementById('upload-zone-wrapper');
+  const manualFields = document.getElementById('manual-fields-wrapper');
 
   if (isRefiner) {
     heading.textContent = 'Elevate Your Story';
-    desc.textContent = 'Paste your existing CV below and share any extra details. Our AI will refine and elevate your narrative to elite standards.';
+    desc.textContent = 'Upload your existing CV below — our AI will read it and fill in your details automatically.';
     uploadZone.style.display = 'block';
+    if (manualFields) manualFields.style.display = 'none'; // Refiner starts as upload-only; fields appear once extracted (or the user chooses to skip)
   } else {
     heading.textContent = 'Build Your Legacy';
     desc.textContent = 'Provide your professional details below and our AI will craft an elite CV tailored to your ambitions.';
     uploadZone.style.display = 'none';
+    if (manualFields) manualFields.style.display = 'block';
   }
 }
 
@@ -2743,6 +2766,8 @@ For "achievements", combine the real work experience, responsibilities, and acco
       errorEl.style.color = '#ece6d6';
       errorEl.textContent = 'Done — your details have been filled in below. Review and edit anything before continuing.';
       errorEl.style.display = 'block';
+      const mf = document.getElementById('manual-fields-wrapper');
+      if (mf) mf.style.display = 'block';
       document.getElementById('f-name').scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     } catch (e) {
@@ -3287,6 +3312,7 @@ function showPage(name, opts) {
    maybeShowExtraCards();
  } else if (name === 'form' || name === 'hero') {
    confirmEl.classList.remove('active'); resultEl.classList.remove('active'); tailorEl.classList.remove('active');
+   step2.classList.remove('active');
    step1.classList.add('active');
    window.scrollTo({ top:0, behavior:'smooth' });
    if (!(opts && opts.fromPopstate)) { history.pushState({ screen:'step1' }, '', '#step1'); }
@@ -3309,13 +3335,27 @@ window.addEventListener('popstate', function(e){
 });
 
 function startGeneration() {
+ const sel = document.getElementById('f-template');
+ if (!sel.value) {
+   sel.classList.add('field-invalid');
+   let err = document.getElementById('template-select-error');
+   if (!err) {
+     err = document.createElement('div');
+     err.id = 'template-select-error';
+     err.className = 'field-error';
+     err.textContent = '⚠ Please choose a template style before generating your CV';
+     err.style.cssText = 'color:#e57373;font-size:0.8rem;margin-top:4px;font-family:"EB Garamond",serif;';
+     sel.parentNode.appendChild(err);
+   }
+   sel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+   return;
+ }
  const genBtn = document.getElementById('generateCV');
  if (genBtn && genBtn.disabled) return; // guard against double-click / double-submit
  if (genBtn) genBtn.disabled = true;
- const sel = document.getElementById('f-template');
  const opt = sel.options[sel.selectedIndex];
  const tier = (opt && opt.getAttribute('data-tier')) || 'pro';
- window._selectedTemplate = (opt && opt.value) ? opt.textContent.trim() : 'The Minimalist';
+ window._selectedTemplate = opt.textContent.trim();
  window._selectedTier = tier;
  generateCV(tier);
 }
