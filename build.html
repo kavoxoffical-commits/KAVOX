@@ -2346,6 +2346,7 @@ function generateCV(tier) {
   };
 
   document.addEventListener('DOMContentLoaded', function () {
+    updateAuthUI();
     restoreDraft();
     fieldIds.forEach(id => {
       const el = document.getElementById(id);
@@ -3037,6 +3038,21 @@ function escHtml(s) {
 }
 
 // ── SUPABASE CORE ──────────────────────────────────────────────────
+async function updateAuthUI() {
+  if (!_sb) await initSupabase();
+  if (!_sb) return;
+  const { data } = await _sb.auth.getUser();
+  document.querySelectorAll('#nav-auth-link, .nav-auth-link').forEach(link => {
+    if (data && data.user) {
+      link.textContent = 'My Account';
+      link.setAttribute('href', 'account.html');
+    } else {
+      link.textContent = 'Login';
+      link.setAttribute('href', 'login.html');
+    }
+  });
+}
+
 async function initSupabase() {
   if (_sb) return;
   try {
