@@ -568,11 +568,29 @@ document.querySelectorAll('.tpl-card').forEach(function(card){
   card.style.cursor = 'pointer';
   card.addEventListener('click', function(){
     var nameEl = card.querySelector('.name');
+    var tierEl = card.querySelector('.tier');
+    var mock = card.querySelector('.tpl-mock');
     var name = nameEl ? nameEl.textContent : '';
     var slug = name.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
-    window.location.href = 'build.html?template=' + encodeURIComponent(slug);
+
+    var modal = document.getElementById('tpl-preview-modal');
+    document.getElementById('tpl-preview-name').textContent = name;
+    document.getElementById('tpl-preview-tier').textContent = tierEl ? tierEl.textContent : '';
+    var previewMock = document.getElementById('tpl-preview-mock');
+    previewMock.innerHTML = mock ? mock.innerHTML : '';
+    previewMock.style.background = mock ? getComputedStyle(mock).background : '#111';
+    document.getElementById('tpl-preview-start').href = 'build.html?template=' + encodeURIComponent(slug);
+    modal.classList.add('open');
   });
 });
+
+(function(){
+  var modal = document.getElementById('tpl-preview-modal');
+  if (!modal) return;
+  modal.addEventListener('click', function(e){ if (e.target === modal) modal.classList.remove('open'); });
+  document.getElementById('tpl-preview-close').addEventListener('click', function(){ modal.classList.remove('open'); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') modal.classList.remove('open'); });
+})();
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -596,3 +614,31 @@ document.querySelectorAll('.tpl-card').forEach(function(card){
   } catch(e) { /* fail silently, default "Sign in" link stays */ }
 })();
 </script>
+
+<style>
+  #tpl-preview-modal { position:fixed; inset:0; background:rgba(0,0,0,.75); backdrop-filter:blur(6px); z-index:200; display:none; align-items:center; justify-content:center; padding:24px; }
+  #tpl-preview-modal.open { display:flex; }
+  .tpl-preview-box { background:#111114; border:1px solid rgba(255,255,255,.12); border-radius:20px; max-width:520px; width:100%; overflow:hidden; }
+  .tpl-preview-mock-wrap { position:relative; width:100%; aspect-ratio:210/297; overflow:hidden; }
+  .tpl-preview-mock-wrap > div { transform:scale(1); }
+  .tpl-preview-info { padding:22px 24px 26px; text-align:center; }
+  .tpl-preview-info .name { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:#f5f2ea; }
+  .tpl-preview-info .tier { font-size:13px; color:rgba(255,255,255,.5); margin-top:4px; }
+  .tpl-preview-actions { display:flex; gap:10px; margin-top:20px; }
+  .tpl-preview-actions a, .tpl-preview-actions button { flex:1; padding:13px; border-radius:999px; font-size:14px; font-weight:600; text-align:center; text-decoration:none; cursor:pointer; border:none; }
+  #tpl-preview-start { background:linear-gradient(135deg,#ece6d6,#d8d0b8); color:#0a0a0c; }
+  #tpl-preview-close { background:rgba(255,255,255,.08); color:#f5f2ea; }
+</style>
+<div id="tpl-preview-modal">
+  <div class="tpl-preview-box">
+    <div class="tpl-preview-mock-wrap" id="tpl-preview-mock"></div>
+    <div class="tpl-preview-info">
+      <div class="name" id="tpl-preview-name"></div>
+      <div class="tier" id="tpl-preview-tier"></div>
+      <div class="tpl-preview-actions">
+        <button id="tpl-preview-close" type="button">Close</button>
+        <a id="tpl-preview-start" href="build.html">Start Building →</a>
+      </div>
+    </div>
+  </div>
+</div>
