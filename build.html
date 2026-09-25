@@ -6,6 +6,8 @@
 <title>Build Your CV — Kavox</title>
 <meta name="description" content="Build your CV with Kavox — AI-crafted content, ATS-optimised formatting, and a professional template, in minutes." />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 <style>
  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@500;600;700;800&display=swap');
  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; -webkit-touch-callout:none; }
@@ -152,8 +154,16 @@
 
  <div id="upload-zone-wrapper" style="display:none; margin-bottom:32px;">
  <div class="field-group">
- <label>Paste Your Existing CV</label>
- <textarea id="f-existing-cv" rows="10" placeholder="Paste the full text of your current CV here…" style="width:100%;padding:14px 16px;border:1px solid rgba(255,255,255,.15);border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;color:#f5f2ea;background:#151517;outline:none;resize:vertical;"></textarea>
+ <label>Upload Your Existing CV</label>
+ <label class="photo-upload-zone" id="cv-file-upload-label" style="display:block;">
+ <input type="file" id="cv-file-input" accept=".pdf,.docx" />
+ <div class="upload-zone-text" id="cv-file-upload-text">Click to upload a PDF or Word (.docx) file</div>
+ <div class="upload-zone-hint">Or paste the text directly below</div>
+ </label>
+ </div>
+ <div id="cv-file-status" style="display:none;font-size:13px;color:#8fd19e;margin-bottom:14px;"></div>
+ <div class="field-group">
+ <textarea id="f-existing-cv" rows="10" placeholder="…or paste the full text of your current CV here" style="width:100%;padding:14px 16px;border:1px solid rgba(255,255,255,.15);border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;color:#f5f2ea;background:#151517;outline:none;resize:vertical;"></textarea>
  </div>
  <div id="refiner-error" style="display:none;color:#e57373;font-size:13px;margin-bottom:14px;"></div>
  <button class="btn-secondary" id="refiner-extract-btn" onclick="extractExistingCV()" type="button">Fill the Form From My CV</button>
@@ -2703,6 +2713,91 @@ function selectPath(path) {
   }
 }
 
+// ── READ UPLOADED CV FILE (PDF / DOCX) INTO THE TEXTAREA ──────────
+(function () {
+  if (typeof pdfjsLib !== 'undefined') {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+  }
+
+  function looksLikeRealDocument(text) {
+    const words = text.trim().split(/\s+/).filter(Boolean);
+    if (words.length < 40) return false; // a real CV has far more than a stray sentence of text
+    const letters = text.replace(/[^\p{L}]/gu, '');
+    if (letters.length > 30) {
+      const uniqueRatio = new Set(letters.toLowerCase()).size / letters.length;
+      if (uniqueRatio < 0.18) return false; // heavy repetition / gibberish
+    }
+    return true;
+  }
+
+  async function extractTextFromPdf(arrayBuffer) {
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let fullText = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      fullText += content.items.map(item => item.str).join(' ') + '\n';
+    }
+    return fullText.trim();
+  }
+
+  async function extractTextFromDocx(arrayBuffer) {
+    const result = await mammoth.extractRawText({ arrayBuffer });
+    return (result.value || '').trim();
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const fileInput = document.getElementById('cv-file-input');
+    if (!fileInput) return;
+
+    fileInput.addEventListener('change', async function () {
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const statusEl = document.getElementById('cv-file-status');
+      const textEl = document.getElementById('cv-file-upload-text');
+      const errorEl = document.getElementById('refiner-error');
+      const textarea = document.getElementById('f-existing-cv');
+
+      if (errorEl) errorEl.style.display = 'none';
+      if (textEl) textEl.textContent = 'Reading ' + file.name + '…';
+
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const name = file.name.toLowerCase();
+        let text = '';
+        if (name.endsWith('.pdf')) {
+          text = await extractTextFromPdf(arrayBuffer);
+        } else if (name.endsWith('.docx')) {
+          text = await extractTextFromDocx(arrayBuffer);
+        } else {
+          throw new Error('Unsupported file type. Please upload a .pdf or .docx file.');
+        }
+
+        if (!text || text.length < 30) {
+          throw new Error('Could not read readable text from this file. It may be a scanned image, a photo, or not a document at all — try uploading the actual CV file, or paste the text manually instead.');
+        }
+        if (!looksLikeRealDocument(text)) {
+          throw new Error('This file doesn\'t look like a real CV (too little readable content). Please upload your actual CV file, or paste the text manually instead.');
+        }
+
+        if (textarea) textarea.value = text;
+        if (textEl) textEl.textContent = 'Click to upload a different file';
+        if (statusEl) {
+          statusEl.textContent = '✓ ' + file.name + ' loaded — review the text below, then click "Fill the Form From My CV".';
+          statusEl.style.display = 'block';
+        }
+      } catch (err) {
+        if (textEl) textEl.textContent = 'Click to upload a PDF or Word (.docx) file';
+        if (errorEl) {
+          errorEl.textContent = err.message || 'Could not read this file. Try pasting the text manually instead.';
+          errorEl.style.display = 'block';
+        }
+      }
+    });
+  });
+})();
+
 async function extractExistingCV() {
   const cvText = document.getElementById('f-existing-cv').value.trim();
   const errorEl = document.getElementById('refiner-error');
@@ -2914,6 +3009,11 @@ function removeLang(btn) {
 function handlePhotoUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
+  if (!file.type.startsWith('image/')) {
+    alert('Please upload an image file (JPG, PNG, or WEBP) — this doesn\'t look like a photo.');
+    event.target.value = '';
+    return;
+  }
   const reader = new FileReader();
   reader.onload = function(e) {
     document.getElementById('photo-preview-img').src = e.target.result;
