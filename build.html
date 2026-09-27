@@ -910,11 +910,30 @@ function goToPricing() {
   function looksLikeGibberish(text) {
     const words = text.trim().split(/\s+/).filter(Boolean);
     if (words.length < 6) return true; // too few real "words" for a genuine description
-    const letters = text.replace(/[^\p{L}]/gu, '');
-    if (letters.length > 15) {
-      const uniqueRatio = new Set(letters.toLowerCase()).size / letters.length;
-      if (uniqueRatio < 0.18) return true; // heavy repetition, e.g. "aaaaaaaaa" or "asdasdasd"
+
+    // Same character repeated 5+ times in a row, e.g. "aaaaaaaaa"
+    if (/(.)\1{4,}/u.test(text)) return true;
+
+    // Same word (3+ letters) repeated back-to-back, e.g. "asd asd asd asd"
+    const lower = words.map(w => w.toLowerCase().replace(/[^\p{L}\p{N}]/gu, ''));
+    let repeatRun = 1;
+    for (let i = 1; i < lower.length; i++) {
+      if (lower[i] && lower[i] === lower[i - 1] && lower[i].length >= 3) {
+        repeatRun++;
+        if (repeatRun >= 3) return true;
+      } else {
+        repeatRun = 1;
+      }
     }
+
+    // Overall word-level diversity — catches "asdasd qweqwe asdasd qweqwe..." patterns
+    // without penalizing normal long text (which naturally reuses common short words like "and", "the").
+    const realWords = lower.filter(w => w.length >= 3);
+    if (realWords.length >= 8) {
+      const uniqueWordRatio = new Set(realWords).size / realWords.length;
+      if (uniqueWordRatio < 0.35) return true;
+    }
+
     return false;
   }
 
