@@ -1163,8 +1163,9 @@ ${jd}
 Generate exactly 5 interview questions this candidate is likely to be asked for THIS specific role (a mix of role-specific and behavioral questions grounded in the actual job description — not generic "tell me about yourself" filler). For each question, write a suggested answer that:
 - Uses SPECIFIC real details already present in the candidate's CV data above (real employer names, real achievements, real skills) — never invent new experience the candidate doesn't have.
 - STRICT RULE ON NUMBERS: only use a number/statistic if it already exists in the CV data above — never invent one.
+- STRICT RULE ON TOOLS, METHODS & STANDARDS: do NOT invent specific tools, frameworks, named methodologies, standards, certifications, or technical practices (e.g. "WCAG", "ARIA attributes", specific browser names, specific testing libraries) that are not explicitly present in the CV data above — even if they are realistic, commonly-used, or would make the answer sound stronger. If the question invites this kind of detail and the CV data doesn't contain it, keep the answer at the level of detail the CV actually supports (general approach, real projects, real skills already listed) instead of filling the gap with invented specifics.
 - HARD BAN on these exact phrases (and their direct translation into ${cvLang}): 'results-driven professional', 'proven track record', 'exceed expectations', 'esteemed organization', 'seasoned professional', 'passionate about'.
-- If the CV genuinely lacks direct experience for a question, the answer should coach the candidate on how to honestly bridge the gap using transferable skills from their actual background — not fabricate experience they don't have.
+- If the CV genuinely lacks direct experience for a question, the answer should coach the candidate on how to honestly bridge the gap using transferable skills from their actual background — not fabricate experience, tools, or specifics they don't have. It is far better for an answer to be shorter and honest than long and invented.
 
 Return ONLY valid JSON, no markdown, no code fences, in this exact structure:
 {"questions": [{"question": "...", "suggested_answer": "..."}, {"question": "...", "suggested_answer": "..."}, {"question": "...", "suggested_answer": "..."}, {"question": "...", "suggested_answer": "..."}, {"question": "...", "suggested_answer": "..."}]}`;
@@ -1189,6 +1190,7 @@ Return ONLY valid JSON, no markdown, no code fences, in this exact structure:
         container.innerHTML = `<p style="margin-top:20px;color:#e57373;font-family:'EB Garamond',serif;">${isAr ? 'وصلت لحدك اليومي من التوليد. حاول تاني بعد 24 ساعة.' : "You've reached your daily generation limit. Please try again in 24 hours."}</p>`;
         return;
       }
+      console.error(`[KAVOX Interview Prep] Provider "${provider.name}" failed:`, err.message || err);
       // try next provider
     }
   }
@@ -2297,6 +2299,7 @@ RULES:
         showPage('result');
         return;
       }
+      console.error(`[KAVOX] Provider "${provider.name}" failed on pass ${pass + 1}:`, err.message || err);
       updateLoadingStatus(`Switching to backup server…`, 30 + (i * 20));
       await new Promise(r => setTimeout(r, 1000));
     }
@@ -2307,6 +2310,7 @@ RULES:
   }
   }
 
+  console.error('[KAVOX] All AI providers failed after all retries — see individual provider errors logged above.');
   document.getElementById('cv-output').innerHTML = `
     <div style="text-align:center;padding:40px 20px;">
       <h2 style="color:#c9a84c;font-family:'Cinzel',serif;">All Servers Busy</h2>
