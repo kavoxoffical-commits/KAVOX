@@ -2837,7 +2837,9 @@ async function extractExistingCV() {
   btn.disabled = true;
   btn.textContent = 'Reading your CV…';
 
-  const prompt = `Extract structured information from this CV text. Do not invent or add anything not present in the text — leave a field as an empty string "" if it is genuinely not mentioned.
+  const prompt = `Extract structured information from this CV text. Do not invent or add anything not present in the text — leave a field as an empty string "" if it is genuinely not mentioned, EXCEPT for "years_experience" (see its specific rule below).
+
+TODAY'S DATE: ${new Date().toISOString().slice(0,10)}
 
 CV TEXT:
 ${cvText}
@@ -2845,6 +2847,7 @@ ${cvText}
 Return ONLY valid JSON in this exact structure:
 {"name":"","email":"","phone":"","location":"","title":"","years_experience":"","industry_role":"","achievements":"","education":"","skills":"","linkedin":"","portfolio":""}
 
+For "years_experience": if the CV states a total years figure explicitly, use it. Otherwise, if the CV lists job dates, CALCULATE it yourself from the earliest job start date to the most recent end date (or to today's date if a role says "Present"/"Current") and return it as a plain number of years (e.g. "5 years") — this is a calculation from real dates in the CV, not an invention, so do this whenever dates are present. Only leave it "" if the CV has no dates at all to calculate from.
 For "achievements", combine the real work experience, responsibilities, and accomplishments described in the CV into one plain-text passage (not JSON, not a list) preserving all specific facts, numbers, and employer names exactly as written. For "skills", provide a comma-separated list.`;
 
   for (let i = 0; i < API_PROVIDERS.length; i++) {
@@ -2867,6 +2870,7 @@ For "achievements", combine the real work experience, responsibilities, and acco
       const setIfPresent = (id, val) => {
         if (val) document.getElementById(id).value = val;
       };
+      document.querySelectorAll('.refiner-missing-note').forEach(el => el.remove());
       setIfPresent('f-name', parsed.name);
       setIfPresent('f-email', parsed.email);
       setIfPresent('f-phone', parsed.phone);
@@ -2887,7 +2891,28 @@ For "achievements", combine the real work experience, responsibilities, and acco
       errorEl.style.display = 'block';
       const mf = document.getElementById('manual-fields-wrapper');
       if (mf) mf.style.display = 'block';
-      document.getElementById('f-name').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      // Flag any required field the CV text didn't contain, right away —
+      // instead of letting the user hit "Continue" and get surprised.
+      const requiredAfterExtract = [
+        ['f-name', 'Full name'], ['f-email', 'Email address'], ['f-phone', 'Phone number'],
+        ['f-location', 'Location'], ['f-title', 'Professional title'],
+        ['f-exp', 'Years of experience'], ['f-industry', 'Target industry & role']
+      ];
+      let firstMissing = null;
+      requiredAfterExtract.forEach(([id, label]) => {
+        const field = document.getElementById(id);
+        if (!field || field.value.trim()) return;
+        field.style.borderColor = '#e57373';
+        const note = document.createElement('div');
+        note.className = 'refiner-missing-note';
+        note.textContent = `⚠ Not found in your CV — please fill in your ${label.toLowerCase()}`;
+        note.style.cssText = 'color:#e57373;font-size:0.8rem;margin-top:4px;font-family:"EB Garamond",serif;';
+        field.parentNode.appendChild(note);
+        if (!firstMissing) firstMissing = field;
+      });
+
+      (firstMissing || document.getElementById('f-name')).scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     } catch (e) {
       continue;
