@@ -140,6 +140,30 @@
   .marquee-track { display:flex; gap:80px; width:max-content; animation:marquee 22s linear infinite; }
   .marquee-track span { font-size:22px; font-weight:700; color:rgba(255,255,255,.3); white-space:nowrap; letter-spacing:-.02em; }
   @keyframes marquee { from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+  /* ---------- Decorative CV papers (make the page feel like a CV builder) ---------- */
+  .cv-ghosts { position:absolute; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
+  .hc { position:absolute; --w:200px; --u:calc(var(--w) / 100); --r:0deg; --o:.4; width:var(--w); aspect-ratio:210/297; border-radius:6px; background:#fbfaf6; box-shadow:0 30px 70px rgba(0,0,0,.6); overflow:hidden; transform:rotate(var(--r)); opacity:0; animation:hcIn 1.4s ease .5s forwards, hcFloat var(--d,9s) ease-in-out 1.9s infinite alternate; }
+  .hc i { display:block; border-radius:99px; }
+  .hc .p-in { height:100%; }
+  @keyframes hcIn { to { opacity:var(--o); } }
+  @keyframes hcFloat { from { transform:rotate(var(--r)) translateY(-9px); } to { transform:rotate(var(--r)) translateY(11px); } }
+  .cv-ghosts[data-set="hero"] .hc:nth-child(1) { --w:210px; --r:-9deg; --o:.5; left:2%; top:17%; --d:9s; }
+  .cv-ghosts[data-set="hero"] .hc:nth-child(2) { --w:168px; --r:6deg; --o:.46; left:10%; top:62%; --d:11s; }
+  .cv-ghosts[data-set="hero"] .hc:nth-child(3) { --w:200px; --r:8deg; --o:.5; right:2%; top:14%; --d:10s; }
+  .cv-ghosts[data-set="hero"] .hc:nth-child(4) { --w:174px; --r:-6deg; --o:.46; right:9%; top:60%; --d:12s; }
+  .cv-ghosts[data-set="statement"] .hc:nth-child(1) { --w:190px; --r:-7deg; --o:.3; left:3%; top:10%; --d:10s; }
+  .cv-ghosts[data-set="statement"] .hc:nth-child(2) { --w:180px; --r:8deg; --o:.3; right:3%; top:42%; --d:12s; }
+  .statement { position:relative; overflow:hidden; }
+  .statement p { position:relative; z-index:2; }
+  @media (max-width:700px) {
+    .cv-ghosts[data-set="hero"] .hc:nth-child(1) { --w:138px; left:-16px; top:96px; --r:-8deg; --o:.5; }
+    .cv-ghosts[data-set="hero"] .hc:nth-child(2) { --w:130px; left:-12px; top:auto; bottom:84px; --r:7deg; --o:.46; }
+    .cv-ghosts[data-set="hero"] .hc:nth-child(3) { --w:124px; left:auto; right:-14px; top:104px; --r:9deg; --o:.5; }
+    .cv-ghosts[data-set="hero"] .hc:nth-child(4) { --w:122px; left:auto; right:-12px; top:auto; bottom:100px; --r:-7deg; --o:.46; display:block; }
+    .cv-ghosts[data-set="statement"] .hc:nth-child(1) { --w:120px; left:-36px; top:12px; --o:.28; }
+    .cv-ghosts[data-set="statement"] .hc:nth-child(2) { --w:116px; right:-34px; top:auto; bottom:14px; --o:.28; }
+  }
+  @media (prefers-reduced-motion:reduce) { .hc { animation:hcIn .01s forwards; } }
   /* ---------- Product demo video (after marquee) ---------- */
   .demo-section { background:#0a0a0c; padding:90px 24px 40px; }
   .demo-head { max-width:640px; margin:0 auto 40px; text-align:center; }
@@ -237,6 +261,7 @@
   </div>
 
 <section id="hero-pin">
+  <div class="cv-ghosts" data-set="hero" aria-hidden="true"></div>
   <div class="hero-copy">
     <span class="eyebrow" id="eyebrow">AI-Powered Career Platform</span>
     <h1 class="hero-title" id="heroTitle">Crafting your<br><span class="light">professional legacy.</span></h1>
@@ -310,6 +335,7 @@
 </section>
 
 <section class="statement" id="about">
+  <div class="cv-ghosts" data-set="statement" aria-hidden="true"></div>
   <p>
     We do not write CVs.<br>
     <span class="lit">We craft the <span class="accent">opening chapters</span></span> —
@@ -764,6 +790,27 @@ document.querySelectorAll('.faq-item').forEach(item => {
       else { v.pause(); }
     });
   },{threshold:0.35,rootMargin:'200px 0px'}).observe(v);
+})();
+</script>
+<script>
+/* decorative CV papers: built from simple bars so they read as CV layouts */
+(function(){
+  var G='#b8963a';
+  function bar(w,c,h,mt){return '<i style="width:'+w+'%;height:calc(var(--u)*'+h+');background:'+c+';margin-top:calc(var(--u)*'+mt+')"></i>';}
+  function lines(c,n){var ws=[94,86,90,72,88,64],o='';for(var k=0;k<n;k++)o+=bar(ws[k%6],c,1.7,2.4);return o;}
+  var P='padding:calc(var(--u)*9)';
+  var T={
+    classic:function(){return '<div class="p-in" style="'+P+'">'+bar(48,'#1b1b1d',4.4,0)+bar(32,'#a0a0a6',1.9,2.2)+bar(100,'#1b1b1d',.4,4.5)+bar(22,G,1.7,5)+lines('#d6d3ca',3)+bar(22,G,1.7,5)+lines('#d6d3ca',4)+bar(22,G,1.7,5)+lines('#d6d3ca',2)+'</div>';},
+    dark:function(){return '<div class="p-in" style="background:#131316;'+P+'">'+bar(48,'#f5f2ea',4.4,0)+bar(32,'#6f6f76',1.9,2.2)+bar(100,G,.4,4.5)+bar(22,G,1.7,5)+lines('#3b3b42',3)+bar(22,G,1.7,5)+lines('#3b3b42',4)+bar(22,G,1.7,5)+lines('#3b3b42',2)+'</div>';},
+    band:function(){return '<div style="height:calc(var(--u)*30);background:linear-gradient(135deg,#d8c79b,#bfa96f);padding:calc(var(--u)*9) calc(var(--u)*9) 0">'+bar(50,'#2b2512',4.4,0)+bar(34,'#6b5d33',1.9,2.2)+'</div><div style="padding:calc(var(--u)*7) calc(var(--u)*9)">'+bar(22,G,1.7,0)+lines('#d6d3ca',3)+bar(22,G,1.7,5)+lines('#d6d3ca',4)+bar(22,G,1.7,5)+lines('#d6d3ca',2)+'</div>';},
+    side:function(){return '<div style="display:flex;height:100%"><div style="width:34%;background:#17171b;padding:calc(var(--u)*8) calc(var(--u)*6)">'+bar(90,'#f5f2ea',3.6,0)+bar(60,'#8c8c93',1.6,2)+bar(50,G,1.5,7)+lines('#3f3f46',4)+'</div><div style="flex:1;padding:calc(var(--u)*8) calc(var(--u)*7)">'+bar(30,G,1.7,0)+lines('#d6d3ca',3)+bar(30,G,1.7,5)+lines('#d6d3ca',4)+bar(30,G,1.7,5)+lines('#d6d3ca',3)+'</div></div>';}
+  };
+  var SETS={hero:['classic','dark','band','side'],statement:['side','classic']};
+  document.querySelectorAll('.cv-ghosts').forEach(function(box){
+    (SETS[box.getAttribute('data-set')]||[]).forEach(function(t){
+      var d=document.createElement('div'); d.className='hc'; d.innerHTML=T[t](); box.appendChild(d);
+    });
+  });
 })();
 </script>
 </body>
