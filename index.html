@@ -44,7 +44,7 @@
   @media (max-width:768px){ .nav-links{ display:none; } nav{ padding:22px 24px; } }
 
   /* ---------- Hero (pinned 3D) ---------- */
-  #hero-pin { position:relative; height:100vh; display:flex; align-items:center; justify-content:center; background:#0a0a0c; overflow:hidden; }
+  #hero-pin { position:relative; min-height:100vh; display:flex; align-items:center; justify-content:center; background:#0a0a0c; overflow:hidden; padding:118px 28px 80px; }
 
   .hero-copy { position:relative; z-index:5; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:0 24px; }
   .eyebrow { font-size:12px; letter-spacing:.35em; text-transform:uppercase; color:#8a8375; margin-bottom:28px; opacity:0; }
@@ -140,30 +140,56 @@
   .marquee-track { display:flex; gap:80px; width:max-content; animation:marquee 22s linear infinite; }
   .marquee-track span { font-size:22px; font-weight:700; color:rgba(255,255,255,.3); white-space:nowrap; letter-spacing:-.02em; }
   @keyframes marquee { from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
-  /* ---------- Decorative CV papers (make the page feel like a CV builder) ---------- */
-  .cv-ghosts { position:absolute; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
-  .hc { position:absolute; --w:200px; --u:calc(var(--w) / 100); --r:0deg; --o:.4; width:var(--w); aspect-ratio:210/297; border-radius:6px; background:#fbfaf6; box-shadow:0 30px 70px rgba(0,0,0,.6); overflow:hidden; transform:rotate(var(--r)); opacity:0; animation:hcIn 1.4s ease .5s forwards, hcFloat var(--d,9s) ease-in-out 1.9s infinite alternate; }
-  .hc i { display:block; border-radius:99px; }
-  .hc .p-in { height:100%; }
-  @keyframes hcIn { to { opacity:var(--o); } }
-  @keyframes hcFloat { from { transform:rotate(var(--r)) translateY(-9px); } to { transform:rotate(var(--r)) translateY(11px); } }
-  .cv-ghosts[data-set="hero"] .hc:nth-child(1) { --w:210px; --r:-9deg; --o:.5; left:2%; top:17%; --d:9s; }
-  .cv-ghosts[data-set="hero"] .hc:nth-child(2) { --w:168px; --r:6deg; --o:.46; left:10%; top:62%; --d:11s; }
-  .cv-ghosts[data-set="hero"] .hc:nth-child(3) { --w:200px; --r:8deg; --o:.5; right:2%; top:14%; --d:10s; }
-  .cv-ghosts[data-set="hero"] .hc:nth-child(4) { --w:174px; --r:-6deg; --o:.46; right:9%; top:60%; --d:12s; }
-  .cv-ghosts[data-set="statement"] .hc:nth-child(1) { --w:190px; --r:-7deg; --o:.3; left:3%; top:10%; --d:10s; }
-  .cv-ghosts[data-set="statement"] .hc:nth-child(2) { --w:180px; --r:8deg; --o:.3; right:3%; top:42%; --d:12s; }
-  .statement { position:relative; overflow:hidden; }
-  .statement p { position:relative; z-index:2; }
-  @media (max-width:700px) {
-    .cv-ghosts[data-set="hero"] .hc:nth-child(1) { --w:138px; left:-16px; top:96px; --r:-8deg; --o:.5; }
-    .cv-ghosts[data-set="hero"] .hc:nth-child(2) { --w:130px; left:-12px; top:auto; bottom:84px; --r:7deg; --o:.46; }
-    .cv-ghosts[data-set="hero"] .hc:nth-child(3) { --w:124px; left:auto; right:-14px; top:104px; --r:9deg; --o:.5; }
-    .cv-ghosts[data-set="hero"] .hc:nth-child(4) { --w:122px; left:auto; right:-12px; top:auto; bottom:100px; --r:-7deg; --o:.46; display:block; }
-    .cv-ghosts[data-set="statement"] .hc:nth-child(1) { --w:120px; left:-36px; top:12px; --o:.28; }
-    .cv-ghosts[data-set="statement"] .hc:nth-child(2) { --w:116px; right:-34px; top:auto; bottom:14px; --o:.28; }
+  /* ---------- Hero with real CV images ---------- */
+  .hero-wrap { position:relative; z-index:5; width:100%; max-width:1260px; margin:0 auto; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.08fr); gap:36px; align-items:center; }
+  .hero-wrap .hero-copy { align-items:flex-start; text-align:left; padding:0; }
+  .hero-wrap h1.hero-title { font-size:clamp(44px,5.6vw,88px); }
+  .hero-cta-row { display:flex; gap:14px; flex-wrap:wrap; margin-top:38px; opacity:0; animation:hvIn .9s ease .9s forwards; }
+  .hero-cta-row .cta-btn { margin-top:0; padding:16px 34px; opacity:1; transform:none; }
+  .hero-link { display:inline-flex; align-items:center; padding:16px 26px; border-radius:999px; border:1px solid rgba(255,255,255,.22); color:#f5f2ea; text-decoration:none; font-size:15px; font-weight:500; }
+  .hero-link:hover { border-color:#d8d0b8; }
+  .hero-visual { position:relative; height:clamp(480px,50vw,680px); opacity:0; animation:hvIn 1.2s ease .25s forwards; }
+  @keyframes hvIn { to { opacity:1; } }
+  .hv { position:absolute; display:block; height:auto; border-radius:8px; background:#fff; box-shadow:0 36px 80px rgba(0,0,0,.6); animation:hvFloat var(--d,9s) ease-in-out infinite alternate; }
+  @keyframes hvFloat { from { translate:0 -9px; } to { translate:0 11px; } }
+  .hv-main { width:min(410px,35vw); left:50%; top:50%; transform:translate(-50%,-50%); z-index:3; --d:10s; }
+  .hv-left { width:min(318px,27vw); left:50%; top:54%; transform:translate(-100%,-48%) rotate(-7deg); z-index:2; --d:12s; }
+  .hv-right { width:min(318px,27vw); left:50%; top:46%; transform:translate(0%,-52%) rotate(6deg); z-index:2; --d:11s; }
+  .hv-chip { position:absolute; z-index:5; display:flex; align-items:center; gap:9px; padding:11px 16px; border-radius:14px; background:rgba(18,18,22,.8); border:1px solid rgba(255,255,255,.14); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); font-size:13px; font-weight:600; color:#f5f2ea; box-shadow:0 18px 40px rgba(0,0,0,.45); animation:hvFloat 8s ease-in-out infinite alternate; }
+  .hv-chip i { width:20px; height:20px; border-radius:50%; background:#d8d0b8; color:#0a0a0c; font-style:normal; font-size:12px; display:flex; align-items:center; justify-content:center; }
+  .hv-chip.c1 { left:0; top:16%; --d:8s; }
+  .hv-chip.c2 { right:-2%; top:42%; animation-delay:-3s; }
+  .hv-chip.c3 { left:5%; bottom:9%; animation-delay:-5s; }
+  .hv-note { position:absolute; right:2%; bottom:2%; z-index:5; font-size:11px; color:rgba(255,255,255,.4); letter-spacing:.04em; }
+  @media (max-width:900px) {
+    #hero-pin { padding:96px 20px 64px; align-items:flex-start; }
+    .hero-wrap { grid-template-columns:1fr; gap:26px; }
+    .hero-visual { order:-1; height:370px; }
+    .hv-main { width:min(236px,58vw); }
+    .hv-left { width:min(166px,40vw); transform:translate(-96%,-46%) rotate(-7deg); }
+    .hv-right { width:min(166px,40vw); transform:translate(-4%,-54%) rotate(6deg); }
+    .hv-chip { font-size:11.5px; padding:8px 12px; border-radius:12px; }
+    .hv-chip.c1 { left:-4px; top:6%; } .hv-chip.c2 { right:-6px; top:auto; bottom:22%; } .hv-chip.c3 { display:none; }
+    .hv-note { right:50%; transform:translateX(50%); bottom:-16px; }
+    .hero-wrap .hero-copy { align-items:center; text-align:center; }
+    .hero-wrap h1.hero-title { font-size:clamp(40px,11.5vw,60px); }
+    .hero-cta-row { justify-content:center; }
+    .scroll-cue { display:none; }
   }
-  @media (prefers-reduced-motion:reduce) { .hc { animation:hcIn .01s forwards; } }
+  @media (prefers-reduced-motion:reduce) { .hv, .hv-chip { animation:none; } }
+
+  /* ---------- Template showcase (two scrolling rows of real CVs) ---------- */
+  .showcase { background:#0a0a0c; padding:70px 0 50px; overflow:hidden; }
+  .sc-row { overflow:hidden; margin-bottom:22px; -webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent); mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent); }
+  .sc-track { display:flex; gap:22px; width:max-content; animation:scL 70s linear infinite; }
+  .sc-row.rev .sc-track { animation-direction:reverse; animation-duration:80s; }
+  .sc-row:hover .sc-track { animation-play-state:paused; }
+  .sc-track img { height:clamp(250px,27vw,390px); width:auto; border-radius:8px; background:#fff; box-shadow:0 18px 50px rgba(0,0,0,.55); flex:none; }
+  @keyframes scL { to { transform:translateX(-50%); } }
+  .sc-foot { text-align:center; }
+  @media (max-width:700px) { .showcase { padding:50px 0 30px; } .sc-track { gap:14px; } .sc-track img { height:240px; } }
+  @media (prefers-reduced-motion:reduce) { .sc-track { animation:none; } .sc-row { overflow-x:auto; } }
+
   /* ---------- Product demo video (after marquee) ---------- */
   .demo-section { background:#0a0a0c; padding:90px 24px 40px; }
   .demo-head { max-width:640px; margin:0 auto 40px; text-align:center; }
@@ -261,11 +287,25 @@
   </div>
 
 <section id="hero-pin">
-  <div class="cv-ghosts" data-set="hero" aria-hidden="true"></div>
-  <div class="hero-copy">
-    <span class="eyebrow" id="eyebrow">AI-Powered Career Platform</span>
-    <h1 class="hero-title" id="heroTitle">Crafting your<br><span class="light">professional legacy.</span></h1>
-    <p class="hero-sub" id="heroSub">Not another template. A CV written with the precision of a craft — tailored to you, and to the role you're after.</p>
+  <div class="hero-wrap">
+    <div class="hero-copy">
+      <span class="eyebrow" id="eyebrow">AI-Powered Career Platform</span>
+      <h1 class="hero-title" id="heroTitle">Crafting your<br><span class="light">professional legacy.</span></h1>
+      <p class="hero-sub" id="heroSub">Not another template. A CV written with the precision of a craft — tailored to you, and to the role you're after.</p>
+      <div class="hero-cta-row" id="heroCta">
+        <a href="build.html" class="cta-btn" style="text-decoration:none;">Build your CV →</a>
+        <a href="templates.html" class="hero-link">Browse templates</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <img class="hv hv-left" src="assets/hero/cv-left.webp" width="620" height="713" alt="Sapphire Showcase CV template with a blue sidebar" decoding="async">
+      <img class="hv hv-right" src="assets/hero/cv-right.webp" width="620" height="712" alt="The Executive Clean CV template with a navy header" decoding="async">
+      <img class="hv hv-main" src="assets/hero/cv-main.webp" width="880" height="1012" alt="A finished CV in The Modern Slate template" fetchpriority="high">
+      <div class="hv-chip c1"><i>✓</i>ATS-friendly layouts</div>
+      <div class="hv-chip c2"><i>✓</i>Tailored to the role</div>
+      <div class="hv-chip c3"><i>✓</i>20 premium templates</div>
+      <span class="hv-note">Sample CVs</span>
+    </div>
   </div>
   <div class="scroll-cue" id="scrollCue"><span>Scroll</span><div class="line"></div></div>
 </section>
@@ -289,6 +329,16 @@
     <video id="demoVideo" data-mp4="assets/hero-demo.mp4" data-webm="assets/hero-demo.webm" data-mp4-m="assets/hero-demo-m.mp4" data-webm-m="assets/hero-demo-m.webm" data-poster-m="assets/hero-demo-m-poster.jpg" poster="assets/hero-demo-poster.jpg" muted loop playsinline preload="none" aria-label="KAVOX rewriting CV bullets for a job description, raising the ATS match score and switching templates"></video>
   </div>
   <p class="demo-note">Illustrative sample. Your results depend on your own CV and the role you apply for.</p>
+</section>
+
+<section class="showcase" id="showcase">
+  <div class="demo-head">
+    <span class="demo-label">The templates</span>
+    <h2>Twenty real designs. One that fits the role.</h2>
+  </div>
+  <div class="sc-row"><div class="sc-track"><img src="assets/templates/the-modern-slate.webp" width="640" height="604" loading="lazy" decoding="async" alt="The Modern Slate CV template"><img src="assets/templates/the-classic-serif.webp" width="640" height="597" loading="lazy" decoding="async" alt="The Classic Serif CV template"><img src="assets/templates/the-executive-clean.webp" width="640" height="735" loading="lazy" decoding="async" alt="The Executive Clean CV template"><img src="assets/templates/the-soft-tech.webp" width="640" height="600" loading="lazy" decoding="async" alt="The Soft Tech CV template"><img src="assets/templates/the-minimalist.webp" width="640" height="723" loading="lazy" decoding="async" alt="The Minimalist CV template"><img src="assets/templates/the-royal-parchment.webp" width="640" height="750" loading="lazy" decoding="async" alt="The Royal Parchment CV template"><img src="assets/templates/royal-grid.webp" width="640" height="652" loading="lazy" decoding="async" alt="Royal Grid CV template"><img src="assets/templates/the-visionary.webp" width="640" height="699" loading="lazy" decoding="async" alt="The Visionary CV template"><img src="assets/templates/gilded-grid.webp" width="640" height="717" loading="lazy" decoding="async" alt="Gilded Grid CV template"><img src="assets/templates/the-obsidian-scroll.webp" width="640" height="867" loading="lazy" decoding="async" alt="The Obsidian Scroll CV template"><img src="assets/templates/the-modern-slate.webp" width="640" height="604" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="assets/templates/the-classic-serif.webp" width="640" height="597" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="assets/templates/the-executive-clean.webp" width="640" height="735" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="assets/templates/the-soft-tech.webp" width="640" height="600" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="assets/templates/the-minimalist.webp" width="640" height="723" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="assets/templates/the-royal-parchment.webp" width="640" height="750" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="assets/templates/royal-grid.webp" width="640" height="652" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="assets/templates/the-visionary.webp" width="640" height="699" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="assets/templates/gilded-grid.webp" width="640" height="717" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="assets/templates/the-obsidian-scroll.webp" width="640" height="867" loading="lazy" decoding="async" alt="" aria-hidden="true"></div></div>
+  <div class="sc-row rev"><div class="sc-track"><img src="assets/templates/royal-dark-mode.webp" width="640" height="778" loading="lazy" decoding="async" alt="Royal Dark Mode CV template"><img src="assets/templates/sapphire-showcase.webp" width="640" height="571" loading="lazy" decoding="async" alt="Sapphire Showcase CV template"><img src="assets/templates/golden-graph.webp" width="640" height="716" loading="lazy" decoding="async" alt="Golden Graph CV template"><img src="assets/templates/the-charcoal-signature.webp" width="640" height="901" loading="lazy" decoding="async" alt="The Charcoal Signature CV template"><img src="assets/templates/crimson-career.webp" width="640" height="887" loading="lazy" decoding="async" alt="Crimson Career CV template"><img src="assets/templates/onyx-office.webp" width="640" height="785" loading="lazy" decoding="async" alt="Onyx Office CV template"><img src="assets/templates/the-elite-emblem.webp" width="640" height="745" loading="lazy" decoding="async" alt="The Elite Emblem CV template"><img src="assets/templates/the-marble-monarch.webp" width="640" height="590" loading="lazy" decoding="async" alt="The Marble Monarch CV template"><img src="assets/templates/the-sapphire-sultan.webp" width="640" height="695" loading="lazy" decoding="async" alt="The Sapphire Sultan CV template"><img src="assets/templates/the-celestial-signature.webp" width="640" height="728" loading="lazy" decoding="async" alt="The Celestial Signature CV template"><img src="assets/templates/royal-dark-mode.webp" width="640" height="778" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="assets/templates/sapphire-showcase.webp" width="640" height="571" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="assets/templates/golden-graph.webp" width="640" height="716" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="assets/templates/the-charcoal-signature.webp" width="640" height="901" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="assets/templates/crimson-career.webp" width="640" height="887" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="assets/templates/onyx-office.webp" width="640" height="785" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="assets/templates/the-elite-emblem.webp" width="640" height="745" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="assets/templates/the-marble-monarch.webp" width="640" height="590" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="assets/templates/the-sapphire-sultan.webp" width="640" height="695" loading="lazy" decoding="async" alt="" aria-hidden="true"><img src="assets/templates/the-celestial-signature.webp" width="640" height="728" loading="lazy" decoding="async" alt="" aria-hidden="true"></div></div>
+  <div class="sc-foot"><a href="templates.html" class="cta-btn" style="text-decoration:none;margin-top:34px;">Browse all templates →</a></div>
 </section>
 
 <section class="tips-section">
@@ -335,7 +385,6 @@
 </section>
 
 <section class="statement" id="about">
-  <div class="cv-ghosts" data-set="statement" aria-hidden="true"></div>
   <p>
     We do not write CVs.<br>
     <span class="lit">We craft the <span class="accent">opening chapters</span></span> —
@@ -790,27 +839,6 @@ document.querySelectorAll('.faq-item').forEach(item => {
       else { v.pause(); }
     });
   },{threshold:0.35,rootMargin:'200px 0px'}).observe(v);
-})();
-</script>
-<script>
-/* decorative CV papers: built from simple bars so they read as CV layouts */
-(function(){
-  var G='#b8963a';
-  function bar(w,c,h,mt){return '<i style="width:'+w+'%;height:calc(var(--u)*'+h+');background:'+c+';margin-top:calc(var(--u)*'+mt+')"></i>';}
-  function lines(c,n){var ws=[94,86,90,72,88,64],o='';for(var k=0;k<n;k++)o+=bar(ws[k%6],c,1.7,2.4);return o;}
-  var P='padding:calc(var(--u)*9)';
-  var T={
-    classic:function(){return '<div class="p-in" style="'+P+'">'+bar(48,'#1b1b1d',4.4,0)+bar(32,'#a0a0a6',1.9,2.2)+bar(100,'#1b1b1d',.4,4.5)+bar(22,G,1.7,5)+lines('#d6d3ca',3)+bar(22,G,1.7,5)+lines('#d6d3ca',4)+bar(22,G,1.7,5)+lines('#d6d3ca',2)+'</div>';},
-    dark:function(){return '<div class="p-in" style="background:#131316;'+P+'">'+bar(48,'#f5f2ea',4.4,0)+bar(32,'#6f6f76',1.9,2.2)+bar(100,G,.4,4.5)+bar(22,G,1.7,5)+lines('#3b3b42',3)+bar(22,G,1.7,5)+lines('#3b3b42',4)+bar(22,G,1.7,5)+lines('#3b3b42',2)+'</div>';},
-    band:function(){return '<div style="height:calc(var(--u)*30);background:linear-gradient(135deg,#d8c79b,#bfa96f);padding:calc(var(--u)*9) calc(var(--u)*9) 0">'+bar(50,'#2b2512',4.4,0)+bar(34,'#6b5d33',1.9,2.2)+'</div><div style="padding:calc(var(--u)*7) calc(var(--u)*9)">'+bar(22,G,1.7,0)+lines('#d6d3ca',3)+bar(22,G,1.7,5)+lines('#d6d3ca',4)+bar(22,G,1.7,5)+lines('#d6d3ca',2)+'</div>';},
-    side:function(){return '<div style="display:flex;height:100%"><div style="width:34%;background:#17171b;padding:calc(var(--u)*8) calc(var(--u)*6)">'+bar(90,'#f5f2ea',3.6,0)+bar(60,'#8c8c93',1.6,2)+bar(50,G,1.5,7)+lines('#3f3f46',4)+'</div><div style="flex:1;padding:calc(var(--u)*8) calc(var(--u)*7)">'+bar(30,G,1.7,0)+lines('#d6d3ca',3)+bar(30,G,1.7,5)+lines('#d6d3ca',4)+bar(30,G,1.7,5)+lines('#d6d3ca',3)+'</div></div>';}
-  };
-  var SETS={hero:['classic','dark','band','side'],statement:['side','classic']};
-  document.querySelectorAll('.cv-ghosts').forEach(function(box){
-    (SETS[box.getAttribute('data-set')]||[]).forEach(function(t){
-      var d=document.createElement('div'); d.className='hc'; d.innerHTML=T[t](); box.appendChild(d);
-    });
-  });
 })();
 </script>
 </body>

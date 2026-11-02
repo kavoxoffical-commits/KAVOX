@@ -127,6 +127,35 @@
   @media (max-width:768px){ .nav-toggle{ display:flex; } }
 </style>
 <script src="kavox-theme.js"></script>
+<style>
+  .tier-nav { flex-direction:column; align-items:center; gap:14px; }
+  .chip-row { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
+  .chip { font:600 14px Inter,sans-serif; padding:11px 22px; border-radius:999px; border:1px solid rgba(255,255,255,.2); background:transparent; color:rgba(255,255,255,.78); cursor:pointer; transition:all .2s; }
+  .chip b { font-weight:600; opacity:.55; margin-left:6px; }
+  .chip:hover { border-color:#d8d0b8; color:#ece6d6; }
+  .chip.on { background:#f5f2ea; color:#0a0a0c; border-color:#f5f2ea; }
+  .chip-row.small .chip { font-size:12.5px; padding:8px 16px; }
+  .gal { padding:30px 24px 110px; }
+  .gal-inner { max-width:1320px; margin:0 auto; }
+  .gal-note { text-align:center; font-size:13px; color:rgba(255,255,255,.45); margin:0 auto 38px; max-width:560px; }
+  .gal-grid { column-count:4; column-gap:22px; }
+  @media (max-width:1100px) { .gal-grid { column-count:3; } }
+  @media (max-width:720px) { .gal-grid { column-count:2; column-gap:12px; } .gal { padding:20px 14px 80px; } }
+  .tcard { display:block; position:relative; break-inside:avoid; margin-bottom:30px; text-decoration:none; color:inherit; }
+  .tcard.hide { display:none; }
+  .tcard .timg { display:block; border-radius:10px; overflow:hidden; background:#fff; box-shadow:0 16px 44px rgba(0,0,0,.5); transition:transform .35s ease, box-shadow .35s ease; }
+  .tcard:hover .timg { transform:translateY(-7px); box-shadow:0 26px 60px rgba(0,0,0,.6); }
+  .tcard img { display:block; width:100%; height:auto; }
+  .tcap { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:13px; }
+  .tbadge { flex:none; font:700 10px Inter,sans-serif; letter-spacing:.12em; text-transform:uppercase; padding:5px 10px; border-radius:999px; background:rgba(10,10,12,.82); color:#ece6d6; border:1px solid rgba(255,255,255,.14); backdrop-filter:blur(6px); }
+  .tb-elite { background:linear-gradient(135deg,#ece6d6,#d8d0b8); color:#0a0a0c; border-color:transparent; }
+  .tname { display:block; font:600 13.5px Inter,sans-serif; letter-spacing:.08em; text-transform:uppercase; color:#f5f2ea; }
+  .tmeta { display:block; margin-top:3px; font-size:12px; color:rgba(255,255,255,.45); }
+  @media (max-width:720px) { .tier-nav { align-items:stretch; } .chip-row { flex-wrap:nowrap; overflow-x:auto; justify-content:flex-start; padding:2px 4px; scrollbar-width:none; } .chip-row::-webkit-scrollbar { display:none; } .chip { flex:none; } }
+  .gal-empty { text-align:center; color:rgba(255,255,255,.5); padding:60px 0; }
+  .tpl-preview-mock-wrap { aspect-ratio:auto !important; max-height:72vh; overflow:auto; background:#fff; }
+  .tpl-preview-mock-wrap img { display:block; width:100%; height:auto; }
+</style>
 </head>
 <body>
 
@@ -149,310 +178,113 @@
   </div>
 
 <section class="tpl-hero">
-  <span class="tpl-eyebrow" id="teEyebrow">Twenty templates, three tiers</span>
+  <span class="tpl-eyebrow" id="teEyebrow">Real templates, real previews</span>
   <h1 class="tpl-title" id="teTitle">From clean and<br>ATS-safe to unapologetically luxe.</h1>
   <p class="tpl-sub" id="teSub">Every template is built to pass applicant tracking systems first, then designed to stand out to the human reading it after.</p>
 
   <div class="tier-nav" id="tierNav">
-    <a href="#tier-pro">Pro · $5 · 5 templates</a>
-    <a href="#tier-royal">Royal · $9/mo · 8 templates</a>
-    <a href="#tier-elite">Elite · $19/mo · 7 templates</a>
-  </div>
-</section>
-
-<section class="tier-section" id="tier-pro">
-  <div class="tier-section-inner">
-    <div class="tier-header">
-      <div class="tier-header-left">
-        <span class="tier-name">Pro</span>
-        <h2 class="tier-title">Clean, ATS-safe, built for volume applications.</h2>
-        <p class="tier-desc">Simple layouts that parse cleanly through applicant tracking systems — the safest starting point for most job searches.</p>
-      </div>
-      <span class="tier-price-pill">$5 one-time · 5 templates</span>
+    <div class="chip-row" id="catChips" role="group" aria-label="Filter by style">
+      <button type="button" class="chip on" data-cat="all">All templates <b>20</b></button>
+      <button type="button" class="chip" data-cat="simple">Simple</button>
+      <button type="button" class="chip" data-cat="modern">Modern</button>
+      <button type="button" class="chip" data-cat="professional">Professional</button>
+      <button type="button" class="chip" data-cat="dark">Dark &amp; luxe</button>
     </div>
-    <div class="tpl-grid">
-      <div class="tpl-card"><div class="tpl-mock" style="position:absolute;inset:0;"><div class="cv-doc cv-minimalist" style="position:absolute;inset:0;width:100%;height:100%;">
-              <div class="cv-doc-sidebar">
-                <div class="cvs-avatar"></div>
-                <div class="cvs-line w80 h4 gold mb4"></div>
-                <div class="cvs-line w60 h2 muted mb8"></div>
-                <div class="cvs-section-title mt6">Contact</div>
-                <div class="cvs-line w90 h2 light mt3"></div>
-                <div class="cvs-line w75 h2 light mt3"></div>
-                <div class="cvs-section-title mt8">Skills</div>
-                <div class="cvs-skill-bar mt3"><div class="cvs-skill-fill" style="width:85%"></div></div>
-                <div class="cvs-skill-bar mt3"><div class="cvs-skill-fill" style="width:65%"></div></div>
-              </div>
-              <div class="cv-doc-body">
-                <div class="cvb-section-title">Experience</div>
-                <div class="cvb-divider"></div>
-                <div class="cvb-job-title w70 h3 mb3"></div>
-                <div class="cvb-line w100 h2 mb2"></div>
-                <div class="cvb-line w90 h2 mb2"></div>
-                <div class="cvb-line w80 h2 mb8"></div>
-                <div class="cvb-section-title">Education</div>
-                <div class="cvb-divider"></div>
-                <div class="cvb-job-title w60 h3 mb3"></div>
-                <div class="cvb-line w80 h2"></div>
-              </div>
-            </div></div><span class="tpl-lock">Pro</span><div class="tpl-info"><div class="name">The Minimalist</div><div class="tier">Clean sidebar</div></div></div>
-      <div class="tpl-card"><div class="tpl-mock" style="position:absolute;inset:0;"><div class="cv-doc cv-executive" style="position:absolute;inset:0;width:100%;height:100%;">
-              <div class="cv-doc-header-dark">
-                <div class="w55 h5 mb3" style="background:#fff;opacity:0.9;border-radius:2px;"></div>
-                <div class="w40 h2" style="background:#c9a84c;opacity:0.8;border-radius:2px;"></div>
-              </div>
-              <div class="cv-doc-body" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px;">
-                <div>
-                  <div class="cvb-section-title" style="color:#1a1a2e;border-bottom:2px solid #c9a84c;">Experience</div>
-                  <div class="cvb-job-title w80 h3 mb3 mt4"></div>
-                  <div class="cvb-line w100 h2 mb2"></div>
-                  <div class="cvb-line w90 h2 mb2"></div>
-                </div>
-                <div>
-                  <div class="cvb-section-title" style="color:#1a1a2e;border-bottom:2px solid #c9a84c;">Skills</div>
-                  <div class="cvs-skill-bar mt6"><div class="cvs-skill-fill" style="width:90%;background:#1a1a2e;"></div></div>
-                  <div class="cvs-skill-bar mt4"><div class="cvs-skill-fill" style="width:70%;background:#1a1a2e;"></div></div>
-                </div>
-              </div>
-            </div></div><span class="tpl-lock">Pro</span><div class="tpl-info"><div class="name">The Executive Clean</div><div class="tier">Navy header</div></div></div>
-      <div class="tpl-card"><div class="tpl-mock" style="position:absolute;inset:0;background:#f8f8f8;"><div style="display:flex;width:100%;height:100%;position:absolute;inset:0;">
-              <div style="width:38%;background:#1e2d3d;padding:8px;display:flex;flex-direction:column;gap:4px;">
-                <div style="width:36px;height:36px;border-radius:50%;border:2px solid #c9a84c;margin:0 auto 5px;background:rgba(201,168,76,0.15);"></div>
-                <div style="width:80%;height:3px;background:#c9a84c;border-radius:2px;margin:0 auto 2px;"></div>
-                <div style="width:60%;height:2px;background:rgba(255,255,255,0.4);border-radius:2px;margin:0 auto 6px;"></div>
-                <div style="background:rgba(255,255,255,0.1);height:3px;border-radius:2px;margin-bottom:2px;"><div style="width:85%;height:100%;background:#c9a84c;border-radius:2px;opacity:0.7;"></div></div>
-                <div style="background:rgba(255,255,255,0.1);height:3px;border-radius:2px;"><div style="width:65%;height:100%;background:#c9a84c;border-radius:2px;opacity:0.7;"></div></div>
-              </div>
-              <div style="flex:1;padding:8px;background:#f8f8f8;display:flex;flex-direction:column;gap:3px;">
-                <div style="height:3px;background:#1e2d3d;border-radius:2px;width:65%;margin-bottom:2px;"></div>
-                <div style="height:2px;background:#999;border-radius:2px;width:45%;margin-bottom:6px;"></div>
-                <div style="height:2px;background:#c9a84c;border-radius:2px;width:50%;margin-bottom:3px;"></div>
-                <div style="height:1px;background:#ddd;width:100%;margin-bottom:4px;"></div>
-                <div style="height:2px;background:#bbb;border-radius:2px;width:95%;margin-bottom:2px;"></div>
-                <div style="height:2px;background:#bbb;border-radius:2px;width:85%;margin-bottom:2px;"></div>
-              </div>
-            </div></div><span class="tpl-lock">Pro</span><div class="tpl-info"><div class="name">The Modern Slate</div><div class="tier">Dark sidebar</div></div></div>
-      <div class="tpl-card"><div class="tpl-mock" style="position:absolute;inset:0;background:#fdfaf5;"><div style="position:absolute;inset:0;padding:10px;display:flex;flex-direction:column;gap:4px;">
-              <div style="text-align:center;border-bottom:2px solid #333;padding-bottom:5px;margin-bottom:5px;">
-                <div style="width:55%;height:5px;background:#1a1a1a;border-radius:1px;margin:0 auto 3px;"></div>
-                <div style="width:38%;height:2px;background:#555;border-radius:1px;margin:0 auto 4px;"></div>
-              </div>
-              <div style="display:flex;gap:8px;">
-                <div style="flex:1.4;display:flex;flex-direction:column;gap:3px;">
-                  <div style="height:2px;background:#c9a84c;border-radius:1px;width:60%;margin-bottom:3px;opacity:0.8;"></div>
-                  <div style="height:2px;background:#666;width:100%;border-radius:1px;"></div>
-                  <div style="height:2px;background:#666;width:85%;border-radius:1px;"></div>
-                  <div style="height:2px;background:#666;width:95%;border-radius:1px;"></div>
-                </div>
-                <div style="flex:1;display:flex;flex-direction:column;gap:3px;">
-                  <div style="height:2px;background:#c9a84c;border-radius:1px;width:65%;margin-bottom:3px;opacity:0.8;"></div>
-                  <div style="height:2px;background:#666;width:85%;border-radius:1px;"></div>
-                  <div style="height:2px;background:#666;width:75%;border-radius:1px;"></div>
-                </div>
-              </div>
-            </div></div><span class="tpl-lock">Pro</span><div class="tpl-info"><div class="name">The Classic Serif</div><div class="tier">Timeless columns</div></div></div>
-      <div class="tpl-card"><div class="tpl-mock" style="position:absolute;inset:0;background:#f4f7ff;"><div style="position:absolute;inset:0;display:flex;flex-direction:column;">
-              <div style="background:#2d5be3;padding:8px;display:flex;align-items:center;gap:8px;">
-                <div style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.2);flex-shrink:0;"></div>
-                <div style="display:flex;flex-direction:column;gap:3px;flex:1;">
-                  <div style="height:4px;background:#fff;border-radius:2px;width:55%;opacity:0.9;"></div>
-                  <div style="height:2px;background:rgba(255,255,255,0.5);border-radius:2px;width:38%;"></div>
-                </div>
-              </div>
-              <div style="display:flex;gap:0;flex:1;">
-                <div style="width:36%;background:#e8eeff;padding:7px;display:flex;flex-direction:column;gap:3px;">
-                  <div style="height:2px;background:#2d5be3;border-radius:2px;width:70%;opacity:0.5;"></div>
-                  <div style="height:2px;background:#667;border-radius:2px;width:90%;"></div>
-                  <div style="background:#dde3ff;height:4px;border-radius:2px;margin-top:4px;"><div style="width:85%;height:100%;background:#2d5be3;border-radius:2px;opacity:0.6;"></div></div>
-                  <div style="background:#dde3ff;height:4px;border-radius:2px;margin-top:2px;"><div style="width:65%;height:100%;background:#2d5be3;border-radius:2px;opacity:0.6;"></div></div>
-                </div>
-                <div style="flex:1;padding:7px;display:flex;flex-direction:column;gap:3px;">
-                  <div style="height:2px;background:#2d5be3;border-radius:2px;width:55%;opacity:0.5;"></div>
-                  <div style="height:2px;background:#333;border-radius:2px;width:75%;"></div>
-                  <div style="height:2px;background:#999;border-radius:2px;width:100%;margin-top:2px;"></div>
-                  <div style="height:2px;background:#999;border-radius:2px;width:90%;"></div>
-                </div>
-              </div>
-            </div></div><span class="tpl-lock">Pro</span><div class="tpl-info"><div class="name">The Soft Tech</div><div class="tier">Blue accent</div></div></div>
+    <div class="chip-row small" id="tierChips" role="group" aria-label="Filter by plan">
+      <button type="button" class="chip on" data-tier="all">All plans</button>
+      <button type="button" class="chip" data-tier="Pro">Pro · $5 · 5</button>
+      <button type="button" class="chip" data-tier="Royal">Royal · $9/mo · 8</button>
+      <button type="button" class="chip" data-tier="Elite">Elite · $19/mo · 7</button>
     </div>
   </div>
 </section>
 
-<section class="tier-section" id="tier-royal">
-  <div class="tier-section-inner">
-    <div class="tier-header">
-      <div class="tier-header-left">
-        <span class="tier-name">Royal</span>
-        <h2 class="tier-title">Built for candidates tailoring to a specific role.</h2>
-        <p class="tier-desc">Includes access to Tailor for a Job — paste a job description and get a real, measured ATS match score alongside these templates.</p>
-      </div>
-      <span class="tier-price-pill">$9/mo · 8 templates</span>
+<section class="gal" id="gallery">
+  <div class="gal-inner">
+    <p class="gal-note">Every preview below is the real template, filled with sample data. Your own CV takes its place when you build.</p>
+    <div class="gal-grid" id="galGrid">
+      <a class="tcard" href="build.html?template=the-modern-slate" data-cat="modern" data-tier="Pro" data-name="The Modern Slate" data-style="Slate sidebar">
+        <span class="timg"><img src="assets/templates/the-modern-slate.webp" width="640" height="604" loading="lazy" decoding="async" alt="The Modern Slate CV template, slate sidebar layout"></span>
+        <span class="tcap"><span class="tname">The Modern Slate</span><span class="tbadge tb-pro">Pro</span></span><span class="tmeta">Slate sidebar</span>
+      </a>
+      <a class="tcard" href="build.html?template=royal-dark-mode" data-cat="dark" data-tier="Royal" data-name="Royal Dark Mode" data-style="Gold on dark">
+        <span class="timg"><img src="assets/templates/royal-dark-mode.webp" width="640" height="778" loading="lazy" decoding="async" alt="Royal Dark Mode CV template, gold on dark layout"></span>
+        <span class="tcap"><span class="tname">Royal Dark Mode</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Gold on dark</span>
+      </a>
+      <a class="tcard" href="build.html?template=the-classic-serif" data-cat="simple professional" data-tier="Pro" data-name="The Classic Serif" data-style="Centred serif">
+        <span class="timg"><img src="assets/templates/the-classic-serif.webp" width="640" height="597" loading="lazy" decoding="async" alt="The Classic Serif CV template, centred serif layout"></span>
+        <span class="tcap"><span class="tname">The Classic Serif</span><span class="tbadge tb-pro">Pro</span></span><span class="tmeta">Centred serif</span>
+      </a>
+      <a class="tcard" href="build.html?template=sapphire-showcase" data-cat="modern" data-tier="Royal" data-name="Sapphire Showcase" data-style="Sapphire sidebar">
+        <span class="timg"><img src="assets/templates/sapphire-showcase.webp" width="640" height="571" loading="lazy" decoding="async" alt="Sapphire Showcase CV template, sapphire sidebar layout"></span>
+        <span class="tcap"><span class="tname">Sapphire Showcase</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Sapphire sidebar</span>
+      </a>
+      <a class="tcard" href="build.html?template=the-executive-clean" data-cat="simple professional" data-tier="Pro" data-name="The Executive Clean" data-style="Navy header">
+        <span class="timg"><img src="assets/templates/the-executive-clean.webp" width="640" height="735" loading="lazy" decoding="async" alt="The Executive Clean CV template, navy header layout"></span>
+        <span class="tcap"><span class="tname">The Executive Clean</span><span class="tbadge tb-pro">Pro</span></span><span class="tmeta">Navy header</span>
+      </a>
+      <a class="tcard" href="build.html?template=golden-graph" data-cat="professional dark" data-tier="Royal" data-name="Golden Graph" data-style="Golden skill bars">
+        <span class="timg"><img src="assets/templates/golden-graph.webp" width="640" height="716" loading="lazy" decoding="async" alt="Golden Graph CV template, golden skill bars layout"></span>
+        <span class="tcap"><span class="tname">Golden Graph</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Golden skill bars</span>
+      </a>
+      <a class="tcard" href="build.html?template=the-soft-tech" data-cat="modern" data-tier="Pro" data-name="The Soft Tech" data-style="Blue header">
+        <span class="timg"><img src="assets/templates/the-soft-tech.webp" width="640" height="600" loading="lazy" decoding="async" alt="The Soft Tech CV template, blue header layout"></span>
+        <span class="tcap"><span class="tname">The Soft Tech</span><span class="tbadge tb-pro">Pro</span></span><span class="tmeta">Blue header</span>
+      </a>
+      <a class="tcard" href="build.html?template=the-charcoal-signature" data-cat="dark" data-tier="Elite" data-name="The Charcoal Signature" data-style="Ultra premium dark">
+        <span class="timg"><img src="assets/templates/the-charcoal-signature.webp" width="640" height="901" loading="lazy" decoding="async" alt="The Charcoal Signature CV template, ultra premium dark layout"></span>
+        <span class="tcap"><span class="tname">The Charcoal Signature</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Ultra premium dark</span>
+      </a>
+      <a class="tcard" href="build.html?template=the-minimalist" data-cat="simple modern" data-tier="Pro" data-name="The Minimalist" data-style="Clean sidebar">
+        <span class="timg"><img src="assets/templates/the-minimalist.webp" width="640" height="723" loading="lazy" decoding="async" alt="The Minimalist CV template, clean sidebar layout"></span>
+        <span class="tcap"><span class="tname">The Minimalist</span><span class="tbadge tb-pro">Pro</span></span><span class="tmeta">Clean sidebar</span>
+      </a>
+      <a class="tcard" href="build.html?template=crimson-career" data-cat="professional" data-tier="Royal" data-name="Crimson Career" data-style="Crimson header">
+        <span class="timg"><img src="assets/templates/crimson-career.webp" width="640" height="887" loading="lazy" decoding="async" alt="Crimson Career CV template, crimson header layout"></span>
+        <span class="tcap"><span class="tname">Crimson Career</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Crimson header</span>
+      </a>
+      <a class="tcard" href="build.html?template=the-royal-parchment" data-cat="simple professional" data-tier="Elite" data-name="The Royal Parchment" data-style="Warm parchment">
+        <span class="timg"><img src="assets/templates/the-royal-parchment.webp" width="640" height="750" loading="lazy" decoding="async" alt="The Royal Parchment CV template, warm parchment layout"></span>
+        <span class="tcap"><span class="tname">The Royal Parchment</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Warm parchment</span>
+      </a>
+      <a class="tcard" href="build.html?template=onyx-office" data-cat="dark" data-tier="Royal" data-name="Onyx Office" data-style="Onyx and gold">
+        <span class="timg"><img src="assets/templates/onyx-office.webp" width="640" height="785" loading="lazy" decoding="async" alt="Onyx Office CV template, onyx and gold layout"></span>
+        <span class="tcap"><span class="tname">Onyx Office</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Onyx and gold</span>
+      </a>
+      <a class="tcard" href="build.html?template=royal-grid" data-cat="modern professional" data-tier="Royal" data-name="Royal Grid" data-style="Navy sidebar">
+        <span class="timg"><img src="assets/templates/royal-grid.webp" width="640" height="652" loading="lazy" decoding="async" alt="Royal Grid CV template, navy sidebar layout"></span>
+        <span class="tcap"><span class="tname">Royal Grid</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Navy sidebar</span>
+      </a>
+      <a class="tcard" href="build.html?template=the-elite-emblem" data-cat="dark" data-tier="Elite" data-name="The Elite Emblem" data-style="Emblem monogram">
+        <span class="timg"><img src="assets/templates/the-elite-emblem.webp" width="640" height="745" loading="lazy" decoding="async" alt="The Elite Emblem CV template, emblem monogram layout"></span>
+        <span class="tcap"><span class="tname">The Elite Emblem</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Emblem monogram</span>
+      </a>
+      <a class="tcard" href="build.html?template=the-visionary" data-cat="modern" data-tier="Royal" data-name="The Visionary" data-style="Violet sidebar">
+        <span class="timg"><img src="assets/templates/the-visionary.webp" width="640" height="699" loading="lazy" decoding="async" alt="The Visionary CV template, violet sidebar layout"></span>
+        <span class="tcap"><span class="tname">The Visionary</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Violet sidebar</span>
+      </a>
+      <a class="tcard" href="build.html?template=the-marble-monarch" data-cat="simple professional" data-tier="Elite" data-name="The Marble Monarch" data-style="Marble frame">
+        <span class="timg"><img src="assets/templates/the-marble-monarch.webp" width="640" height="590" loading="lazy" decoding="async" alt="The Marble Monarch CV template, marble frame layout"></span>
+        <span class="tcap"><span class="tname">The Marble Monarch</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Marble frame</span>
+      </a>
+      <a class="tcard" href="build.html?template=gilded-grid" data-cat="professional dark" data-tier="Royal" data-name="Gilded Grid" data-style="Gilded two-column">
+        <span class="timg"><img src="assets/templates/gilded-grid.webp" width="640" height="717" loading="lazy" decoding="async" alt="Gilded Grid CV template, gilded two-column layout"></span>
+        <span class="tcap"><span class="tname">Gilded Grid</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Gilded two-column</span>
+      </a>
+      <a class="tcard" href="build.html?template=the-sapphire-sultan" data-cat="dark professional" data-tier="Elite" data-name="The Sapphire Sultan" data-style="Sapphire header">
+        <span class="timg"><img src="assets/templates/the-sapphire-sultan.webp" width="640" height="695" loading="lazy" decoding="async" alt="The Sapphire Sultan CV template, sapphire header layout"></span>
+        <span class="tcap"><span class="tname">The Sapphire Sultan</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Sapphire header</span>
+      </a>
+      <a class="tcard" href="build.html?template=the-obsidian-scroll" data-cat="dark" data-tier="Elite" data-name="The Obsidian Scroll" data-style="Midnight luxury">
+        <span class="timg"><img src="assets/templates/the-obsidian-scroll.webp" width="640" height="867" loading="lazy" decoding="async" alt="The Obsidian Scroll CV template, midnight luxury layout"></span>
+        <span class="tcap"><span class="tname">The Obsidian Scroll</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Midnight luxury</span>
+      </a>
+      <a class="tcard" href="build.html?template=the-celestial-signature" data-cat="dark" data-tier="Elite" data-name="The Celestial Signature" data-style="Celestial dark">
+        <span class="timg"><img src="assets/templates/the-celestial-signature.webp" width="640" height="728" loading="lazy" decoding="async" alt="The Celestial Signature CV template, celestial dark layout"></span>
+        <span class="tcap"><span class="tname">The Celestial Signature</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Celestial dark</span>
+      </a>
     </div>
-    <div class="tpl-grid">
-      <div class="tpl-card"><div class="tpl-mock" style="position:absolute;inset:0;background:#0d1b2e;"><div style="position:absolute;inset:0;padding:10px;display:flex;flex-direction:column;gap:5px;">
-              <div style="width:70%;height:5px;background:#c9a84c;border-radius:2px;opacity:0.9;"></div>
-              <div style="width:50%;height:2px;background:rgba(201,168,76,0.5);border-radius:2px;margin-bottom:6px;"></div>
-              <div style="height:1px;background:rgba(201,168,76,0.3);width:100%;margin-bottom:5px;"></div>
-              <div style="height:2px;background:rgba(255,255,255,0.5);border-radius:2px;width:100%;"></div>
-              <div style="height:2px;background:rgba(255,255,255,0.35);border-radius:2px;width:90%;"></div>
-              <div style="height:2px;background:rgba(255,255,255,0.35);border-radius:2px;width:95%;"></div>
-              <div style="height:1px;background:rgba(201,168,76,0.3);width:100%;margin:6px 0;"></div>
-              <div style="height:2px;background:#c9a84c;border-radius:2px;width:55%;opacity:0.7;"></div>
-              <div style="height:2px;background:rgba(255,255,255,0.3);border-radius:2px;width:100%;"></div>
-              <div style="height:2px;background:rgba(255,255,255,0.25);border-radius:2px;width:85%;"></div>
-            </div></div><span class="tpl-lock">Royal</span><div class="tpl-info"><div class="name">Royal Dark Mode</div><div class="tier">Gold on dark</div></div></div>
-      <div class="tpl-card"><div class="tpl-mock" style="position:absolute;inset:0;background:#0a1628;"><div style="position:absolute;inset:0;display:flex;flex-direction:row;">
-              <div style="width:34%;background:rgba(201,168,76,0.08);border-right:1px solid rgba(201,168,76,0.25);padding:8px;display:flex;flex-direction:column;gap:4px;">
-                <div style="height:3px;background:#c9a84c;border-radius:2px;width:80%;opacity:0.8;"></div>
-                <div style="height:2px;background:rgba(201,168,76,0.4);border-radius:2px;width:60%;margin-bottom:5px;"></div>
-                <div style="height:2px;background:rgba(255,255,255,0.3);border-radius:2px;width:90%;"></div>
-                <div style="height:2px;background:rgba(255,255,255,0.25);border-radius:2px;width:80%;"></div>
-                <div style="height:1px;background:rgba(201,168,76,0.2);width:100%;margin:4px 0;"></div>
-                <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:2px;background:#c9a84c;opacity:0.6;border-radius:1px;"></div><div style="height:2px;background:rgba(255,255,255,0.25);flex:1;border-radius:1px;"></div></div>
-                <div style="display:flex;align-items:center;gap:4px;margin-top:2px;"><div style="width:8px;height:2px;background:#c9a84c;opacity:0.5;border-radius:1px;"></div><div style="height:2px;background:rgba(255,255,255,0.2);flex:1;border-radius:1px;"></div></div>
-              </div>
-              <div style="flex:1;padding:8px;display:flex;flex-direction:column;gap:3px;">
-                <div style="height:2px;background:#c9a84c;border-radius:2px;width:60%;opacity:0.7;margin-bottom:2px;"></div>
-                <div style="height:1px;background:rgba(201,168,76,0.25);width:100%;margin-bottom:4px;"></div>
-                <div style="height:2px;background:rgba(255,255,255,0.45);border-radius:2px;width:80%;"></div>
-                <div style="height:2px;background:rgba(255,255,255,0.3);border-radius:2px;width:100%;"></div>
-                <div style="height:2px;background:rgba(255,255,255,0.3);border-radius:2px;width:95%;"></div>
-              </div>
-            </div></div><span class="tpl-lock">Royal</span><div class="tpl-info"><div class="name">Golden Graph</div><div class="tier">Royal sidebar</div></div></div>
-      <div class="tpl-card"><div class="tpl-mock" style="position:absolute;inset:0;background:#f9f5e8;"><div style="position:absolute;inset:0;padding:10px;display:flex;flex-direction:column;gap:4px;">
-              <div style="background:#1a2a45;padding:8px;margin:-10px -10px 8px;display:flex;justify-content:space-between;align-items:center;">
-                <div style="display:flex;flex-direction:column;gap:2px;"><div style="width:80px;height:4px;background:#c9a84c;border-radius:1px;"></div><div style="width:55px;height:2px;background:rgba(201,168,76,0.5);border-radius:1px;"></div></div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;"><div style="width:35px;height:2px;background:rgba(255,255,255,0.4);border-radius:1px;"></div><div style="width:35px;height:2px;background:rgba(255,255,255,0.4);border-radius:1px;"></div><div style="width:35px;height:2px;background:rgba(255,255,255,0.3);border-radius:1px;"></div><div style="width:35px;height:2px;background:rgba(255,255,255,0.3);border-radius:1px;"></div></div>
-              </div>
-              <div style="height:2px;background:#c9a84c;border-radius:1px;width:50%;opacity:0.7;margin-bottom:3px;"></div>
-              <div style="height:2px;background:#555;width:100%;border-radius:1px;"></div>
-              <div style="height:2px;background:#777;width:95%;border-radius:1px;"></div>
-              <div style="height:2px;background:#777;width:88%;border-radius:1px;"></div>
-            </div></div><span class="tpl-lock">Royal</span><div class="tpl-info"><div class="name">Royal Grid</div><div class="tier">Executive grid</div></div></div>
-      <div class="tpl-card"><div class="tpl-mock" style="position:absolute;inset:0;background:#0d1b2e;"><div style="position:absolute;inset:0;padding:10px;display:flex;flex-direction:column;gap:4px;">
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><div style="width:38px;height:38px;border-radius:50%;border:2px solid #1565c0;background:rgba(21,101,192,0.2);flex-shrink:0;"></div><div style="display:flex;flex-direction:column;gap:3px;"><div style="width:80px;height:4px;background:#fff;border-radius:1px;opacity:0.9;"></div><div style="width:55px;height:2px;background:#1565c0;border-radius:1px;opacity:0.8;"></div></div></div>
-              <div style="height:2px;background:#1565c0;border-radius:1px;width:55%;opacity:0.7;margin-bottom:3px;"></div>
-              <div style="height:1px;background:rgba(21,101,192,0.4);width:100%;margin-bottom:4px;"></div>
-              <div style="height:2px;background:rgba(255,255,255,0.45);border-radius:1px;width:90%;"></div>
-              <div style="height:2px;background:rgba(255,255,255,0.3);border-radius:1px;width:100%;"></div>
-              <div style="height:2px;background:rgba(255,255,255,0.3);border-radius:1px;width:85%;"></div>
-            </div></div><span class="tpl-lock">Royal</span><div class="tpl-info"><div class="name">Sapphire Showcase</div><div class="tier">Blue executive</div></div></div>
-      <div class="tpl-card"><div class="tpl-mock" style="position:absolute;inset:0;background:#fff;"><div style="position:absolute;inset:0;padding:10px;display:flex;flex-direction:column;gap:3px;">
-              <div style="display:grid;grid-template-columns:1fr 3px 1fr;gap:6px;height:100%;">
-                <div style="display:flex;flex-direction:column;gap:3px;"><div style="height:3px;background:#c9a84c;border-radius:1px;width:80%;margin-bottom:2px;"></div><div style="height:2px;background:#555;border-radius:1px;width:100%;"></div><div style="height:2px;background:#777;border-radius:1px;width:90%;"></div><div style="height:2px;background:#777;border-radius:1px;width:95%;"></div><div style="height:2px;background:#c9a84c;border-radius:1px;width:65%;margin-top:5px;margin-bottom:2px;opacity:0.7;"></div><div style="height:2px;background:#666;border-radius:1px;width:100%;"></div><div style="height:2px;background:#666;border-radius:1px;width:85%;"></div></div>
-                <div style="background:rgba(201,168,76,0.3);"></div>
-                <div style="display:flex;flex-direction:column;gap:3px;"><div style="height:3px;background:#c9a84c;border-radius:1px;width:75%;margin-bottom:2px;"></div><div style="height:2px;background:#555;border-radius:1px;width:100%;"></div><div style="height:2px;background:#777;border-radius:1px;width:90%;"></div><div style="height:2px;background:#c9a84c;border-radius:1px;width:60%;margin-top:5px;margin-bottom:2px;opacity:0.7;"></div><div style="height:2px;background:#666;border-radius:1px;width:85%;"></div></div>
-              </div>
-            </div></div><span class="tpl-lock">Royal</span><div class="tpl-info"><div class="name">Gilded Grid</div><div class="tier">Gold columns</div></div></div>
-      <div class="tpl-card"><div class="tpl-mock" style="position:absolute;inset:0;background:#111;"><div style="position:absolute;inset:0;padding:10px;display:flex;flex-direction:column;gap:4px;">
-              <div style="height:4px;background:#fff;border-radius:1px;width:65%;opacity:0.9;"></div>
-              <div style="height:2px;background:rgba(255,255,255,0.5);border-radius:1px;width:45%;margin-bottom:5px;"></div>
-              <div style="display:flex;gap:6px;margin-bottom:6px;">
-                <div style="flex:1;height:1px;background:rgba(255,255,255,0.15);"></div>
-              </div>
-              <div style="height:2px;background:rgba(255,255,255,0.4);border-radius:1px;width:100%;"></div>
-              <div style="height:2px;background:rgba(255,255,255,0.3);border-radius:1px;width:90%;"></div>
-              <div style="height:2px;background:rgba(255,255,255,0.3);border-radius:1px;width:95%;"></div>
-            </div></div><span class="tpl-lock">Royal</span><div class="tpl-info"><div class="name">Onyx Office</div><div class="tier">Black minimal</div></div></div>
-      <div class="tpl-card"><div class="tpl-mock" style="position:absolute;inset:0;background:#fff;"><div style="position:absolute;inset:0;">
-              <div style="background:#8b1a1a;padding:10px;"><div style="height:4px;background:#fff;border-radius:1px;width:60%;opacity:0.95;margin-bottom:2px;"></div><div style="height:2px;background:rgba(255,255,255,0.5);border-radius:1px;width:40%;"></div></div>
-              <div style="padding:8px;display:flex;flex-direction:column;gap:3px;"><div style="height:2px;background:#8b1a1a;border-radius:1px;width:55%;opacity:0.7;margin-bottom:2px;"></div><div style="height:1px;background:#ddd;width:100%;margin-bottom:3px;"></div><div style="height:2px;background:#555;border-radius:1px;width:90%;"></div><div style="height:2px;background:#777;border-radius:1px;width:85%;"></div><div style="height:2px;background:#777;border-radius:1px;width:95%;"></div></div>
-            </div></div><span class="tpl-lock">Royal</span><div class="tpl-info"><div class="name">Crimson Career</div><div class="tier">Bold red accent</div></div></div>
-      <div class="tpl-card"><div class="tpl-mock" style="position:absolute;inset:0;background:#f5f0ff;"><div style="position:absolute;inset:0;display:flex;flex-direction:row;">
-              <div style="width:32%;background:#4a1d96;padding:8px;display:flex;flex-direction:column;gap:3px;">
-                <div style="height:3px;background:#c9a84c;border-radius:1px;width:80%;margin-bottom:3px;"></div>
-                <div style="height:2px;background:rgba(255,255,255,0.4);border-radius:1px;width:90%;"></div>
-                <div style="height:2px;background:rgba(255,255,255,0.3);border-radius:1px;width:80%;"></div>
-              </div>
-              <div style="flex:1;padding:8px;display:flex;flex-direction:column;gap:3px;">
-                <div style="height:2px;background:#4a1d96;border-radius:1px;width:55%;opacity:0.6;"></div>
-                <div style="height:2px;background:#555;border-radius:1px;width:90%;"></div>
-                <div style="height:2px;background:#777;border-radius:1px;width:100%;"></div>
-                <div style="height:2px;background:#777;border-radius:1px;width:85%;"></div>
-              </div>
-            </div></div><span class="tpl-lock">Royal</span><div class="tpl-info"><div class="name">The Visionary</div><div class="tier">Purple premium</div></div></div>
-    </div>
-  </div>
-</section>
-
-<section class="tier-section" id="tier-elite">
-  <div class="tier-section-inner">
-    <div class="tier-header">
-      <div class="tier-header-left">
-        <span class="tier-name">Elite</span>
-        <h2 class="tier-title">The full toolkit for top-tier applications.</h2>
-        <p class="tier-desc">Includes Cover Letter, LinkedIn summary, and Interview Prep generation alongside the most refined template designs in the library.</p>
-      </div>
-      <span class="tier-price-pill">$19/mo · 7 templates</span>
-    </div>
-    <div class="tpl-grid">
-      <div class="tpl-card"><div class="tpl-mock" style="position:absolute;inset:0;background:#1a1a1a;"><div style="position:absolute;inset:0;padding:10px;display:flex;flex-direction:column;gap:4px;">
-              <div style="display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:6px;border-bottom:1px solid rgba(201,168,76,0.4);margin-bottom:5px;">
-                <div><div style="height:5px;background:#c9a84c;border-radius:1px;width:100px;margin-bottom:2px;"></div><div style="height:2px;background:rgba(201,168,76,0.5);border-radius:1px;width:70px;"></div></div>
-                <div style="width:30px;height:30px;border-radius:50%;border:1px solid rgba(201,168,76,0.5);"></div>
-              </div>
-              <div style="height:2px;background:#c9a84c;border-radius:1px;width:55%;opacity:0.7;"></div>
-              <div style="height:2px;background:rgba(255,255,255,0.4);border-radius:1px;width:100%;"></div>
-              <div style="height:2px;background:rgba(255,255,255,0.3);border-radius:1px;width:90%;"></div>
-              <div style="height:2px;background:rgba(255,255,255,0.3);border-radius:1px;width:95%;"></div>
-            </div></div><span class="tpl-lock">Elite</span><div class="tpl-info"><div class="name">The Charcoal Signature</div><div class="tier">Ultra premium dark</div></div></div>
-      <div class="tpl-card"><div class="tpl-mock" style="position:absolute;inset:0;background:#1c1410;"><div style="position:absolute;inset:0;padding:10px;display:flex;flex-direction:column;gap:4px;">
-              <div style="border:1px solid rgba(201,168,76,0.3);border-radius:2px;padding:6px;margin-bottom:5px;">
-                <div style="height:4px;background:#c9a84c;border-radius:1px;width:65%;margin-bottom:2px;opacity:0.9;"></div>
-                <div style="height:2px;background:rgba(201,168,76,0.5);border-radius:1px;width:45%;"></div>
-              </div>
-              <div style="height:2px;background:rgba(201,168,76,0.6);border-radius:1px;width:50%;margin-bottom:3px;"></div>
-              <div style="height:2px;background:rgba(255,255,255,0.4);border-radius:1px;width:100%;"></div>
-              <div style="height:2px;background:rgba(255,255,255,0.3);border-radius:1px;width:90%;"></div>
-            </div></div><span class="tpl-lock">Elite</span><div class="tpl-info"><div class="name">The Obsidian Scroll</div><div class="tier">Midnight luxury</div></div></div>
-      <div class="tpl-card"><div class="tpl-mock" style="position:absolute;inset:0;background:#001133;"><div style="position:absolute;inset:0;display:flex;flex-direction:row;">
-              <div style="width:35%;background:rgba(0,50,120,0.6);border-right:1px solid rgba(201,168,76,0.3);padding:8px;display:flex;flex-direction:column;gap:3px;">
-                <div style="height:3px;background:#c9a84c;border-radius:1px;width:75%;margin-bottom:3px;"></div>
-                <div style="height:2px;background:rgba(255,255,255,0.35);border-radius:1px;width:90%;"></div>
-                <div style="height:2px;background:rgba(255,255,255,0.25);border-radius:1px;width:80%;"></div>
-              </div>
-              <div style="flex:1;padding:8px;display:flex;flex-direction:column;gap:3px;">
-                <div style="height:2px;background:#c9a84c;border-radius:1px;width:50%;opacity:0.8;"></div>
-                <div style="height:2px;background:rgba(255,255,255,0.4);border-radius:1px;width:95%;"></div>
-                <div style="height:2px;background:rgba(255,255,255,0.3);border-radius:1px;width:85%;"></div>
-              </div>
-            </div></div><span class="tpl-lock">Elite</span><div class="tpl-info"><div class="name">The Sapphire Sultan</div><div class="tier">Deep blue royalty</div></div></div>
-      <div class="tpl-card"><div class="tpl-mock" style="position:absolute;inset:0;background:#0a0a0a;"><div style="position:absolute;inset:0;padding:10px;display:flex;flex-direction:column;gap:4px;">
-              <div style="width:50px;height:50px;border-radius:50%;border:2px solid #c9a84c;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;"><div style="width:28px;height:28px;background:rgba(201,168,76,0.3);border-radius:50%;"></div></div>
-              <div style="height:4px;background:#c9a84c;border-radius:1px;width:60%;margin:0 auto 3px;opacity:0.9;"></div>
-              <div style="height:2px;background:rgba(201,168,76,0.5);border-radius:1px;width:40%;margin:0 auto 6px;"></div>
-              <div style="height:1px;background:rgba(201,168,76,0.3);width:100%;"></div>
-            </div></div><span class="tpl-lock">Elite</span><div class="tpl-info"><div class="name">The Elite Emblem</div><div class="tier">Centred prestige</div></div></div>
-      <div class="tpl-card"><div class="tpl-mock" style="position:absolute;inset:0;background:#f5f5f0;"><div style="position:absolute;inset:0;padding:10px;display:flex;flex-direction:column;gap:4px;">
-              <div style="background:linear-gradient(135deg,#e8e0d0,#f5f0e8);padding:8px;margin:-10px -10px 8px;border-bottom:2px solid #c9a84c;">
-                <div style="height:5px;background:#2a2010;border-radius:1px;width:55%;margin-bottom:2px;"></div>
-                <div style="height:2px;background:rgba(201,168,76,0.7);border-radius:1px;width:38%;"></div>
-              </div>
-              <div style="height:2px;background:#c9a84c;border-radius:1px;width:50%;opacity:0.7;"></div>
-              <div style="height:2px;background:#555;border-radius:1px;width:95%;"></div>
-              <div style="height:2px;background:#777;border-radius:1px;width:90%;"></div>
-            </div></div><span class="tpl-lock">Elite</span><div class="tpl-info"><div class="name">The Marble Monarch</div><div class="tier">Cream luxury</div></div></div>
-      <div class="tpl-card"><div class="tpl-mock" style="position:absolute;inset:0;background:#f9f5e8;"><div style="position:absolute;inset:0;padding:10px;display:flex;flex-direction:column;gap:4px;">
-              <div style="border:1px solid rgba(201,168,76,0.4);padding:6px;margin-bottom:6px;text-align:center;">
-                <div style="height:4px;background:#8b6914;border-radius:1px;width:55%;margin:0 auto 2px;"></div>
-                <div style="height:2px;background:rgba(139,105,20,0.5);border-radius:1px;width:38%;margin:0 auto;"></div>
-              </div>
-              <div style="height:2px;background:#8b6914;border-radius:1px;width:50%;opacity:0.6;"></div>
-              <div style="height:2px;background:#666;border-radius:1px;width:100%;"></div>
-              <div style="height:2px;background:#888;border-radius:1px;width:90%;"></div>
-            </div></div><span class="tpl-lock">Elite</span><div class="tpl-info"><div class="name">The Royal Parchment</div><div class="tier">Vintage prestige</div></div></div>
-      <div class="tpl-card"><div class="tpl-mock" style="position:absolute;inset:0;background:#030a1a;"><div style="position:absolute;inset:0;padding:10px;display:flex;flex-direction:column;gap:4px;">
-              <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">
-                <div style="flex:1;height:1px;background:rgba(201,168,76,0.3);"></div>
-                <div style="width:8px;height:8px;background:rgba(201,168,76,0.6);transform:rotate(45deg);"></div>
-                <div style="flex:1;height:1px;background:rgba(201,168,76,0.3);"></div>
-              </div>
-              <div style="height:5px;background:#c9a84c;border-radius:1px;width:60%;margin:0 auto 2px;opacity:0.9;"></div>
-              <div style="height:2px;background:rgba(201,168,76,0.5);border-radius:1px;width:40%;margin:0 auto 6px;"></div>
-              <div style="height:2px;background:rgba(255,255,255,0.35);border-radius:1px;width:100%;"></div>
-              <div style="height:2px;background:rgba(255,255,255,0.25);border-radius:1px;width:90%;"></div>
-            </div></div><span class="tpl-lock">Elite</span><div class="tpl-info"><div class="name">The Celestial Signature</div><div class="tier">Cosmic gold</div></div></div>
-    </div>
+    <p class="gal-empty" id="galEmpty" hidden>No templates match that filter.</p>
   </div>
 </section>
 
@@ -565,25 +397,41 @@ window.addEventListener('resize', () => {
   });
 })();
 
-document.querySelectorAll('.tpl-card').forEach(function(card){
-  card.style.cursor = 'pointer';
-  card.addEventListener('click', function(){
-    var nameEl = card.querySelector('.name');
-    var tierEl = card.querySelector('.tier');
-    var mock = card.querySelector('.tpl-mock');
-    var name = nameEl ? nameEl.textContent : '';
-    var slug = name.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
-
-    var modal = document.getElementById('tpl-preview-modal');
-    document.getElementById('tpl-preview-name').textContent = name;
-    document.getElementById('tpl-preview-tier').textContent = tierEl ? tierEl.textContent : '';
-    var previewMock = document.getElementById('tpl-preview-mock');
-    previewMock.innerHTML = mock ? mock.innerHTML : '';
-    previewMock.style.background = mock ? getComputedStyle(mock).background : '#111';
-    document.getElementById('tpl-preview-start').href = 'build.html?template=' + encodeURIComponent(slug);
-    modal.classList.add('open');
+(function(){
+  var cards=[].slice.call(document.querySelectorAll('.tcard'));
+  var state={cat:'all',tier:'all'};
+  function apply(){
+    var shown=0;
+    cards.forEach(function(c){
+      var okC=state.cat==='all'||(' '+c.dataset.cat+' ').indexOf(' '+state.cat+' ')>-1;
+      var okT=state.tier==='all'||c.dataset.tier===state.tier;
+      c.classList.toggle('hide',!(okC&&okT)); if(okC&&okT) shown++;
+    });
+    var e=document.getElementById('galEmpty'); if(e) e.hidden=shown>0;
+  }
+  function wire(id,key){
+    var box=document.getElementById(id); if(!box) return;
+    box.addEventListener('click',function(ev){
+      var b=ev.target.closest('.chip'); if(!b) return;
+      box.querySelectorAll('.chip').forEach(function(x){x.classList.remove('on');}); b.classList.add('on');
+      state[key]=b.dataset[key]; apply();
+    });
+  }
+  wire('catChips','cat'); wire('tierChips','tier');
+  var PRICE={Pro:'Pro · $5 one-time',Royal:'Royal · $9/mo',Elite:'Elite · $19/mo'};
+  cards.forEach(function(card){
+    card.addEventListener('click',function(ev){
+      ev.preventDefault();
+      var img=card.querySelector('img');
+      document.getElementById('tpl-preview-name').textContent=card.dataset.name;
+      document.getElementById('tpl-preview-tier').textContent=(PRICE[card.dataset.tier]||card.dataset.tier)+' · '+card.dataset.style;
+      var wrap=document.getElementById('tpl-preview-mock'); wrap.innerHTML='';
+      var big=document.createElement('img'); big.src=img.src; big.alt=img.alt; wrap.appendChild(big); wrap.scrollTop=0;
+      document.getElementById('tpl-preview-start').href=card.getAttribute('href');
+      document.getElementById('tpl-preview-modal').classList.add('open');
+    });
   });
-});
+})();
 
 (function(){
   var modal = document.getElementById('tpl-preview-modal');
