@@ -141,6 +141,13 @@
     function monogram(size, bg, ring, ink) {
       return '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:' + bg + ';border:2px solid ' + ring + ';color:' + ink + ';display:flex;align-items:center;justify-content:center;font-weight:700;font-size:' + Math.round(size * 0.34) + 'px;letter-spacing:1px;">' + esc(initials()) + '</div>';
     }
+    function photoImg(size, ring, round) {
+      return '<img src="' + d.photo + '" alt="" style="width:' + size + 'px;height:' + size + 'px;object-fit:cover;display:block;border-radius:' + (round === false ? '10px' : '50%') + ';border:3px solid ' + ring + ';">';
+    }
+    // photo if provided; otherwise the monogram (slots that always show something)
+    function avatar(size, bg, ring, ink) {
+      return d.photo ? photoImg(size, ring) : monogram(size, bg, ring, ink);
+    }
     var pcts = [92, 86, 80, 90, 74, 84, 78, 88];
     function skills(list, style, fg, acc, track, bg) {
       list = list || [];
@@ -201,7 +208,7 @@
 
     var font = (ctx.isRTL || /Chinese|Japanese/.test(ctx.lang || '')) ? ctx.fontFamily : FONTS[cfg.font];
     var wrapOpen = '<div class="kv-cv" ' + ctx.dir + ' style="font-family:' + font + ';color:' + P.ink + ';background:' + P.bg + ';';
-    return { P: P, o: o, L: L, contacts: contacts, contactLines: contactLines, contactRow: contactRow, monogram: monogram, skills: skills, langs: langs, head: head, jobs: jobs, edus: edus, summary: summary, wrapOpen: wrapOpen, skillStyle: cfg.skills, headKind: o.head };
+    return { P: P, o: o, avatar: avatar, photoImg: photoImg, hasPhoto: !!d.photo, L: L, contacts: contacts, contactLines: contactLines, contactRow: contactRow, monogram: monogram, skills: skills, langs: langs, head: head, jobs: jobs, edus: edus, summary: summary, wrapOpen: wrapOpen, skillStyle: cfg.skills, headKind: o.head };
   }
 
   /* ---------- layouts ---------- */
@@ -213,7 +220,7 @@
     var sInk = P.sideInk, sAcc = lightSide ? P.acc : P.acc;
     var track = lightSide ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.18)';
     var side = '<div style="background:' + P.side + ';color:' + sInk + ';padding:28px 18px;">' +
-      '<div style="margin:0 auto 14px;width:' + 72 + 'px;">' + h.monogram(72, lightSide ? '#fff' : 'rgba(255,255,255,0.08)', sAcc, lightSide ? P.acc : sAcc) + '</div>' +
+      '<div style="margin:0 auto 14px;width:' + (d.photo ? 96 : 72) + 'px;">' + h.avatar(d.photo ? 96 : 72, lightSide ? '#fff' : 'rgba(255,255,255,0.08)', sAcc, lightSide ? P.acc : sAcc) + '</div>' +
       '<div style="font-size:13.5pt;font-weight:700;color:' + (lightSide ? P.ink : '#fff') + ';text-align:center;margin-bottom:3px;line-height:1.2;">' + esc(d.name) + '</div>' +
       '<div style="font-size:9pt;color:' + sInk + ';opacity:.8;text-align:center;margin-bottom:16px;">' + esc(d.title) + '</div>' +
       h.head(h.L('contact', 'Contact'), 'rule', sAcc, sAcc) + h.contactLines(sInk, '8.6pt') +
@@ -235,10 +242,11 @@
     var sideBg = P.soft, sideInk = P.ink, track = P.track;
     var bandBg = P.side;
     return h.wrapOpen + '">' +
-      '<div style="background:' + bandBg + ';color:' + bandInk + ';padding:30px 32px 22px;">' +
+      '<div style="background:' + bandBg + ';color:' + bandInk + ';padding:30px 32px 22px;display:flex;align-items:center;justify-content:space-between;gap:20px;"><div style="flex:1;">' +
       '<div style="font-size:22pt;font-weight:800;letter-spacing:-.01em;line-height:1.1;color:' + (cfg.pal === 'orange' ? '#fff' : (P.acc === '#ffffff' ? '#fff' : P.acc)) + ';">' + esc(d.name) + '</div>' +
       '<div style="font-size:10.5pt;margin-top:4px;opacity:.9;">' + esc(d.title) + '</div>' +
       '<div style="margin-top:10px;">' + h.contactRow(bandInk, '8.6pt') + '</div></div>' +
+      (d.photo ? '<div style="flex:none;">' + h.photoImg(100, (cfg.pal === 'orange' ? '#fff' : P.acc), false) + '</div>' : '') + '</div>' +
       '<div style="display:grid;grid-template-columns:1fr 215px;">' +
       '<div style="padding:8px 26px 24px;">' + h.head(h.L('summary', 'Summary'), 'rule', P.ink, P.acc) + h.summary(P.ink) +
       h.head(h.L('experience', 'Experience'), 'rule', P.ink, P.acc) + h.jobs() + '</div>' +
@@ -264,10 +272,11 @@
   LAYOUT.twoColLight = function (cfg, d, ctx) {
     var h = make(d, ctx, cfg), P = h.P;
     return h.wrapOpen + '">' +
-      '<div style="padding:30px 32px 16px;border-bottom:4px solid ' + P.acc + ';">' +
+      '<div style="padding:30px 32px 16px;border-bottom:4px solid ' + P.acc + ';display:flex;align-items:center;justify-content:space-between;gap:20px;"><div style="flex:1;">' +
       '<div style="font-size:23pt;font-weight:800;letter-spacing:-.01em;color:' + P.ink + ';line-height:1.1;">' + esc(d.name) + '</div>' +
       '<div style="font-size:11pt;font-weight:600;color:' + P.acc + ';margin-top:4px;">' + esc(d.title) + '</div>' +
       '<div style="margin-top:8px;">' + h.contactRow(P.mute, '8.7pt') + '</div></div>' +
+      (d.photo ? '<div style="flex:none;">' + h.photoImg(94, P.acc) + '</div>' : '') + '</div>' +
       '<div style="display:grid;grid-template-columns:1fr 210px;">' +
       '<div style="padding:6px 28px 24px 32px;">' + h.head(h.L('summary', 'Summary'), 'bar', P.ink, P.acc) + h.summary(P.ink) +
       h.head(h.L('experience', 'Experience'), 'bar', P.ink, P.acc) + h.jobs() + '</div>' +
@@ -317,7 +326,7 @@
     var light = !!h.o.sideLight;
     var sBg = light ? P.soft : P.side, sInk = light ? P.ink : P.sideInk, track = light ? 'rgba(0,0,0,0.10)' : 'rgba(255,255,255,0.18)';
     var side = '<div style="background:' + sBg + ';color:' + sInk + ';padding:26px 16px;">' +
-      '<div style="margin:0 auto 12px;width:68px;">' + h.monogram(68, light ? '#fff' : 'rgba(255,255,255,0.08)', P.acc, light ? P.acc : '#fff') + '</div>' +
+      '<div style="margin:0 auto 12px;width:' + (d.photo ? 92 : 68) + 'px;">' + h.avatar(d.photo ? 92 : 68, light ? '#fff' : 'rgba(255,255,255,0.08)', P.acc, light ? P.acc : '#fff') + '</div>' +
       '<div style="font-size:13pt;font-weight:800;text-align:center;line-height:1.2;color:' + (light ? P.ink : '#fff') + ';">' + esc(d.name) + '</div>' +
       '<div style="font-size:8.8pt;text-align:center;opacity:.8;margin:3px 0 14px;">' + esc(d.title) + '</div>' +
       h.head(h.L('contact', 'Contact'), 'rule', P.acc, P.acc) + h.contactLines(sInk, '8.4pt') +
@@ -333,9 +342,10 @@
     var h = make(d, ctx, cfg), P = h.P;
     function card(inner, extra) { return '<div style="background:#fff;border:1px solid ' + P.line + ';border-radius:10px;padding:14px 18px;margin-bottom:12px;' + (extra || '') + '">' + inner + '</div>'; }
     return h.wrapOpen + 'background:' + P.soft + ';padding:22px;">' +
-      '<div style="background:' + (cfg.pal === 'blush' ? P.acc : P.side) + ';color:#fff;border-radius:12px;padding:22px 24px;margin-bottom:12px;">' +
+      '<div style="background:' + (cfg.pal === 'blush' ? P.acc : P.side) + ';color:#fff;border-radius:12px;padding:22px 24px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:18px;"><div style="flex:1;">' +
       '<div style="font-size:21pt;font-weight:800;line-height:1.1;">' + esc(d.name) + '</div><div style="font-size:10.5pt;margin-top:4px;opacity:.92;">' + esc(d.title) + '</div>' +
       '<div style="margin-top:8px;">' + h.contactRow('#fff', '8.6pt') + '</div></div>' +
+      (d.photo ? '<div style="flex:none;">' + h.photoImg(88, 'rgba(255,255,255,0.85)') + '</div>' : '') + '</div>' +
       card(h.head(h.L('summary', 'Summary'), 'plain', P.ink, P.acc).replace('margin-block:16px 8px;', 'margin-block:0 6px;') + h.summary(P.ink)) +
       card(h.head(h.L('experience', 'Experience'), 'plain', P.ink, P.acc).replace('margin-block:16px 8px;', 'margin-block:0 8px;') + h.jobs()) +
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">' +
@@ -385,7 +395,7 @@
     var hi = lightHead ? P.ink : '#fff';
     return h.wrapOpen + '">' +
       '<div style="background:' + P.side + ';color:' + P.sideInk + ';padding:28px 34px;display:flex;align-items:center;gap:22px;">' +
-      h.monogram(78, 'rgba(255,255,255,0.06)', P.acc, P.acc) +
+      h.avatar(d.photo ? 96 : 78, 'rgba(255,255,255,0.06)', P.acc, P.acc) +
       '<div style="flex:1;"><div style="font-size:21pt;font-weight:700;line-height:1.1;color:' + hi + ';">' + esc(d.name) + '</div>' +
       '<div style="font-size:10.5pt;color:' + P.acc + ';margin-top:4px;letter-spacing:.06em;">' + esc(d.title) + '</div>' +
       '<div style="margin-top:8px;">' + h.contactRow(P.sideInk, '8.5pt') + '</div></div></div>' +
@@ -434,6 +444,8 @@
   /* ---------- public API ---------- */
   window.KVX = {
     has: function (name) { return Object.prototype.hasOwnProperty.call(REG, name); },
+    PHOTO_LAYOUTS: { sidebarL: 1, sidebarR: 1, infographic: 1, splitHeader: 1, bandTop: 1, cardGrid: 1, twoColLight: 1 },
+    hasPhoto: function (name) { var c = REG[name]; return !!(c && this.PHOTO_LAYOUTS[c.layout]); },
     names: function () { return T.map(function (r) { return r[0]; }); },
     get: function (name) { return REG[name]; },
     list: function () { return T.map(function (r) { return REG[r[0]]; }); },

@@ -310,7 +310,7 @@
  <div id="photo-default-state">
  
  <div class="upload-zone-text">Add a profile photo</div>
- <div class="upload-zone-hint">JPG, PNG — Recommended for Middle East, Asia &amp; European markets</div>
+ <div class="upload-zone-hint">JPG, PNG or WEBP — shown on templates that have a photo slot. Recommended for Middle East, Asia &amp; European markets</div>
  </div>
  <div id="photo-preview-state" style="display:none; flex-direction:column; align-items:center; gap:10px;">
  <img id="photo-preview-img" src="" alt="" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid #d8d0b8;" />
@@ -318,7 +318,9 @@
  <button type="button" class="photo-remove-btn" id="removePhotoBtn">Remove</button>
  </div>
  </label>
- <p class="field-hint">ℹ️ Not recommended for US &amp; Canadian markets to avoid hiring bias.</p>
+ <p class="field-hint" id="photo-error" style="color:#ff9b8a;"></p>
+ <p class="field-hint" id="photo-template-hint"></p>
+ <p class="field-hint">Your photo is never sent to the AI. If you save the CV to your account, the photo is saved with it. ℹ️ Not recommended for US &amp; Canadian markets to avoid hiring bias.</p>
  </div>
 
  <!-- Languages -->
@@ -716,7 +718,7 @@ if (!cvData) {
     showPage('confirm');
     try {
       const { data: cvHtmlRow } = await _sb.from('cvs').select('cv_html').eq('id', _tailorCvId).single();
-      const extractPrompt = `Extract the CV data from this HTML and return ONLY valid JSON with these fields: name, title, email, phone, location, summary, experience (array with title/company/dates/bullets), education (array with degree/institution/dates), skills (array), languages (array). HTML: ${(cvHtmlRow?.cv_html||'').substring(0,4000)}`;
+      const extractPrompt = `Extract the CV data from this HTML and return ONLY valid JSON with these fields: name, title, email, phone, location, summary, experience (array with title/company/dates/bullets), education (array with degree/institution/dates), skills (array), languages (array). HTML: ${(cvHtmlRow?.cv_html||'').replace(/(src|href)="data:[^"]*"/gi,'$1=""').replace(/url\(\s*['"]?data:[^)]*\)/gi,'none').substring(0,4000)}`;
       const extracted = await callProvider(API_PROVIDERS[0], extractPrompt, {});
       const clean = extracted.replace(/\`\`\`json/gi,'').replace(/\`\`\`/g,'').trim();
       const match = clean.match(/\{[\s\S]*\}/);
@@ -1291,8 +1293,20 @@ async function callProvider(provider, prompt, userData, requestId) {
 }
 
 // ── CV TEMPLATES (fixed HTML shells) ─────────────────────────────
+// ── PHOTO HELPERS (used by templates that have a photo slot) ──────
+const KV_PHOTO_OLD = new Set(['The Minimalist','The Modern Slate','The Soft Tech','The Visionary','Sapphire Showcase','The Charcoal Signature','The Elite Emblem']);
+function kvTemplateHasPhoto(name) {
+  return KV_PHOTO_OLD.has(name) || !!(window.KVX && window.KVX.hasPhoto && window.KVX.hasPhoto(name));
+}
+function kvAvatar(d, size, style) {
+  if (d && d.photo) {
+    return '<img src="' + d.photo + '" alt="" style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;object-fit:cover;display:block;' + style + '">';
+  }
+  return '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;' + style + '"></div>';
+}
+
 function buildCVFromTemplate(templateName, data, tier) {
-  const d = data;
+  const d = (window._kvPhoto && !(data && data.photo)) ? Object.assign({}, data, { photo: window._kvPhoto }) : data;
   const isRTL = d.rtl;
   const dir = isRTL ? 'dir="rtl"' : '';
 
@@ -1407,7 +1421,7 @@ function buildCVFromTemplate(templateName, data, tier) {
   if (templateName === 'The Minimalist') {
     return baseStyles + `<div class="kv-cv" ${dir} style="display:grid;grid-template-columns:220px 1fr;min-height:auto;">
       <div style="background:#1e2d3d;color:#f0e6d0;padding:28px 18px;">
-        <div style="width:70px;height:70px;border-radius:50%;background:rgba(201,168,76,0.2);border:2px solid #c9a84c;margin:0 auto 14px;"></div>
+        ${kvAvatar(d,70,'background:rgba(201,168,76,0.2);border:2px solid #c9a84c;margin:0 auto 14px;')}
         <div style="font-size:13pt;font-weight:700;color:#c9a84c;text-align:center;margin-bottom:3px;">${escHtml(d.name)}</div>
         <div style="font-size:9pt;color:rgba(240,230,208,0.7);text-align:center;margin-bottom:14px;">${escHtml(d.title)}</div>
         ${sectionLabel(d.labels?.contact||'Contact','#c9a84c','rgba(201,168,76,0.4)')}
@@ -1463,7 +1477,7 @@ function buildCVFromTemplate(templateName, data, tier) {
   if (templateName === 'The Modern Slate') {
     return baseStyles + `<div class="kv-cv" ${dir} style="display:grid;grid-template-columns:200px 1fr;min-height:auto;">
       <div style="background:#1e2d3d;color:#f0e6d0;padding:24px 16px;">
-        <div style="width:68px;height:68px;border-radius:50%;border:2.5px solid #c9a84c;background:rgba(201,168,76,0.15);margin:0 auto 12px;"></div>
+        ${kvAvatar(d,68,'border:2.5px solid #c9a84c;background:rgba(201,168,76,0.15);margin:0 auto 12px;')}
         <div style="font-size:12pt;font-weight:700;color:#c9a84c;text-align:center;margin-bottom:2px;">${escHtml(d.name)}</div>
         <div style="font-size:8.5pt;color:rgba(240,230,208,0.65);text-align:center;margin-bottom:14px;">${escHtml(d.title)}</div>
         <div style="height:1px;background:rgba(201,168,76,0.3);margin-bottom:12px;"></div>
@@ -1518,7 +1532,7 @@ function buildCVFromTemplate(templateName, data, tier) {
   if (templateName === 'The Soft Tech') {
     return baseStyles + `<div class="kv-cv" ${dir} style="background:#f4f7ff;">
       <div style="background:#2d5be3;padding:20px 28px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
-        <div style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.5);flex-shrink:0;"></div>
+        ${kvAvatar(d,64,'background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.5);flex-shrink:0;')}
         <div>
           <div style="font-size:18pt;font-weight:700;color:#fff;margin-bottom:3px;">${escHtml(d.name)}</div>
           <div style="font-size:9.5pt;color:rgba(255,255,255,0.8);">${escHtml(d.title)}</div>
@@ -1588,7 +1602,7 @@ function buildCVFromTemplate(templateName, data, tier) {
   if (templateName === 'The Visionary') {
     return baseStyles + `<div class="kv-cv" ${dir} style="display:grid;grid-template-columns:200px 1fr;min-height:auto;">
       <div style="background:#4a1d96;color:#f0e6d0;padding:24px 16px;">
-        <div style="width:68px;height:68px;border-radius:50%;border:2.5px solid #c9a84c;background:rgba(201,168,76,0.1);margin:0 auto 12px;"></div>
+        ${kvAvatar(d,68,'border:2.5px solid #c9a84c;background:rgba(201,168,76,0.1);margin:0 auto 12px;')}
         <div style="font-size:11pt;font-weight:700;color:#c9a84c;text-align:center;margin-bottom:2px;">${escHtml(d.name)}</div>
         <div style="font-size:8.5pt;color:rgba(240,230,208,0.65);text-align:center;margin-bottom:14px;">${escHtml(d.title)}</div>
         <div style="height:1px;background:rgba(201,168,76,0.3);margin-bottom:12px;"></div>
@@ -1694,7 +1708,7 @@ function buildCVFromTemplate(templateName, data, tier) {
   if (templateName === 'Sapphire Showcase') {
     return baseStyles + `<div class="kv-cv" ${dir} style="display:grid;grid-template-columns:210px 1fr;min-height:auto;">
       <div style="background:#001233;color:#e8f0ff;padding:26px 16px;">
-        <div style="width:66px;height:66px;border-radius:50%;border:2px solid #c9a84c;background:rgba(201,168,76,0.1);margin:0 auto 14px;"></div>
+        ${kvAvatar(d,66,'border:2px solid #c9a84c;background:rgba(201,168,76,0.1);margin:0 auto 14px;')}
         <div style="font-size:12pt;font-weight:700;color:#c9a84c;text-align:center;margin-bottom:2px;">${escHtml(d.name)}</div>
         <div style="font-size:8.5pt;color:rgba(232,240,255,0.6);text-align:center;margin-bottom:14px;">${escHtml(d.title)}</div>
         <div style="height:1px;background:rgba(201,168,76,0.35);margin-bottom:12px;"></div>
@@ -1757,7 +1771,7 @@ function buildCVFromTemplate(templateName, data, tier) {
             <div style="font-size:9.5pt;color:rgba(232,232,232,0.6);letter-spacing:0.16em;text-transform:uppercase;">${escHtml(d.title)}</div>
             <div style="font-size:8.5pt;color:rgba(232,232,232,0.4);margin-top:6px;">${[d.email,d.phone,d.location].filter(Boolean).map(x=>escHtml(x)).join(' · ')}</div>
           </div>
-          <div style="width:70px;height:70px;border-radius:50%;border:2px solid rgba(201,168,76,0.5);background:rgba(201,168,76,0.08);flex-shrink:0;"></div>
+          ${kvAvatar(d,70,'border:2px solid rgba(201,168,76,0.5);background:rgba(201,168,76,0.08);flex-shrink:0;')}
         </div>
       </div>
       <div style="border:1px solid rgba(201,168,76,0.2);padding:14px 18px;margin-bottom:14px;">
@@ -1824,9 +1838,9 @@ function buildCVFromTemplate(templateName, data, tier) {
   if (templateName === 'The Elite Emblem') {
     return baseStyles + `<div class="kv-cv" ${dir} style="background:#000;color:#e8e8e8;">
       <div style="padding:32px 30px 18px;text-align:center;border-bottom:1px solid rgba(201,168,76,0.3);">
-        <div style="width:80px;height:80px;border-radius:50%;border:2px solid #c9a84c;background:rgba(201,168,76,0.06);margin:0 auto 14px;display:flex;align-items:center;justify-content:center;">
+        ${d.photo ? kvAvatar(d,80,'border:2px solid #c9a84c;margin:0 auto 14px;') : `<div style="width:80px;height:80px;border-radius:50%;border:2px solid #c9a84c;background:rgba(201,168,76,0.06);margin:0 auto 14px;display:flex;align-items:center;justify-content:center;">
           <span style="font-size:24pt;font-weight:700;color:#c9a84c;">${(d.name||'').charAt(0)}</span>
-        </div>
+        </div>`}
         <div style="font-size:22pt;font-weight:700;color:#c9a84c;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">${escHtml(d.name)}</div>
         <div style="font-size:9.5pt;color:rgba(232,232,232,0.55);letter-spacing:0.22em;text-transform:uppercase;margin-bottom:8px;">${escHtml(d.title)}</div>
         <div style="font-size:8.5pt;color:rgba(232,232,232,0.35);">${[d.email,d.phone,d.location].filter(Boolean).map(x=>escHtml(x)).join(' · ')}</div>
@@ -3343,7 +3357,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const slugT = t => String(t).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
     if (selT) {
       for (let i = 0; i < selT.options.length; i++) {
-        if (selT.options[i].value !== '' && slugT(selT.options[i].textContent) === preTpl) { selT.selectedIndex = i; break; }
+        if (selT.options[i].value !== '' && slugT(selT.options[i].textContent) === preTpl) { selT.selectedIndex = i; selT.dispatchEvent(new Event('change')); break; }
       }
     }
   }
@@ -3638,26 +3652,69 @@ document.querySelectorAll('.skill-cat-pill').forEach(pill => {
  pill.addEventListener('click', () => pill.classList.toggle('selected'));
 });
 
-/* ── Photo upload (same behavior as the live app) ── */
+/* ── Photo upload: validate, centre-crop to a square, downscale, keep in memory only ── */
+window._kvPhoto = '';
+function kvSetPhotoState(dataUrl) {
+  window._kvPhoto = dataUrl || '';
+  const prev = document.getElementById('photo-preview-img');
+  prev.src = dataUrl || '';
+  document.getElementById('photo-default-state').style.display = dataUrl ? 'none' : 'flex';
+  document.getElementById('photo-preview-state').style.display = dataUrl ? 'flex' : 'none';
+  const err = document.getElementById('photo-error'); if (err) err.textContent = '';
+}
+function kvPhotoError(msg) {
+  const err = document.getElementById('photo-error'); if (err) err.textContent = msg;
+  document.getElementById('photo-input').value = '';
+}
 document.getElementById('photo-input').addEventListener('change', (event) => {
- const file = event.target.files[0];
- if (!file) return;
- const reader = new FileReader();
- reader.onload = (e) => {
- document.getElementById('photo-preview-img').src = e.target.result;
- document.getElementById('photo-default-state').style.display = 'none';
- document.getElementById('photo-preview-state').style.display = 'flex';
- };
- reader.readAsDataURL(file);
+  const file = event.target.files[0];
+  if (!file) return;
+  if (!/^image\/(jpeg|png|webp)$/.test(file.type)) { kvPhotoError('Please choose a JPG, PNG or WEBP image.'); return; }
+  if (file.size > 12 * 1024 * 1024) { kvPhotoError('That photo is over 12 MB. Please choose a smaller one.'); return; }
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => {
+    try {
+      const side = Math.min(img.naturalWidth, img.naturalHeight);
+      if (side < 160) { kvPhotoError('That photo is very small. Please use one at least 300 px wide.'); URL.revokeObjectURL(url); return; }
+      const sx = (img.naturalWidth - side) / 2;
+      // bias the crop upward slightly so faces are not cut at the forehead
+      const sy = Math.max(0, Math.min(img.naturalHeight - side, (img.naturalHeight - side) * 0.3));
+      const out = 480, c = document.createElement('canvas');
+      c.width = out; c.height = out;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, out, out);
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(img, sx, sy, side, side, 0, 0, out, out);
+      kvSetPhotoState(c.toDataURL('image/jpeg', 0.86));
+    } catch (e) { kvPhotoError('Could not read that photo. Please try another one.'); }
+    URL.revokeObjectURL(url);
+  };
+  img.onerror = () => { kvPhotoError('Could not read that photo. Please try another one.'); URL.revokeObjectURL(url); };
+  img.src = url;
 });
 document.getElementById('removePhotoBtn').addEventListener('click', (event) => {
- event.preventDefault();
- event.stopPropagation();
- document.getElementById('photo-input').value = '';
- document.getElementById('photo-preview-img').src = '';
- document.getElementById('photo-default-state').style.display = 'flex';
- document.getElementById('photo-preview-state').style.display = 'none';
+  event.preventDefault();
+  event.stopPropagation();
+  document.getElementById('photo-input').value = '';
+  kvSetPhotoState('');
 });
+/* tell the user whether the chosen template shows a photo */
+(function () {
+  const sel = document.getElementById('f-template');
+  const hint = document.getElementById('photo-template-hint');
+  if (!sel || !hint) return;
+  function update() {
+    const opt = sel.options[sel.selectedIndex];
+    const name = opt ? opt.textContent.trim() : '';
+    if (!name || sel.value === '') { hint.textContent = ''; return; }
+    hint.textContent = kvTemplateHasPhoto(name)
+      ? '✓ ' + name + ' shows your photo.'
+      : name + ' is a no-photo design, so your photo will not appear on it. Pick a template with a photo slot to use it.';
+  }
+  sel.addEventListener('change', update);
+  update();
+})();
 
 /* ── Languages: remove + add (same behavior as the live app) ── */
 document.getElementById('languages-container').addEventListener('click', (e) => {

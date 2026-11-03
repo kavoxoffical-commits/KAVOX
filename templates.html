@@ -152,6 +152,7 @@
   .tname { display:block; font:600 13.5px Inter,sans-serif; letter-spacing:.08em; text-transform:uppercase; color:#f5f2ea; }
   .tmeta { display:block; margin-top:3px; font-size:12px; color:rgba(255,255,255,.45); }
   @media (max-width:720px) { .tier-nav { align-items:stretch; } .chip-row { flex-wrap:nowrap; overflow-x:auto; justify-content:flex-start; padding:2px 4px; scrollbar-width:none; } .chip-row::-webkit-scrollbar { display:none; } .chip { flex:none; } }
+  .tcard[data-photo="1"] .tmeta::before { content:""; display:inline-block; width:11px; height:11px; margin-right:6px; vertical-align:-1px; background:currentColor; opacity:.75; -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'><path d='M4 8h3l2-3h6l2 3h3v11H4z'/><circle cx='12' cy='13' r='3.5'/></svg>") center/contain no-repeat; mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'><path d='M4 8h3l2-3h6l2 3h3v11H4z'/><circle cx='12' cy='13' r='3.5'/></svg>") center/contain no-repeat; }
   .gal-empty { text-align:center; color:rgba(255,255,255,.5); padding:60px 0; }
   .tpl-preview-mock-wrap { aspect-ratio:auto !important; max-height:72vh; overflow:auto; background:#fff; }
   .tpl-preview-mock-wrap img { display:block; width:100%; height:auto; }
@@ -192,6 +193,7 @@
       <button type="button" class="chip" data-cat="tech">Tech &amp; data</button>
       <button type="button" class="chip" data-cat="executive">Executive</button>
       <button type="button" class="chip" data-cat="dark">Dark &amp; luxe</button>
+      <button type="button" class="chip" data-cat="photo">With photo</button>
     </div>
     <div class="chip-row small" id="tierChips" role="group" aria-label="Filter by plan">
       <button type="button" class="chip on" data-tier="all">All plans</button>
@@ -204,278 +206,278 @@
 
 <section class="gal" id="gallery">
   <div class="gal-inner">
-    <p class="gal-note"><span id="galCount">68</span> templates. Every preview is the real template, filled with sample data. Your own CV takes its place when you build.</p>
+    <p class="gal-note"><span id="galCount">68</span> templates. Every preview is the real template filled with sample data (illustrated portraits stand in for your photo). Your own CV takes its place when you build.</p>
     <div class="gal-grid" id="galGrid">
-      <a class="tcard" href="build.html?template=royal-dark-mode" data-cat="dark" data-tier="Royal" data-name="Royal Dark Mode" data-style="Gold on dark">
+      <a class="tcard" href="build.html?template=royal-dark-mode" data-cat="dark" data-tier="Royal" data-name="Royal Dark Mode" data-style="Gold on dark" data-photo="0">
         <span class="timg"><img src="assets/templates/royal-dark-mode.webp" width="640" height="778" loading="lazy" decoding="async" alt="Royal Dark Mode CV template, gold on dark layout"></span>
         <span class="tcap"><span class="tname">Royal Dark Mode</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Gold on dark</span>
       </a>
-      <a class="tcard" href="build.html?template=the-minimalist" data-cat="simple modern" data-tier="Pro" data-name="The Minimalist" data-style="Clean sidebar">
+      <a class="tcard" href="build.html?template=the-minimalist" data-cat="simple modern" data-tier="Pro" data-name="The Minimalist" data-style="Clean sidebar" data-photo="1">
         <span class="timg"><img src="assets/templates/the-minimalist.webp" width="640" height="723" loading="lazy" decoding="async" alt="The Minimalist CV template, clean sidebar layout"></span>
         <span class="tcap"><span class="tname">The Minimalist</span><span class="tbadge tb-pro">Pro</span></span><span class="tmeta">Clean sidebar</span>
       </a>
-      <a class="tcard" href="build.html?template=the-charcoal-signature" data-cat="dark executive" data-tier="Elite" data-name="The Charcoal Signature" data-style="Ultra premium dark">
+      <a class="tcard" href="build.html?template=the-charcoal-signature" data-cat="dark executive" data-tier="Elite" data-name="The Charcoal Signature" data-style="Ultra premium dark" data-photo="1">
         <span class="timg"><img src="assets/templates/the-charcoal-signature.webp" width="640" height="901" loading="lazy" decoding="async" alt="The Charcoal Signature CV template, ultra premium dark layout"></span>
         <span class="tcap"><span class="tname">The Charcoal Signature</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Ultra premium dark</span>
       </a>
-      <a class="tcard" href="build.html?template=crimson-career" data-cat="professional creative" data-tier="Royal" data-name="Crimson Career" data-style="Crimson header">
+      <a class="tcard" href="build.html?template=crimson-career" data-cat="professional creative" data-tier="Royal" data-name="Crimson Career" data-style="Crimson header" data-photo="0">
         <span class="timg"><img src="assets/templates/crimson-career.webp" width="640" height="887" loading="lazy" decoding="async" alt="Crimson Career CV template, crimson header layout"></span>
         <span class="tcap"><span class="tname">Crimson Career</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Crimson header</span>
       </a>
-      <a class="tcard" href="build.html?template=the-executive-clean" data-cat="simple professional" data-tier="Pro" data-name="The Executive Clean" data-style="Navy header">
+      <a class="tcard" href="build.html?template=the-executive-clean" data-cat="simple professional" data-tier="Pro" data-name="The Executive Clean" data-style="Navy header" data-photo="0">
         <span class="timg"><img src="assets/templates/the-executive-clean.webp" width="640" height="735" loading="lazy" decoding="async" alt="The Executive Clean CV template, navy header layout"></span>
         <span class="tcap"><span class="tname">The Executive Clean</span><span class="tbadge tb-pro">Pro</span></span><span class="tmeta">Navy header</span>
       </a>
-      <a class="tcard" href="build.html?template=the-obsidian-scroll" data-cat="dark executive" data-tier="Elite" data-name="The Obsidian Scroll" data-style="Midnight luxury">
+      <a class="tcard" href="build.html?template=the-obsidian-scroll" data-cat="dark executive" data-tier="Elite" data-name="The Obsidian Scroll" data-style="Midnight luxury" data-photo="0">
         <span class="timg"><img src="assets/templates/the-obsidian-scroll.webp" width="640" height="867" loading="lazy" decoding="async" alt="The Obsidian Scroll CV template, midnight luxury layout"></span>
         <span class="tcap"><span class="tname">The Obsidian Scroll</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Midnight luxury</span>
       </a>
-      <a class="tcard" href="build.html?template=the-visionary" data-cat="modern creative" data-tier="Royal" data-name="The Visionary" data-style="Violet sidebar">
+      <a class="tcard" href="build.html?template=the-visionary" data-cat="modern creative" data-tier="Royal" data-name="The Visionary" data-style="Violet sidebar" data-photo="1">
         <span class="timg"><img src="assets/templates/the-visionary.webp" width="640" height="699" loading="lazy" decoding="async" alt="The Visionary CV template, violet sidebar layout"></span>
         <span class="tcap"><span class="tname">The Visionary</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Violet sidebar</span>
       </a>
-      <a class="tcard" href="build.html?template=the-modern-slate" data-cat="modern" data-tier="Pro" data-name="The Modern Slate" data-style="Slate sidebar">
+      <a class="tcard" href="build.html?template=the-modern-slate" data-cat="modern" data-tier="Pro" data-name="The Modern Slate" data-style="Slate sidebar" data-photo="1">
         <span class="timg"><img src="assets/templates/the-modern-slate.webp" width="640" height="604" loading="lazy" decoding="async" alt="The Modern Slate CV template, slate sidebar layout"></span>
         <span class="tcap"><span class="tname">The Modern Slate</span><span class="tbadge tb-pro">Pro</span></span><span class="tmeta">Slate sidebar</span>
       </a>
-      <a class="tcard" href="build.html?template=the-sapphire-sultan" data-cat="dark professional executive" data-tier="Elite" data-name="The Sapphire Sultan" data-style="Sapphire header">
+      <a class="tcard" href="build.html?template=the-sapphire-sultan" data-cat="dark professional executive" data-tier="Elite" data-name="The Sapphire Sultan" data-style="Sapphire header" data-photo="0">
         <span class="timg"><img src="assets/templates/the-sapphire-sultan.webp" width="640" height="695" loading="lazy" decoding="async" alt="The Sapphire Sultan CV template, sapphire header layout"></span>
         <span class="tcap"><span class="tname">The Sapphire Sultan</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Sapphire header</span>
       </a>
-      <a class="tcard" href="build.html?template=onyx-office" data-cat="dark" data-tier="Royal" data-name="Onyx Office" data-style="Onyx and gold">
+      <a class="tcard" href="build.html?template=onyx-office" data-cat="dark" data-tier="Royal" data-name="Onyx Office" data-style="Onyx and gold" data-photo="0">
         <span class="timg"><img src="assets/templates/onyx-office.webp" width="640" height="785" loading="lazy" decoding="async" alt="Onyx Office CV template, onyx and gold layout"></span>
         <span class="tcap"><span class="tname">Onyx Office</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Onyx and gold</span>
       </a>
-      <a class="tcard" href="build.html?template=the-classic-serif" data-cat="simple professional" data-tier="Pro" data-name="The Classic Serif" data-style="Centred serif">
+      <a class="tcard" href="build.html?template=the-classic-serif" data-cat="simple professional" data-tier="Pro" data-name="The Classic Serif" data-style="Centred serif" data-photo="0">
         <span class="timg"><img src="assets/templates/the-classic-serif.webp" width="640" height="597" loading="lazy" decoding="async" alt="The Classic Serif CV template, centred serif layout"></span>
         <span class="tcap"><span class="tname">The Classic Serif</span><span class="tbadge tb-pro">Pro</span></span><span class="tmeta">Centred serif</span>
       </a>
-      <a class="tcard" href="build.html?template=the-elite-emblem" data-cat="dark executive" data-tier="Elite" data-name="The Elite Emblem" data-style="Emblem monogram">
+      <a class="tcard" href="build.html?template=the-elite-emblem" data-cat="dark executive" data-tier="Elite" data-name="The Elite Emblem" data-style="Emblem monogram" data-photo="1">
         <span class="timg"><img src="assets/templates/the-elite-emblem.webp" width="640" height="745" loading="lazy" decoding="async" alt="The Elite Emblem CV template, emblem monogram layout"></span>
         <span class="tcap"><span class="tname">The Elite Emblem</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Emblem monogram</span>
       </a>
-      <a class="tcard" href="build.html?template=golden-graph" data-cat="professional dark" data-tier="Royal" data-name="Golden Graph" data-style="Golden skill bars">
+      <a class="tcard" href="build.html?template=golden-graph" data-cat="professional dark" data-tier="Royal" data-name="Golden Graph" data-style="Golden skill bars" data-photo="0">
         <span class="timg"><img src="assets/templates/golden-graph.webp" width="640" height="716" loading="lazy" decoding="async" alt="Golden Graph CV template, golden skill bars layout"></span>
         <span class="tcap"><span class="tname">Golden Graph</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Golden skill bars</span>
       </a>
-      <a class="tcard" href="build.html?template=the-soft-tech" data-cat="modern tech" data-tier="Pro" data-name="The Soft Tech" data-style="Blue header">
+      <a class="tcard" href="build.html?template=the-soft-tech" data-cat="modern tech" data-tier="Pro" data-name="The Soft Tech" data-style="Blue header" data-photo="1">
         <span class="timg"><img src="assets/templates/the-soft-tech.webp" width="640" height="600" loading="lazy" decoding="async" alt="The Soft Tech CV template, blue header layout"></span>
         <span class="tcap"><span class="tname">The Soft Tech</span><span class="tbadge tb-pro">Pro</span></span><span class="tmeta">Blue header</span>
       </a>
-      <a class="tcard" href="build.html?template=the-marble-monarch" data-cat="simple professional executive" data-tier="Elite" data-name="The Marble Monarch" data-style="Marble frame">
+      <a class="tcard" href="build.html?template=the-marble-monarch" data-cat="simple professional executive" data-tier="Elite" data-name="The Marble Monarch" data-style="Marble frame" data-photo="0">
         <span class="timg"><img src="assets/templates/the-marble-monarch.webp" width="640" height="590" loading="lazy" decoding="async" alt="The Marble Monarch CV template, marble frame layout"></span>
         <span class="tcap"><span class="tname">The Marble Monarch</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Marble frame</span>
       </a>
-      <a class="tcard" href="build.html?template=royal-grid" data-cat="modern professional" data-tier="Royal" data-name="Royal Grid" data-style="Navy sidebar">
+      <a class="tcard" href="build.html?template=royal-grid" data-cat="modern professional" data-tier="Royal" data-name="Royal Grid" data-style="Navy sidebar" data-photo="0">
         <span class="timg"><img src="assets/templates/royal-grid.webp" width="640" height="652" loading="lazy" decoding="async" alt="Royal Grid CV template, navy sidebar layout"></span>
         <span class="tcap"><span class="tname">Royal Grid</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Navy sidebar</span>
       </a>
-      <a class="tcard" href="build.html?template=tech-minimal" data-cat="simple modern tech" data-tier="Pro" data-name="Tech Minimal" data-style="Two columns">
-        <span class="timg"><img src="assets/templates/tech-minimal.webp" width="640" height="691" loading="lazy" decoding="async" alt="Tech Minimal CV template, two columns layout"></span>
+      <a class="tcard" href="build.html?template=tech-minimal" data-cat="simple modern tech" data-tier="Pro" data-name="Tech Minimal" data-style="Two columns" data-photo="1">
+        <span class="timg"><img src="assets/templates/tech-minimal.webp" width="640" height="570" loading="lazy" decoding="async" alt="Tech Minimal CV template, two columns layout"></span>
         <span class="tcap"><span class="tname">Tech Minimal</span><span class="tbadge tb-pro">Pro</span></span><span class="tmeta">Two columns</span>
       </a>
-      <a class="tcard" href="build.html?template=the-royal-parchment" data-cat="simple professional executive creative" data-tier="Elite" data-name="The Royal Parchment" data-style="Warm parchment">
+      <a class="tcard" href="build.html?template=the-royal-parchment" data-cat="simple professional executive creative" data-tier="Elite" data-name="The Royal Parchment" data-style="Warm parchment" data-photo="0">
         <span class="timg"><img src="assets/templates/the-royal-parchment.webp" width="640" height="750" loading="lazy" decoding="async" alt="The Royal Parchment CV template, warm parchment layout"></span>
         <span class="tcap"><span class="tname">The Royal Parchment</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Warm parchment</span>
       </a>
-      <a class="tcard" href="build.html?template=sapphire-showcase" data-cat="modern" data-tier="Royal" data-name="Sapphire Showcase" data-style="Sapphire sidebar">
+      <a class="tcard" href="build.html?template=sapphire-showcase" data-cat="modern" data-tier="Royal" data-name="Sapphire Showcase" data-style="Sapphire sidebar" data-photo="1">
         <span class="timg"><img src="assets/templates/sapphire-showcase.webp" width="640" height="571" loading="lazy" decoding="async" alt="Sapphire Showcase CV template, sapphire sidebar layout"></span>
         <span class="tcap"><span class="tname">Sapphire Showcase</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Sapphire sidebar</span>
       </a>
-      <a class="tcard" href="build.html?template=clean-classic" data-cat="simple professional" data-tier="Pro" data-name="Clean Classic" data-style="Centred classic">
-        <span class="timg"><img src="assets/templates/clean-classic.webp" width="640" height="869" loading="lazy" decoding="async" alt="Clean Classic CV template, centred classic layout"></span>
+      <a class="tcard" href="build.html?template=clean-classic" data-cat="simple professional" data-tier="Pro" data-name="Clean Classic" data-style="Centred classic" data-photo="0">
+        <span class="timg"><img src="assets/templates/clean-classic.webp" width="640" height="723" loading="lazy" decoding="async" alt="Clean Classic CV template, centred classic layout"></span>
         <span class="tcap"><span class="tname">Clean Classic</span><span class="tbadge tb-pro">Pro</span></span><span class="tmeta">Centred classic</span>
       </a>
-      <a class="tcard" href="build.html?template=the-celestial-signature" data-cat="dark executive" data-tier="Elite" data-name="The Celestial Signature" data-style="Celestial dark">
+      <a class="tcard" href="build.html?template=the-celestial-signature" data-cat="dark executive" data-tier="Elite" data-name="The Celestial Signature" data-style="Celestial dark" data-photo="0">
         <span class="timg"><img src="assets/templates/the-celestial-signature.webp" width="640" height="728" loading="lazy" decoding="async" alt="The Celestial Signature CV template, celestial dark layout"></span>
         <span class="tcap"><span class="tname">The Celestial Signature</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Celestial dark</span>
       </a>
-      <a class="tcard" href="build.html?template=gilded-grid" data-cat="professional dark" data-tier="Royal" data-name="Gilded Grid" data-style="Gilded two-column">
+      <a class="tcard" href="build.html?template=gilded-grid" data-cat="professional dark" data-tier="Royal" data-name="Gilded Grid" data-style="Gilded two-column" data-photo="0">
         <span class="timg"><img src="assets/templates/gilded-grid.webp" width="640" height="717" loading="lazy" decoding="async" alt="Gilded Grid CV template, gilded two-column layout"></span>
         <span class="tcap"><span class="tname">Gilded Grid</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Gilded two-column</span>
       </a>
-      <a class="tcard" href="build.html?template=the-newsroom" data-cat="simple professional creative" data-tier="Pro" data-name="The Newsroom" data-style="Editorial rail">
+      <a class="tcard" href="build.html?template=the-newsroom" data-cat="simple professional creative" data-tier="Pro" data-name="The Newsroom" data-style="Editorial rail" data-photo="0">
         <span class="timg"><img src="assets/templates/the-newsroom.webp" width="640" height="743" loading="lazy" decoding="async" alt="The Newsroom CV template, editorial rail layout"></span>
         <span class="tcap"><span class="tname">The Newsroom</span><span class="tbadge tb-pro">Pro</span></span><span class="tmeta">Editorial rail</span>
       </a>
-      <a class="tcard" href="build.html?template=senior-executive" data-cat="professional dark executive" data-tier="Elite" data-name="Senior Executive" data-style="Split header">
-        <span class="timg"><img src="assets/templates/senior-executive.webp" width="640" height="656" loading="lazy" decoding="async" alt="Senior Executive CV template, split header layout"></span>
+      <a class="tcard" href="build.html?template=senior-executive" data-cat="professional dark executive" data-tier="Elite" data-name="Senior Executive" data-style="Split header" data-photo="1">
+        <span class="timg"><img src="assets/templates/senior-executive.webp" width="640" height="575" loading="lazy" decoding="async" alt="Senior Executive CV template, split header layout"></span>
         <span class="tcap"><span class="tname">Senior Executive</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Split header</span>
       </a>
-      <a class="tcard" href="build.html?template=creative-agency" data-cat="creative modern" data-tier="Royal" data-name="Creative Agency" data-style="Sidebar">
+      <a class="tcard" href="build.html?template=creative-agency" data-cat="creative modern" data-tier="Royal" data-name="Creative Agency" data-style="Sidebar" data-photo="1">
         <span class="timg"><img src="assets/templates/creative-agency.webp" width="640" height="590" loading="lazy" decoding="async" alt="Creative Agency CV template, sidebar layout"></span>
         <span class="tcap"><span class="tname">Creative Agency</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Sidebar</span>
       </a>
-      <a class="tcard" href="build.html?template=legal-professional" data-cat="simple professional" data-tier="Pro" data-name="Legal Professional" data-style="Centred classic">
+      <a class="tcard" href="build.html?template=legal-professional" data-cat="simple professional" data-tier="Pro" data-name="Legal Professional" data-style="Centred classic" data-photo="0">
         <span class="timg"><img src="assets/templates/legal-professional.webp" width="640" height="723" loading="lazy" decoding="async" alt="Legal Professional CV template, centred classic layout"></span>
         <span class="tcap"><span class="tname">Legal Professional</span><span class="tbadge tb-pro">Pro</span></span><span class="tmeta">Centred classic</span>
       </a>
-      <a class="tcard" href="build.html?template=corporate-counsel" data-cat="professional executive" data-tier="Elite" data-name="Corporate Counsel" data-style="Framed">
+      <a class="tcard" href="build.html?template=corporate-counsel" data-cat="professional executive" data-tier="Elite" data-name="Corporate Counsel" data-style="Framed" data-photo="0">
         <span class="timg"><img src="assets/templates/corporate-counsel.webp" width="640" height="723" loading="lazy" decoding="async" alt="Corporate Counsel CV template, framed layout"></span>
         <span class="tcap"><span class="tname">Corporate Counsel</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Framed</span>
       </a>
-      <a class="tcard" href="build.html?template=digital-marketing" data-cat="creative modern" data-tier="Royal" data-name="Digital Marketing" data-style="Header band">
+      <a class="tcard" href="build.html?template=digital-marketing" data-cat="creative modern" data-tier="Royal" data-name="Digital Marketing" data-style="Header band" data-photo="1">
         <span class="timg"><img src="assets/templates/digital-marketing.webp" width="640" height="583" loading="lazy" decoding="async" alt="Digital Marketing CV template, header band layout"></span>
         <span class="tcap"><span class="tname">Digital Marketing</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Header band</span>
       </a>
-      <a class="tcard" href="build.html?template=project-manager" data-cat="simple professional" data-tier="Pro" data-name="Project Manager" data-style="Timeline">
-        <span class="timg"><img src="assets/templates/project-manager.webp" width="640" height="680" loading="lazy" decoding="async" alt="Project Manager CV template, timeline layout"></span>
+      <a class="tcard" href="build.html?template=project-manager" data-cat="simple professional" data-tier="Pro" data-name="Project Manager" data-style="Timeline" data-photo="0">
+        <span class="timg"><img src="assets/templates/project-manager.webp" width="640" height="817" loading="lazy" decoding="async" alt="Project Manager CV template, timeline layout"></span>
         <span class="tcap"><span class="tname">Project Manager</span><span class="tbadge tb-pro">Pro</span></span><span class="tmeta">Timeline</span>
       </a>
-      <a class="tcard" href="build.html?template=head-of-operations" data-cat="professional dark executive" data-tier="Elite" data-name="Head of Operations" data-style="Sidebar">
-        <span class="timg"><img src="assets/templates/head-of-operations.webp" width="640" height="575" loading="lazy" decoding="async" alt="Head of Operations CV template, sidebar layout"></span>
+      <a class="tcard" href="build.html?template=head-of-operations" data-cat="professional dark executive" data-tier="Elite" data-name="Head of Operations" data-style="Sidebar" data-photo="1">
+        <span class="timg"><img src="assets/templates/head-of-operations.webp" width="640" height="557" loading="lazy" decoding="async" alt="Head of Operations CV template, sidebar layout"></span>
         <span class="tcap"><span class="tname">Head of Operations</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Sidebar</span>
       </a>
-      <a class="tcard" href="build.html?template=data-analyst" data-cat="tech modern" data-tier="Royal" data-name="Data Analyst" data-style="Visual skills">
-        <span class="timg"><img src="assets/templates/data-analyst.webp" width="640" height="603" loading="lazy" decoding="async" alt="Data Analyst CV template, visual skills layout"></span>
+      <a class="tcard" href="build.html?template=data-analyst" data-cat="tech modern" data-tier="Royal" data-name="Data Analyst" data-style="Visual skills" data-photo="1">
+        <span class="timg"><img src="assets/templates/data-analyst.webp" width="640" height="734" loading="lazy" decoding="async" alt="Data Analyst CV template, visual skills layout"></span>
         <span class="tcap"><span class="tname">Data Analyst</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Visual skills</span>
       </a>
-      <a class="tcard" href="build.html?template=software-developer" data-cat="simple tech" data-tier="Pro" data-name="Software Developer" data-style="Compact dates">
-        <span class="timg"><img src="assets/templates/software-developer.webp" width="640" height="714" loading="lazy" decoding="async" alt="Software Developer CV template, compact dates layout"></span>
+      <a class="tcard" href="build.html?template=software-developer" data-cat="simple tech" data-tier="Pro" data-name="Software Developer" data-style="Compact dates" data-photo="0">
+        <span class="timg"><img src="assets/templates/software-developer.webp" width="640" height="838" loading="lazy" decoding="async" alt="Software Developer CV template, compact dates layout"></span>
         <span class="tcap"><span class="tname">Software Developer</span><span class="tbadge tb-pro">Pro</span></span><span class="tmeta">Compact dates</span>
       </a>
-      <a class="tcard" href="build.html?template=strategic-planner" data-cat="tech modern" data-tier="Elite" data-name="Strategic Planner" data-style="Blueprint">
-        <span class="timg"><img src="assets/templates/strategic-planner.webp" width="640" height="785" loading="lazy" decoding="async" alt="Strategic Planner CV template, blueprint layout"></span>
+      <a class="tcard" href="build.html?template=strategic-planner" data-cat="tech modern" data-tier="Elite" data-name="Strategic Planner" data-style="Blueprint" data-photo="0">
+        <span class="timg"><img src="assets/templates/strategic-planner.webp" width="640" height="906" loading="lazy" decoding="async" alt="Strategic Planner CV template, blueprint layout"></span>
         <span class="tcap"><span class="tname">Strategic Planner</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Blueprint</span>
       </a>
-      <a class="tcard" href="build.html?template=data-scientist" data-cat="tech modern" data-tier="Royal" data-name="Data Scientist" data-style="Visual skills">
-        <span class="timg"><img src="assets/templates/data-scientist.webp" width="640" height="571" loading="lazy" decoding="async" alt="Data Scientist CV template, visual skills layout"></span>
+      <a class="tcard" href="build.html?template=data-scientist" data-cat="tech modern" data-tier="Royal" data-name="Data Scientist" data-style="Visual skills" data-photo="1">
+        <span class="timg"><img src="assets/templates/data-scientist.webp" width="640" height="715" loading="lazy" decoding="async" alt="Data Scientist CV template, visual skills layout"></span>
         <span class="tcap"><span class="tname">Data Scientist</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Visual skills</span>
       </a>
-      <a class="tcard" href="build.html?template=educator" data-cat="simple professional" data-tier="Pro" data-name="Educator" data-style="Two columns">
-        <span class="timg"><img src="assets/templates/educator.webp" width="640" height="691" loading="lazy" decoding="async" alt="Educator CV template, two columns layout"></span>
+      <a class="tcard" href="build.html?template=educator" data-cat="simple professional" data-tier="Pro" data-name="Educator" data-style="Two columns" data-photo="1">
+        <span class="timg"><img src="assets/templates/educator.webp" width="640" height="570" loading="lazy" decoding="async" alt="Educator CV template, two columns layout"></span>
         <span class="tcap"><span class="tname">Educator</span><span class="tbadge tb-pro">Pro</span></span><span class="tmeta">Two columns</span>
       </a>
-      <a class="tcard" href="build.html?template=chief-product-officer" data-cat="dark executive" data-tier="Elite" data-name="Chief Product Officer" data-style="Header band">
-        <span class="timg"><img src="assets/templates/chief-product-officer.webp" width="640" height="568" loading="lazy" decoding="async" alt="Chief Product Officer CV template, header band layout"></span>
+      <a class="tcard" href="build.html?template=chief-product-officer" data-cat="dark executive" data-tier="Elite" data-name="Chief Product Officer" data-style="Header band" data-photo="1">
+        <span class="timg"><img src="assets/templates/chief-product-officer.webp" width="640" height="695" loading="lazy" decoding="async" alt="Chief Product Officer CV template, header band layout"></span>
         <span class="tcap"><span class="tname">Chief Product Officer</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Header band</span>
       </a>
-      <a class="tcard" href="build.html?template=retail-management" data-cat="professional modern" data-tier="Royal" data-name="Retail Management" data-style="Sidebar">
-        <span class="timg"><img src="assets/templates/retail-management.webp" width="640" height="720" loading="lazy" decoding="async" alt="Retail Management CV template, sidebar layout"></span>
+      <a class="tcard" href="build.html?template=retail-management" data-cat="professional modern" data-tier="Royal" data-name="Retail Management" data-style="Sidebar" data-photo="1">
+        <span class="timg"><img src="assets/templates/retail-management.webp" width="640" height="590" loading="lazy" decoding="async" alt="Retail Management CV template, sidebar layout"></span>
         <span class="tcap"><span class="tname">Retail Management</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Sidebar</span>
       </a>
-      <a class="tcard" href="build.html?template=finance-director" data-cat="simple professional" data-tier="Pro" data-name="Finance Director" data-style="Compact dates">
-        <span class="timg"><img src="assets/templates/finance-director.webp" width="640" height="841" loading="lazy" decoding="async" alt="Finance Director CV template, compact dates layout"></span>
+      <a class="tcard" href="build.html?template=finance-director" data-cat="simple professional" data-tier="Pro" data-name="Finance Director" data-style="Compact dates" data-photo="0">
+        <span class="timg"><img src="assets/templates/finance-director.webp" width="640" height="696" loading="lazy" decoding="async" alt="Finance Director CV template, compact dates layout"></span>
         <span class="tcap"><span class="tname">Finance Director</span><span class="tbadge tb-pro">Pro</span></span><span class="tmeta">Compact dates</span>
       </a>
-      <a class="tcard" href="build.html?template=investment-strategist" data-cat="professional dark executive" data-tier="Elite" data-name="Investment Strategist" data-style="Split header">
-        <span class="timg"><img src="assets/templates/investment-strategist.webp" width="640" height="692" loading="lazy" decoding="async" alt="Investment Strategist CV template, split header layout"></span>
+      <a class="tcard" href="build.html?template=investment-strategist" data-cat="professional dark executive" data-tier="Elite" data-name="Investment Strategist" data-style="Split header" data-photo="1">
+        <span class="timg"><img src="assets/templates/investment-strategist.webp" width="640" height="648" loading="lazy" decoding="async" alt="Investment Strategist CV template, split header layout"></span>
         <span class="tcap"><span class="tname">Investment Strategist</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Split header</span>
       </a>
-      <a class="tcard" href="build.html?template=hospitality-lead" data-cat="professional creative" data-tier="Royal" data-name="Hospitality Lead" data-style="Split header">
-        <span class="timg"><img src="assets/templates/hospitality-lead.webp" width="640" height="656" loading="lazy" decoding="async" alt="Hospitality Lead CV template, split header layout"></span>
+      <a class="tcard" href="build.html?template=hospitality-lead" data-cat="professional creative" data-tier="Royal" data-name="Hospitality Lead" data-style="Split header" data-photo="1">
+        <span class="timg"><img src="assets/templates/hospitality-lead.webp" width="640" height="575" loading="lazy" decoding="async" alt="Hospitality Lead CV template, split header layout"></span>
         <span class="tcap"><span class="tname">Hospitality Lead</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Split header</span>
       </a>
-      <a class="tcard" href="build.html?template=hr-specialist" data-cat="simple professional" data-tier="Pro" data-name="HR Specialist" data-style="Two columns">
-        <span class="timg"><img src="assets/templates/hr-specialist.webp" width="640" height="562" loading="lazy" decoding="async" alt="HR Specialist CV template, two columns layout"></span>
+      <a class="tcard" href="build.html?template=hr-specialist" data-cat="simple professional" data-tier="Pro" data-name="HR Specialist" data-style="Two columns" data-photo="1">
+        <span class="timg"><img src="assets/templates/hr-specialist.webp" width="640" height="570" loading="lazy" decoding="async" alt="HR Specialist CV template, two columns layout"></span>
         <span class="tcap"><span class="tname">HR Specialist</span><span class="tbadge tb-pro">Pro</span></span><span class="tmeta">Two columns</span>
       </a>
-      <a class="tcard" href="build.html?template=heritage-parchment" data-cat="professional creative" data-tier="Elite" data-name="Heritage Parchment" data-style="Framed">
-        <span class="timg"><img src="assets/templates/heritage-parchment.webp" width="640" height="814" loading="lazy" decoding="async" alt="Heritage Parchment CV template, framed layout"></span>
+      <a class="tcard" href="build.html?template=heritage-parchment" data-cat="professional creative" data-tier="Elite" data-name="Heritage Parchment" data-style="Framed" data-photo="0">
+        <span class="timg"><img src="assets/templates/heritage-parchment.webp" width="640" height="706" loading="lazy" decoding="async" alt="Heritage Parchment CV template, framed layout"></span>
         <span class="tcap"><span class="tname">Heritage Parchment</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Framed</span>
       </a>
-      <a class="tcard" href="build.html?template=construction-trades" data-cat="professional modern" data-tier="Royal" data-name="Construction & Trades" data-style="Sidebar">
+      <a class="tcard" href="build.html?template=construction-trades" data-cat="professional modern" data-tier="Royal" data-name="Construction & Trades" data-style="Sidebar" data-photo="1">
         <span class="timg"><img src="assets/templates/construction-trades.webp" width="640" height="573" loading="lazy" decoding="async" alt="Construction & Trades CV template, sidebar layout"></span>
         <span class="tcap"><span class="tname">Construction & Trades</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Sidebar</span>
       </a>
-      <a class="tcard" href="build.html?template=e-commerce-manager" data-cat="simple modern" data-tier="Pro" data-name="E-commerce Manager" data-style="Editorial rail">
+      <a class="tcard" href="build.html?template=e-commerce-manager" data-cat="simple modern" data-tier="Pro" data-name="E-commerce Manager" data-style="Editorial rail" data-photo="0">
         <span class="timg"><img src="assets/templates/e-commerce-manager.webp" width="640" height="727" loading="lazy" decoding="async" alt="E-commerce Manager CV template, editorial rail layout"></span>
         <span class="tcap"><span class="tname">E-commerce Manager</span><span class="tbadge tb-pro">Pro</span></span><span class="tmeta">Editorial rail</span>
       </a>
-      <a class="tcard" href="build.html?template=architect-s-grid" data-cat="creative tech" data-tier="Elite" data-name="Architect’s Grid" data-style="Blueprint">
-        <span class="timg"><img src="assets/templates/architect-s-grid.webp" width="640" height="735" loading="lazy" decoding="async" alt="Architect’s Grid CV template, blueprint layout"></span>
+      <a class="tcard" href="build.html?template=architect-s-grid" data-cat="creative tech" data-tier="Elite" data-name="Architect’s Grid" data-style="Blueprint" data-photo="0">
+        <span class="timg"><img src="assets/templates/architect-s-grid.webp" width="640" height="727" loading="lazy" decoding="async" alt="Architect’s Grid CV template, blueprint layout"></span>
         <span class="tcap"><span class="tname">Architect’s Grid</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Blueprint</span>
       </a>
-      <a class="tcard" href="build.html?template=fashion-designer" data-cat="creative" data-tier="Royal" data-name="Fashion Designer" data-style="Bold type">
+      <a class="tcard" href="build.html?template=fashion-designer" data-cat="creative" data-tier="Royal" data-name="Fashion Designer" data-style="Bold type" data-photo="0">
         <span class="timg"><img src="assets/templates/fashion-designer.webp" width="640" height="571" loading="lazy" decoding="async" alt="Fashion Designer CV template, bold type layout"></span>
         <span class="tcap"><span class="tname">Fashion Designer</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Bold type</span>
       </a>
-      <a class="tcard" href="build.html?template=operations-head" data-cat="simple professional" data-tier="Pro" data-name="Operations Head" data-style="Editorial rail">
-        <span class="timg"><img src="assets/templates/operations-head.webp" width="640" height="753" loading="lazy" decoding="async" alt="Operations Head CV template, editorial rail layout"></span>
+      <a class="tcard" href="build.html?template=operations-head" data-cat="simple professional" data-tier="Pro" data-name="Operations Head" data-style="Editorial rail" data-photo="0">
+        <span class="timg"><img src="assets/templates/operations-head.webp" width="640" height="884" loading="lazy" decoding="async" alt="Operations Head CV template, editorial rail layout"></span>
         <span class="tcap"><span class="tname">Operations Head</span><span class="tbadge tb-pro">Pro</span></span><span class="tmeta">Editorial rail</span>
       </a>
-      <a class="tcard" href="build.html?template=emerald-authority" data-cat="dark executive" data-tier="Elite" data-name="Emerald Authority" data-style="Sidebar">
+      <a class="tcard" href="build.html?template=emerald-authority" data-cat="dark executive" data-tier="Elite" data-name="Emerald Authority" data-style="Sidebar" data-photo="1">
         <span class="timg"><img src="assets/templates/emerald-authority.webp" width="640" height="547" loading="lazy" decoding="async" alt="Emerald Authority CV template, sidebar layout"></span>
         <span class="tcap"><span class="tname">Emerald Authority</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Sidebar</span>
       </a>
-      <a class="tcard" href="build.html?template=marketing-strategist" data-cat="creative modern" data-tier="Royal" data-name="Marketing Strategist" data-style="Header band">
-        <span class="timg"><img src="assets/templates/marketing-strategist.webp" width="640" height="568" loading="lazy" decoding="async" alt="Marketing Strategist CV template, header band layout"></span>
+      <a class="tcard" href="build.html?template=marketing-strategist" data-cat="creative modern" data-tier="Royal" data-name="Marketing Strategist" data-style="Header band" data-photo="1">
+        <span class="timg"><img src="assets/templates/marketing-strategist.webp" width="640" height="714" loading="lazy" decoding="async" alt="Marketing Strategist CV template, header band layout"></span>
         <span class="tcap"><span class="tname">Marketing Strategist</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Header band</span>
       </a>
-      <a class="tcard" href="build.html?template=healthcare-professional" data-cat="simple professional" data-tier="Pro" data-name="Healthcare Professional" data-style="Two columns">
-        <span class="timg"><img src="assets/templates/healthcare-professional.webp" width="640" height="560" loading="lazy" decoding="async" alt="Healthcare Professional CV template, two columns layout"></span>
+      <a class="tcard" href="build.html?template=healthcare-professional" data-cat="simple professional" data-tier="Pro" data-name="Healthcare Professional" data-style="Two columns" data-photo="1">
+        <span class="timg"><img src="assets/templates/healthcare-professional.webp" width="640" height="682" loading="lazy" decoding="async" alt="Healthcare Professional CV template, two columns layout"></span>
         <span class="tcap"><span class="tname">Healthcare Professional</span><span class="tbadge tb-pro">Pro</span></span><span class="tmeta">Two columns</span>
       </a>
-      <a class="tcard" href="build.html?template=onyx-director" data-cat="dark executive" data-tier="Elite" data-name="Onyx Director" data-style="Header band">
-        <span class="timg"><img src="assets/templates/onyx-director.webp" width="640" height="557" loading="lazy" decoding="async" alt="Onyx Director CV template, header band layout"></span>
+      <a class="tcard" href="build.html?template=onyx-director" data-cat="dark executive" data-tier="Elite" data-name="Onyx Director" data-style="Header band" data-photo="1">
+        <span class="timg"><img src="assets/templates/onyx-director.webp" width="640" height="704" loading="lazy" decoding="async" alt="Onyx Director CV template, header band layout"></span>
         <span class="tcap"><span class="tname">Onyx Director</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Header band</span>
       </a>
-      <a class="tcard" href="build.html?template=travel-consultant" data-cat="creative modern" data-tier="Royal" data-name="Travel Consultant" data-style="Right sidebar">
-        <span class="timg"><img src="assets/templates/travel-consultant.webp" width="640" height="557" loading="lazy" decoding="async" alt="Travel Consultant CV template, right sidebar layout"></span>
+      <a class="tcard" href="build.html?template=travel-consultant" data-cat="creative modern" data-tier="Royal" data-name="Travel Consultant" data-style="Right sidebar" data-photo="1">
+        <span class="timg"><img src="assets/templates/travel-consultant.webp" width="640" height="701" loading="lazy" decoding="async" alt="Travel Consultant CV template, right sidebar layout"></span>
         <span class="tcap"><span class="tname">Travel Consultant</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Right sidebar</span>
       </a>
-      <a class="tcard" href="build.html?template=academic-scholar" data-cat="simple professional" data-tier="Pro" data-name="Academic Scholar" data-style="Centred classic">
-        <span class="timg"><img src="assets/templates/academic-scholar.webp" width="640" height="864" loading="lazy" decoding="async" alt="Academic Scholar CV template, centred classic layout"></span>
+      <a class="tcard" href="build.html?template=academic-scholar" data-cat="simple professional" data-tier="Pro" data-name="Academic Scholar" data-style="Centred classic" data-photo="0">
+        <span class="timg"><img src="assets/templates/academic-scholar.webp" width="640" height="732" loading="lazy" decoding="async" alt="Academic Scholar CV template, centred classic layout"></span>
         <span class="tcap"><span class="tname">Academic Scholar</span><span class="tbadge tb-pro">Pro</span></span><span class="tmeta">Centred classic</span>
       </a>
-      <a class="tcard" href="build.html?template=rose-gold-executive" data-cat="professional executive creative" data-tier="Elite" data-name="Rose Gold Executive" data-style="Split header">
-        <span class="timg"><img src="assets/templates/rose-gold-executive.webp" width="640" height="560" loading="lazy" decoding="async" alt="Rose Gold Executive CV template, split header layout"></span>
+      <a class="tcard" href="build.html?template=rose-gold-executive" data-cat="professional executive creative" data-tier="Elite" data-name="Rose Gold Executive" data-style="Split header" data-photo="1">
+        <span class="timg"><img src="assets/templates/rose-gold-executive.webp" width="640" height="670" loading="lazy" decoding="async" alt="Rose Gold Executive CV template, split header layout"></span>
         <span class="tcap"><span class="tname">Rose Gold Executive</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Split header</span>
       </a>
-      <a class="tcard" href="build.html?template=sales-champion" data-cat="professional modern" data-tier="Royal" data-name="Sales Champion" data-style="Card layout">
-        <span class="timg"><img src="assets/templates/sales-champion.webp" width="640" height="906" loading="lazy" decoding="async" alt="Sales Champion CV template, card layout layout"></span>
+      <a class="tcard" href="build.html?template=sales-champion" data-cat="professional modern" data-tier="Royal" data-name="Sales Champion" data-style="Card layout" data-photo="1">
+        <span class="timg"><img src="assets/templates/sales-champion.webp" width="640" height="852" loading="lazy" decoding="async" alt="Sales Champion CV template, card layout layout"></span>
         <span class="tcap"><span class="tname">Sales Champion</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Card layout</span>
       </a>
-      <a class="tcard" href="build.html?template=customer-success" data-cat="simple modern" data-tier="Pro" data-name="Customer Success" data-style="Timeline">
-        <span class="timg"><img src="assets/templates/customer-success.webp" width="640" height="781" loading="lazy" decoding="async" alt="Customer Success CV template, timeline layout"></span>
+      <a class="tcard" href="build.html?template=customer-success" data-cat="simple modern" data-tier="Pro" data-name="Customer Success" data-style="Timeline" data-photo="0">
+        <span class="timg"><img src="assets/templates/customer-success.webp" width="640" height="680" loading="lazy" decoding="async" alt="Customer Success CV template, timeline layout"></span>
         <span class="tcap"><span class="tname">Customer Success</span><span class="tbadge tb-pro">Pro</span></span><span class="tmeta">Timeline</span>
       </a>
-      <a class="tcard" href="build.html?template=platinum-partner" data-cat="professional executive" data-tier="Elite" data-name="Platinum Partner" data-style="Two columns">
-        <span class="timg"><img src="assets/templates/platinum-partner.webp" width="640" height="691" loading="lazy" decoding="async" alt="Platinum Partner CV template, two columns layout"></span>
+      <a class="tcard" href="build.html?template=platinum-partner" data-cat="professional executive" data-tier="Elite" data-name="Platinum Partner" data-style="Two columns" data-photo="1">
+        <span class="timg"><img src="assets/templates/platinum-partner.webp" width="640" height="623" loading="lazy" decoding="async" alt="Platinum Partner CV template, two columns layout"></span>
         <span class="tcap"><span class="tname">Platinum Partner</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Two columns</span>
       </a>
-      <a class="tcard" href="build.html?template=engineer" data-cat="professional tech" data-tier="Royal" data-name="Engineer" data-style="Sidebar">
-        <span class="timg"><img src="assets/templates/engineer.webp" width="640" height="701" loading="lazy" decoding="async" alt="Engineer CV template, sidebar layout"></span>
+      <a class="tcard" href="build.html?template=engineer" data-cat="professional tech" data-tier="Royal" data-name="Engineer" data-style="Sidebar" data-photo="1">
+        <span class="timg"><img src="assets/templates/engineer.webp" width="640" height="584" loading="lazy" decoding="async" alt="Engineer CV template, sidebar layout"></span>
         <span class="tcap"><span class="tname">Engineer</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Sidebar</span>
       </a>
-      <a class="tcard" href="build.html?template=noir-editorial" data-cat="dark creative" data-tier="Elite" data-name="Noir Editorial" data-style="Bold type">
-        <span class="timg"><img src="assets/templates/noir-editorial.webp" width="640" height="666" loading="lazy" decoding="async" alt="Noir Editorial CV template, bold type layout"></span>
+      <a class="tcard" href="build.html?template=noir-editorial" data-cat="dark creative" data-tier="Elite" data-name="Noir Editorial" data-style="Bold type" data-photo="0">
+        <span class="timg"><img src="assets/templates/noir-editorial.webp" width="640" height="571" loading="lazy" decoding="async" alt="Noir Editorial CV template, bold type layout"></span>
         <span class="tcap"><span class="tname">Noir Editorial</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Bold type</span>
       </a>
-      <a class="tcard" href="build.html?template=eco-friendly" data-cat="creative modern" data-tier="Royal" data-name="Eco-Friendly" data-style="Sidebar">
+      <a class="tcard" href="build.html?template=eco-friendly" data-cat="creative modern" data-tier="Royal" data-name="Eco-Friendly" data-style="Sidebar" data-photo="1">
         <span class="timg"><img src="assets/templates/eco-friendly.webp" width="640" height="590" loading="lazy" decoding="async" alt="Eco-Friendly CV template, sidebar layout"></span>
         <span class="tcap"><span class="tname">Eco-Friendly</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Sidebar</span>
       </a>
-      <a class="tcard" href="build.html?template=ivory-consultant" data-cat="simple professional executive" data-tier="Elite" data-name="Ivory Consultant" data-style="Centred classic">
-        <span class="timg"><img src="assets/templates/ivory-consultant.webp" width="640" height="756" loading="lazy" decoding="async" alt="Ivory Consultant CV template, centred classic layout"></span>
+      <a class="tcard" href="build.html?template=ivory-consultant" data-cat="simple professional executive" data-tier="Elite" data-name="Ivory Consultant" data-style="Centred classic" data-photo="0">
+        <span class="timg"><img src="assets/templates/ivory-consultant.webp" width="640" height="774" loading="lazy" decoding="async" alt="Ivory Consultant CV template, centred classic layout"></span>
         <span class="tcap"><span class="tname">Ivory Consultant</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Centred classic</span>
       </a>
-      <a class="tcard" href="build.html?template=startup-founder" data-cat="creative modern" data-tier="Royal" data-name="Startup Founder" data-style="Bold type">
-        <span class="timg"><img src="assets/templates/startup-founder.webp" width="640" height="602" loading="lazy" decoding="async" alt="Startup Founder CV template, bold type layout"></span>
+      <a class="tcard" href="build.html?template=startup-founder" data-cat="creative modern" data-tier="Royal" data-name="Startup Founder" data-style="Bold type" data-photo="0">
+        <span class="timg"><img src="assets/templates/startup-founder.webp" width="640" height="583" loading="lazy" decoding="async" alt="Startup Founder CV template, bold type layout"></span>
         <span class="tcap"><span class="tname">Startup Founder</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Bold type</span>
       </a>
-      <a class="tcard" href="build.html?template=royal-burgundy" data-cat="professional dark executive" data-tier="Elite" data-name="Royal Burgundy" data-style="Right sidebar">
+      <a class="tcard" href="build.html?template=royal-burgundy" data-cat="professional dark executive" data-tier="Elite" data-name="Royal Burgundy" data-style="Right sidebar" data-photo="1">
         <span class="timg"><img src="assets/templates/royal-burgundy.webp" width="640" height="547" loading="lazy" decoding="async" alt="Royal Burgundy CV template, right sidebar layout"></span>
         <span class="tcap"><span class="tname">Royal Burgundy</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Right sidebar</span>
       </a>
-      <a class="tcard" href="build.html?template=ux-designer" data-cat="creative modern" data-tier="Royal" data-name="UX Designer" data-style="Card layout">
-        <span class="timg"><img src="assets/templates/ux-designer.webp" width="640" height="801" loading="lazy" decoding="async" alt="UX Designer CV template, card layout layout"></span>
+      <a class="tcard" href="build.html?template=ux-designer" data-cat="creative modern" data-tier="Royal" data-name="UX Designer" data-style="Card layout" data-photo="1">
+        <span class="timg"><img src="assets/templates/ux-designer.webp" width="640" height="906" loading="lazy" decoding="async" alt="UX Designer CV template, card layout layout"></span>
         <span class="tcap"><span class="tname">UX Designer</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Card layout</span>
       </a>
-      <a class="tcard" href="build.html?template=sapphire-chair" data-cat="professional dark executive" data-tier="Elite" data-name="Sapphire Chair" data-style="Sidebar">
-        <span class="timg"><img src="assets/templates/sapphire-chair.webp" width="640" height="581" loading="lazy" decoding="async" alt="Sapphire Chair CV template, sidebar layout"></span>
+      <a class="tcard" href="build.html?template=sapphire-chair" data-cat="professional dark executive" data-tier="Elite" data-name="Sapphire Chair" data-style="Sidebar" data-photo="1">
+        <span class="timg"><img src="assets/templates/sapphire-chair.webp" width="640" height="713" loading="lazy" decoding="async" alt="Sapphire Chair CV template, sidebar layout"></span>
         <span class="tcap"><span class="tname">Sapphire Chair</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Sidebar</span>
       </a>
-      <a class="tcard" href="build.html?template=content-writer" data-cat="creative simple" data-tier="Royal" data-name="Content Writer" data-style="Editorial rail">
-        <span class="timg"><img src="assets/templates/content-writer.webp" width="640" height="729" loading="lazy" decoding="async" alt="Content Writer CV template, editorial rail layout"></span>
+      <a class="tcard" href="build.html?template=content-writer" data-cat="creative simple" data-tier="Royal" data-name="Content Writer" data-style="Editorial rail" data-photo="0">
+        <span class="timg"><img src="assets/templates/content-writer.webp" width="640" height="857" loading="lazy" decoding="async" alt="Content Writer CV template, editorial rail layout"></span>
         <span class="tcap"><span class="tname">Content Writer</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Editorial rail</span>
       </a>
-      <a class="tcard" href="build.html?template=magazine-feature" data-cat="creative" data-tier="Elite" data-name="Magazine Feature" data-style="Bold type">
-        <span class="timg"><img src="assets/templates/magazine-feature.webp" width="640" height="593" loading="lazy" decoding="async" alt="Magazine Feature CV template, bold type layout"></span>
+      <a class="tcard" href="build.html?template=magazine-feature" data-cat="creative" data-tier="Elite" data-name="Magazine Feature" data-style="Bold type" data-photo="0">
+        <span class="timg"><img src="assets/templates/magazine-feature.webp" width="640" height="688" loading="lazy" decoding="async" alt="Magazine Feature CV template, bold type layout"></span>
         <span class="tcap"><span class="tname">Magazine Feature</span><span class="tbadge tb-elite">Elite</span></span><span class="tmeta">Bold type</span>
       </a>
-      <a class="tcard" href="build.html?template=student-graduate" data-cat="simple modern" data-tier="Royal" data-name="Student & Graduate" data-style="Two columns">
-        <span class="timg"><img src="assets/templates/student-graduate.webp" width="640" height="691" loading="lazy" decoding="async" alt="Student & Graduate CV template, two columns layout"></span>
+      <a class="tcard" href="build.html?template=student-graduate" data-cat="simple modern" data-tier="Royal" data-name="Student & Graduate" data-style="Two columns" data-photo="1">
+        <span class="timg"><img src="assets/templates/student-graduate.webp" width="640" height="572" loading="lazy" decoding="async" alt="Student & Graduate CV template, two columns layout"></span>
         <span class="tcap"><span class="tname">Student & Graduate</span><span class="tbadge tb-royal">Royal</span></span><span class="tmeta">Two columns</span>
       </a>
     </div>
@@ -598,7 +600,7 @@ window.addEventListener('resize', () => {
   function apply(){
     var shown=0;
     cards.forEach(function(c){
-      var okC=state.cat==='all'||(' '+c.dataset.cat+' ').indexOf(' '+state.cat+' ')>-1;
+      var okC=state.cat==='all'||(state.cat==='photo'?c.dataset.photo==='1':(' '+c.dataset.cat+' ').indexOf(' '+state.cat+' ')>-1);
       var okT=state.tier==='all'||c.dataset.tier===state.tier;
       c.classList.toggle('hide',!(okC&&okT)); if(okC&&okT) shown++;
     });
@@ -620,7 +622,7 @@ window.addEventListener('resize', () => {
       ev.preventDefault();
       var img=card.querySelector('img');
       document.getElementById('tpl-preview-name').textContent=card.dataset.name;
-      document.getElementById('tpl-preview-tier').textContent=(PRICE[card.dataset.tier]||card.dataset.tier)+' · '+card.dataset.style;
+      document.getElementById('tpl-preview-tier').textContent=(PRICE[card.dataset.tier]||card.dataset.tier)+' · '+card.dataset.style+(card.dataset.photo==='1'?' · shows your photo':'');
       var wrap=document.getElementById('tpl-preview-mock'); wrap.innerHTML='';
       var big=document.createElement('img'); big.src=img.src; big.alt=img.alt; wrap.appendChild(big); wrap.scrollTop=0;
       document.getElementById('tpl-preview-start').href=card.getAttribute('href');
