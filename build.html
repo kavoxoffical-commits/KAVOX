@@ -128,6 +128,7 @@
  .form-footnote { text-align:center; margin-top:32px; font-size:12px; color:rgba(255,255,255,.35); }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="kavox-templates.js"></script>
 </head>
 <body>
 
@@ -398,7 +399,21 @@
  <option data-tier="pro">The Modern Slate</option>
  <option data-tier="pro">The Classic Serif</option>
  <option data-tier="pro">The Soft Tech</option>
- </optgroup>
+  <option data-tier="pro">Tech Minimal</option>
+ <option data-tier="pro">Clean Classic</option>
+ <option data-tier="pro">The Newsroom</option>
+ <option data-tier="pro">Legal Professional</option>
+ <option data-tier="pro">Project Manager</option>
+ <option data-tier="pro">Software Developer</option>
+ <option data-tier="pro">Educator</option>
+ <option data-tier="pro">Finance Director</option>
+ <option data-tier="pro">HR Specialist</option>
+ <option data-tier="pro">E-commerce Manager</option>
+ <option data-tier="pro">Operations Head</option>
+ <option data-tier="pro">Healthcare Professional</option>
+ <option data-tier="pro">Academic Scholar</option>
+ <option data-tier="pro">Customer Success</option>
+</optgroup>
  <optgroup label="— Royal Tier ($9/mo) —">
  <option data-tier="royal">Royal Dark Mode</option>
  <option data-tier="royal">Golden Graph</option>
@@ -408,7 +423,24 @@
  <option data-tier="royal">Onyx Office</option>
  <option data-tier="royal">Crimson Career</option>
  <option data-tier="royal">The Visionary</option>
- </optgroup>
+  <option data-tier="royal">Creative Agency</option>
+ <option data-tier="royal">Digital Marketing</option>
+ <option data-tier="royal">Data Analyst</option>
+ <option data-tier="royal">Data Scientist</option>
+ <option data-tier="royal">Retail Management</option>
+ <option data-tier="royal">Hospitality Lead</option>
+ <option data-tier="royal">Construction & Trades</option>
+ <option data-tier="royal">Fashion Designer</option>
+ <option data-tier="royal">Marketing Strategist</option>
+ <option data-tier="royal">Travel Consultant</option>
+ <option data-tier="royal">Sales Champion</option>
+ <option data-tier="royal">Engineer</option>
+ <option data-tier="royal">Eco-Friendly</option>
+ <option data-tier="royal">Startup Founder</option>
+ <option data-tier="royal">UX Designer</option>
+ <option data-tier="royal">Content Writer</option>
+ <option data-tier="royal">Student & Graduate</option>
+</optgroup>
  <optgroup label="— Elite Tier ($19/mo) —">
  <option data-tier="elite">The Charcoal Signature</option>
  <option data-tier="elite">The Obsidian Scroll</option>
@@ -417,7 +449,24 @@
  <option data-tier="elite">The Marble Monarch</option>
  <option data-tier="elite">The Royal Parchment</option>
  <option data-tier="elite">The Celestial Signature</option>
- </optgroup>
+  <option data-tier="elite">Senior Executive</option>
+ <option data-tier="elite">Corporate Counsel</option>
+ <option data-tier="elite">Head of Operations</option>
+ <option data-tier="elite">Strategic Planner</option>
+ <option data-tier="elite">Chief Product Officer</option>
+ <option data-tier="elite">Investment Strategist</option>
+ <option data-tier="elite">Heritage Parchment</option>
+ <option data-tier="elite">Architect’s Grid</option>
+ <option data-tier="elite">Emerald Authority</option>
+ <option data-tier="elite">Onyx Director</option>
+ <option data-tier="elite">Rose Gold Executive</option>
+ <option data-tier="elite">Platinum Partner</option>
+ <option data-tier="elite">Noir Editorial</option>
+ <option data-tier="elite">Ivory Consultant</option>
+ <option data-tier="elite">Royal Burgundy</option>
+ <option data-tier="elite">Sapphire Chair</option>
+ <option data-tier="elite">Magazine Feature</option>
+</optgroup>
  </select>
  <p class="field-hint">You'll be able to browse and switch templates freely before downloading.</p>
  </div>
@@ -1883,6 +1932,11 @@ function buildCVFromTemplate(templateName, data, tier) {
     </div>`;
   }
 
+  // Extra templates (kavox-templates.js)
+  if (window.KVX && window.KVX.has(templateName)) {
+    return window.KVX.render(templateName, d, { baseStyles, dir, sep, isRTL, fontFamily, lang: d.lang });
+  }
+
   // Fallback
   return buildCVFromTemplate('The Minimalist', data, tier);
 }
@@ -3282,6 +3336,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const tailorId = params.get('tailor');
   if (tailorId) {
     openTailorPage(tailorId);
+  }
+  const preTpl = params.get('template');
+  if (preTpl) {
+    const selT = document.getElementById('f-template');
+    const slugT = t => String(t).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    if (selT) {
+      for (let i = 0; i < selT.options.length; i++) {
+        if (selT.options[i].value !== '' && slugT(selT.options[i].textContent) === preTpl) { selT.selectedIndex = i; break; }
+      }
+    }
   }
   const preTier = params.get('tier');
   if (preTier === 'pro' || preTier === 'royal' || preTier === 'elite') {
