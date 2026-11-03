@@ -150,16 +150,15 @@
   .hero-link:hover { border-color:#d8d0b8; }
   .hero-visual { position:relative; height:clamp(480px,50vw,680px); opacity:0; animation:hvIn 1.2s ease .25s forwards; }
   @keyframes hvIn { to { opacity:1; } }
-  .hv { position:absolute; display:block; height:auto; border-radius:8px; background:#fff; box-shadow:0 36px 80px rgba(0,0,0,.6); animation:hvFloat var(--d,9s) ease-in-out infinite alternate; }
-  @keyframes hvFloat { from { translate:0 -9px; } to { translate:0 11px; } }
+  .hv { position:absolute; display:block; height:auto; border-radius:8px; background:#fff; box-shadow:0 36px 80px rgba(0,0,0,.6); }
   .hv-main { width:min(410px,35vw); left:50%; top:50%; transform:translate(-50%,-50%); z-index:3; --d:10s; }
   .hv-left { width:min(318px,27vw); left:50%; top:54%; transform:translate(-100%,-48%) rotate(-7deg); z-index:2; --d:12s; }
   .hv-right { width:min(318px,27vw); left:50%; top:46%; transform:translate(0%,-52%) rotate(6deg); z-index:2; --d:11s; }
-  .hv-chip { position:absolute; z-index:5; display:flex; align-items:center; gap:9px; padding:11px 16px; border-radius:14px; background:rgba(18,18,22,.8); border:1px solid rgba(255,255,255,.14); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); font-size:13px; font-weight:600; color:#f5f2ea; box-shadow:0 18px 40px rgba(0,0,0,.45); animation:hvFloat 8s ease-in-out infinite alternate; }
+  .hv-chip { position:absolute; z-index:5; display:flex; align-items:center; gap:9px; padding:11px 16px; border-radius:14px; background:rgba(18,18,22,.8); border:1px solid rgba(255,255,255,.14); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); font-size:13px; font-weight:600; color:#f5f2ea; box-shadow:0 18px 40px rgba(0,0,0,.45); }
   .hv-chip i { width:20px; height:20px; border-radius:50%; background:#d8d0b8; color:#0a0a0c; font-style:normal; font-size:12px; display:flex; align-items:center; justify-content:center; }
   .hv-chip.c1 { left:4%; top:3%; --d:8s; }
-  .hv-chip.c2 { right:-2%; top:42%; animation-delay:-3s; }
-  .hv-chip.c3 { left:5%; bottom:9%; animation-delay:-5s; }
+  .hv-chip.c2 { right:-2%; top:42%; }
+  .hv-chip.c3 { left:5%; bottom:9%; }
   .hv-note { position:absolute; right:2%; bottom:2%; z-index:5; font-size:11px; color:rgba(255,255,255,.4); letter-spacing:.04em; }
   @media (max-width:900px) {
     #hero-pin { padding:96px 20px 64px; align-items:flex-start; }
@@ -176,7 +175,6 @@
     .hero-cta-row { justify-content:center; }
     .scroll-cue { display:none; }
   }
-  @media (prefers-reduced-motion:reduce) { .hv, .hv-chip { animation:none; } }
 
   /* ---------- Template showcase (two scrolling rows of real CVs) ---------- */
   .showcase { background:#0a0a0c; padding:70px 0 50px; overflow:hidden; }
@@ -196,7 +194,7 @@
   .demo-label { font-size:12px; letter-spacing:.3em; text-transform:uppercase; color:#8a8375; }
   .demo-head h2 { margin-top:14px; font-size:clamp(28px,4vw,42px); font-weight:700; letter-spacing:-.03em; color:#f5f2ea; }
   .demo-frame { max-width:1000px; margin:0 auto; border-radius:20px; overflow:hidden; border:1px solid rgba(255,255,255,.1); background:#0a0a0c; box-shadow:0 30px 80px rgba(0,0,0,.45); aspect-ratio:16/9; }
-  .demo-frame video { display:block; width:100%; height:100%; object-fit:cover; transform:scale(1.14); }
+  .demo-frame video { display:block; width:100%; height:100%; object-fit:cover; }
   @media (max-width:700px){ .demo-frame { aspect-ratio:4/5; border-radius:16px; } .demo-frame video { transform:none; } }
   .demo-note { max-width:1000px; margin:14px auto 0; text-align:center; font-size:12px; color:rgba(255,255,255,.4); }
 
@@ -323,10 +321,10 @@
 <section class="demo-section" id="demo">
   <div class="demo-head">
     <span class="demo-label">See it work</span>
-    <h2>From rough draft to <span style="white-space:nowrap">role-ready.</span></h2>
+    <h2>From a pasted job to a <span style="white-space:nowrap">finished CV.</span></h2>
   </div>
   <div class="demo-frame">
-    <video id="demoVideo" data-mp4="assets/hero-demo.mp4" data-webm="assets/hero-demo.webm" data-mp4-m="assets/hero-demo-m.mp4" data-webm-m="assets/hero-demo-m.webm" data-poster-m="assets/hero-demo-m-poster.jpg" poster="assets/hero-demo-poster.jpg" muted loop playsinline preload="none" aria-label="KAVOX rewriting CV bullets for a job description, raising the ATS match score and switching templates"></video>
+    <video id="demoVideo" data-mp4="assets/hero-demo.mp4" data-webm="assets/hero-demo.webm" data-mp4-m="assets/hero-demo-m.mp4" data-webm-m="assets/hero-demo-m.webm" data-poster-m="assets/hero-demo-m-poster.jpg" poster="assets/hero-demo-poster.jpg" muted loop playsinline preload="none" aria-label="A short demo: paste a job description, KAVOX rewrites the CV bullets, you add your photo and pick a design, check the ATS match and download the PDF"></video>
   </div>
   <p class="demo-note">Illustrative sample. Your results depend on your own CV and the role you apply for.</p>
 </section>
