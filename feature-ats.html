@@ -84,6 +84,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 <script src="kavox-theme.js"></script>
+<style>
+  .fe-video { padding:10px 24px 70px; background:#0a0a0c; }
+  .fe-video-inner { max-width:960px; margin:0 auto; text-align:center; }
+  .fe-video-label { font-size:12px; letter-spacing:.3em; text-transform:uppercase; color:#8a8375; }
+  .fe-video-frame { margin-top:22px; border-radius:18px; overflow:hidden; border:1px solid rgba(255,255,255,.1); background:#0a0a0c; box-shadow:0 30px 80px rgba(0,0,0,.45); aspect-ratio:16/9; }
+  .fe-video-frame video { display:block; width:100%; height:100%; object-fit:cover; }
+  .fe-video-note { margin-top:14px; font-size:12px; color:rgba(255,255,255,.4); }
+  @media (max-width:700px) { .fe-video { padding:0 16px 50px; } .fe-video-frame { aspect-ratio:4/5; border-radius:14px; } }
+</style>
 </head>
 <body>
 
@@ -110,6 +119,16 @@
   <h1 class="fe-title" id="feTitle">Built to actually<br>get parsed.</h1>
   <p class="fe-sub" id="feSub">Most CVs get filtered before a human ever sees them. Our Pro templates use simple, single-column layouts that applicant tracking systems can read correctly, with no sidebars or tables for the parser to mangle.</p>
   <a href="build.html" class="fe-hero-cta" id="feCta">Start for free &rarr;</a>
+</section>
+
+<section class="fe-video" id="fe-video">
+  <div class="fe-video-inner">
+    <span class="fe-video-label">See the score in action</span>
+    <div class="fe-video-frame">
+      <video id="feVideo" data-mp4="assets/features/ats.mp4" data-webm="assets/features/ats.webm" data-mp4-m="assets/features/ats-m.mp4" data-webm-m="assets/features/ats-m.webm" data-poster-m="assets/features/ats-m-poster.jpg" poster="assets/features/ats-poster.jpg" muted loop playsinline preload="none" aria-label="A short demo: upload a CV, paste a job description, get a keyword-match score, see which keywords are missing and add them"></video>
+    </div>
+    <p class="fe-video-note">Illustrative sample with fictional data. The free checker on this page works on your own CV.</p>
+  </div>
 </section>
 
 <section class="ats-tool" id="atsTool" style="padding:20px 24px 80px;max-width:760px;margin:0 auto;">
@@ -428,6 +447,19 @@ window.addEventListener('resize', () => {
       resultEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
   });
+})();
+</script>
+<script>
+(function(){
+  var v=document.getElementById('feVideo'); if(!v) return;
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce){ v.setAttribute('controls',''); v.removeAttribute('loop'); }
+  var phone=window.matchMedia&&window.matchMedia('(max-width: 700px)').matches;
+  if(phone) v.setAttribute('poster', v.getAttribute('data-poster-m'));
+  var loaded=false;
+  function load(){ if(loaded) return; loaded=true; var mp4=v.canPlayType('video/mp4; codecs="avc1.42E01E"'); v.src=v.getAttribute((mp4?'data-mp4':'data-webm')+(phone?'-m':'')); }
+  if(!('IntersectionObserver' in window)){ load(); if(!reduce&&v.play) v.play().catch(function(){}); return; }
+  new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ load(); if(!reduce){ var p=v.play(); if(p&&p.catch) p.catch(function(){}); } } else { v.pause(); } }); },{threshold:0.35,rootMargin:'200px 0px'}).observe(v);
 })();
 </script>
 </body>
