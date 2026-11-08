@@ -2042,38 +2042,6 @@ async function _doGenerateCV(tier) {
   const template  = document.getElementById('f-template').value || 'Professional';
   const optData   = collectOptionalData();
 
-  // ── AUTO-DETECT LANGUAGE FROM NAME & INPUTS ───────────────────
-  function detectLang(text) {
-    if (!text) return null;
-    // Arabic (general Arabic block — most common; checked before Persian/Urdu)
-    if (/[\u0600-\u06FF]/.test(text)) {
-      // Persian/Farsi uses specific chars (پ چ ژ گ)
-      if (/[\u067E\u0686\u0698\u06AF]/.test(text)) return 'Persian';
-      // Urdu uses specific chars (ٹ ڈ ڑ ں ہ ھ ے)
-      if (/[\u0679\u0688\u0691\u06BA\u06BE\u06C1\u06CC\u06D2]/.test(text)) return 'Urdu';
-      return 'Arabic';
-    }
-    // Chinese (CJK Unified)
-    if (/[\u4E00-\u9FFF\u3400-\u4DBF]/.test(text)) return 'Chinese';
-    // Japanese (Hiragana / Katakana)
-    if (/[\u3040-\u30FF]/.test(text)) return 'Japanese';
-    // Korean (Hangul)
-    if (/[\uAC00-\uD7AF\u1100-\u11FF]/.test(text)) return 'Korean';
-    // Cyrillic — distinguish Russian vs Ukrainian
-    if (/[\u0400-\u04FF]/.test(text)) {
-      // Ukrainian-specific: і, ї, є, ґ
-      if (/[\u0456\u0457\u0454\u0491]/.test(text)) return 'Ukrainian';
-      return 'Russian';
-    }
-    // Thai
-    if (/[\u0E00-\u0E7F]/.test(text)) return 'Thai';
-    // Hindi / Devanagari
-    if (/[\u0900-\u097F]/.test(text)) return 'Hindi';
-    // Vietnamese (tonal diacritics — Latin-based but detectable)
-    if (/[\u1EA0-\u1EF9]/.test(text)) return 'Vietnamese';
-    return null;
-  }
-
   const allInputText = [
     document.getElementById('f-name').value,
     document.getElementById('f-title').value,
@@ -3130,22 +3098,7 @@ function removeLang(btn) {
 }
 
 // ── PHOTO UPLOAD ─────────────────────────────────────────────────
-function handlePhotoUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  if (!file.type.startsWith('image/')) {
-    alert('Please upload an image file (JPG, PNG, or WEBP) — this doesn\'t look like a photo.');
-    event.target.value = '';
-    return;
-  }
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    document.getElementById('photo-preview-img').src = e.target.result;
-    document.getElementById('photo-default-state').style.display = 'none';
-    document.getElementById('photo-preview-state').style.display = 'flex';
-  };
-  reader.readAsDataURL(file);
-}
+
 
 function removePhoto(event) {
   event.preventDefault();

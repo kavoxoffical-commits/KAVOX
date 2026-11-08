@@ -1,0 +1,11 @@
+{
+  "name": "kavox",
+  "private": true,
+  "version": "1.0.0",
+  "description": "KAVOX static site. Sources stay readable in the repo; `npm run build` writes the minified site to dist/.",
+  "scripts": { "build": "node build.js" },
+  "devDependencies": {
+    "html-minifier-terser": "7.2.0",
+    "terser": "5.36.0"
+  }
+}
