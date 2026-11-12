@@ -128,6 +128,7 @@
  .form-footnote { text-align:center; margin-top:32px; font-size:12px; color:rgba(255,255,255,.35); }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="kavox-theme.js"></script>
 <script src="kavox-templates.js"></script>
 <style>
   .kv-lang-select { width:100%; margin-top:8px; padding:12px 14px; border-radius:10px; border:1px solid rgba(255,255,255,.16); background:rgba(0,0,0,.35); color:#f5f2ea; font:inherit; font-size:14px; }
@@ -676,6 +677,33 @@ let currentProviderIndex = 0;
 
  // ── TAILOR CV ─────────────────────────────────────────────────────
 let _tailorCvId = null;
+
+async function viewSavedCV(id) {
+  // "View" on the account page links to build.html?view=<id>; this function did not exist, so the link only opened the form.
+  try {
+    if (!_sb) await initSupabase();
+    const { data: sess } = await _sb.auth.getSession();
+    const user = sess && sess.session && sess.session.user;
+    if (!user) { window.location.href = 'login.html'; return; }
+    const { data: row, error } = await _sb.from('cvs')
+      .select('cv_html, cv_data, tier, language, name')
+      .eq('id', id).eq('user_id', user.id).single();
+    if (error || !row || !row.cv_html) {
+      alert('Could not open that CV. It may have been deleted. You can find your CVs in your account.');
+      return;
+    }
+    window._cvHTML = row.cv_html;
+    window._cvData = row.cv_data || null;
+    renderResult(row.cv_html, row.tier);
+    // coming straight from the account page, the form steps are still the active ones: hide them first
+    ['step1', 'step2'].forEach(function (sid) { var el = document.getElementById(sid); if (el) el.classList.remove('active'); });
+    document.querySelectorAll('.form-step.active').forEach(function (el) { el.classList.remove('active'); });
+    showPage('result');
+  } catch (e) {
+    console.warn('viewSavedCV failed:', e);
+    alert('Could not open that CV. Please try again from your account.');
+  }
+}
 
 function openTailorPage(cvId) {
   _tailorCvId = cvId;

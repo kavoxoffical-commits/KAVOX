@@ -21,7 +21,9 @@
 
   /* page = invert + dim; media = exact undo of the invert, brightened to offset the dim */
   var PAGE = 'invert(1) hue-rotate(180deg) brightness(.88) contrast(1.06)';
-  var MEDIA = 'invert(1) hue-rotate(180deg) brightness(1.1)';
+  /* exact undo of the page filter (invert, hue, brightness .88, contrast 1.06): contrast/brightness first, then invert, so
+     photos and finished CVs show their true colours (only pure white tops out slightly below white) */
+  var MEDIA = 'contrast(.945) brightness(1.134) invert(1) hue-rotate(180deg)';
 
   var SUN = '<svg class="kv-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
     + '<circle cx="12" cy="12" r="4"/>'
@@ -36,16 +38,21 @@
     '.compare-note', '.price-cycle', '.updated', '.hint', '.field-hint', '.form-footnote',
     '.upload-zone-hint', '.btn-skip', '.optional-toggle-icon'
   ];
+  var FLIPPED = ['.slide', '.tpl-card', '#tpl-preview-mock', '.tpl-mock', '#cv-output', '.kv-keep'];
   var faintSel = FAINT.map(function (x) { return L + x; }).join(',');
 
   var css = ''
     + L + '{filter:' + PAGE + ';}'
-    /* photos / video flip back to true colour */
-    + L + 'img,' + L + 'video{filter:' + MEDIA + ';}'
-    /* photo cards keep their dark look (overlay + white text), and CV previews keep true colour */
-    + L + '.slide,' + L + '.tpl-card,' + L + '#tpl-preview-mock{filter:' + MEDIA + ';}'
-    + L + '.slide img,' + L + '.tpl-card img,' + L + '.tpl-card .tpl-mock{filter:none;}'
-    + L + '.tpl-mock{filter:' + MEDIA + ';}'
+    /* everything the user or a photo supplies keeps its true colour: <img>, <video>, <canvas>,
+       <iframe>, and any element whose inline style sets an image (e.g. the account avatar) */
+    + L + 'img,' + L + 'video,' + L + 'canvas,' + L + 'iframe,' + L + '[style*="url("]{filter:' + MEDIA + ';}'
+    /* containers that hold a finished design (CV result, template previews, photo cards) are flipped
+       back as a whole; anything inside them must NOT be flipped a second time */
+    + FLIPPED.map(function (x) { return L + x; }).join(',') + '{filter:' + MEDIA + ';}'
+    + FLIPPED.map(function (x) { return L + x + ' img,' + L + x + ' video,' + L + x + ' canvas,' + L + x + ' iframe,' + L + x + ' [style*="url("]'; }).join(',') + '{filter:none;}'
+    + L + '.tpl-card .tpl-mock{filter:none;}'
+    /* printing and PDF export always use the real colours: no theme filters at all */
+    + '@media print{html[data-theme="light"],html[data-theme="light"] *{filter:none !important;mix-blend-mode:normal !important;}}'
     /* logo: inverted with the page; its black box is made transparent so no pale patch shows */
     + L + '.logo img{filter:none;mix-blend-mode:lighten;}'
     /* text that was deliberately dim on black gets too faint on light: lift it */

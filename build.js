@@ -12,7 +12,7 @@ const { minify: terser } = require('terser');
 
 const ROOT = __dirname;
 const OUT = path.join(ROOT, 'dist');
-const SKIP = new Set(['api', 'dist', 'node_modules', '.git', '.gitignore', 'package.json', 'package-lock.json', 'build.js', 'vercel.json']);
+const SKIP = new Set(['api', 'dist', 'node_modules', '.git', '.gitignore', 'package.json', 'package-lock.json', 'build.js', 'vercel.json', 'NOTES.md']);
 
 function copyDir(src, dst) {
   fs.mkdirSync(dst, { recursive: true });
