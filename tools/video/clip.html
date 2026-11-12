@@ -1,0 +1,445 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:Inter;font-weight:400;src:url(fonts/inter-latin-400-normal.woff2)}
+@font-face{font-family:Inter;font-weight:500;src:url(fonts/inter-latin-500-normal.woff2)}
+@font-face{font-family:Inter;font-weight:600;src:url(fonts/inter-latin-600-normal.woff2)}
+@font-face{font-family:Inter;font-weight:400;src:url(fonts/inter-cyrillic-400-normal.woff2);unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:Inter;font-weight:500;src:url(fonts/inter-cyrillic-500-normal.woff2);unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:Inter;font-weight:600;src:url(fonts/inter-cyrillic-600-normal.woff2);unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:NotoAr;font-weight:400;src:url(fonts/noto-sans-arabic-arabic-400-normal.woff2)}
+@font-face{font-family:NotoAr;font-weight:600;src:url(fonts/noto-sans-arabic-arabic-600-normal.woff2)}
+@font-face{font-family:Playfair Display;font-weight:700;src:url(fonts/playfair-display-latin-700-normal.woff2)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1280px;height:720px;overflow:hidden;background:#050506;font-family:Inter,NotoAr,sans-serif;color:#f5f2ea}
+#stage{position:absolute;inset:0;overflow:hidden;background:radial-gradient(900px 520px at 50% 40%,#17171b 0%,#070708 72%)}
+#cam{position:absolute;left:0;top:0;transform-origin:0 0}
+#win{position:absolute;left:80px;top:34px;width:1120px;height:584px;border-radius:20px;background:#101013;border:1px solid rgba(255,255,255,.1);box-shadow:0 40px 90px rgba(0,0,0,.6);overflow:hidden;opacity:0}
+#bar{height:50px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;padding:0 22px;gap:14px}
+#bar img{height:19px;display:block}
+#bar .t{margin-left:auto;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.45)}
+#A{position:absolute;left:0;top:50px;width:540px;bottom:0;padding:20px 24px}
+#B{position:absolute;left:540px;top:50px;right:0;bottom:0;padding:20px 26px;border-left:1px solid rgba(255,255,255,.08)}
+.pt{font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:12px}
+.card{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);border-radius:12px;padding:12px 14px}
+.btn{display:inline-block;font-size:12.5px;font-weight:600;padding:9px 20px;border-radius:99px;background:linear-gradient(135deg,#ece6d6,#d8d0b8);color:#0a0a0c}
+.lab{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.45);margin:8px 0 5px}
+.field{height:36px;border-radius:9px;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.35);padding:0 12px;display:flex;align-items:center;font-size:15px}
+.chip{display:inline-block;font-size:11.5px;padding:4px 10px;border-radius:99px;margin:0 6px 6px 0;border:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.75)}
+.chip.ok{border-color:#c9b78a;color:#ece6d6}
+.chip.no{border-style:dashed;border-color:#e0a06a;color:#f0c49a}
+.cv{background:#fbfaf6;color:#1b1b1d;border-radius:6px;box-shadow:0 18px 50px rgba(0,0,0,.5);padding:24px 26px;font-size:11px}
+.cv h1{font-family:'Playfair Display',serif;font-size:21px;line-height:1.1}
+.cv .s{font-size:10px;color:#6b6b70;margin-top:3px}
+.cv h4{font-size:8px;letter-spacing:.22em;text-transform:uppercase;color:#8a7a52;border-bottom:1.5px solid #c9a84c;padding-bottom:3px;margin:14px 0 7px}
+.cv p,.cv li{font-size:10.8px;line-height:1.5;color:#2c2c30}
+.cv ul{list-style:none}.cv li{padding-left:12px;position:relative;margin-bottom:6px}
+.cv li:before{content:"";position:absolute;left:0;top:7px;width:4px;height:4px;border-radius:50%;background:#8a7a52}
+.w{border-radius:3px;padding:0 2px;transition:none}
+.w.on{background:rgba(214,170,60,.38)}
+.w.add{background:rgba(120,200,140,.35)}
+#cap{position:absolute;left:0;right:0;top:644px;display:flex;justify-content:center;opacity:0}
+#cap div{display:flex;align-items:center;gap:12px;padding:10px 20px 10px 12px;border-radius:99px;background:rgba(22,22,26,.92);border:1px solid rgba(255,255,255,.14);font-size:19px;font-weight:500;color:#f5f2ea}
+#cap b{width:30px;height:30px;border-radius:50%;background:#d8d0b8;color:#0a0a0c;display:flex;align-items:center;justify-content:center;font-size:15px}
+#cursor{position:absolute;left:0;top:0;width:26px;height:26px;opacity:0;z-index:50;pointer-events:none}
+#cursor svg{display:block;filter:drop-shadow(0 3px 5px rgba(0,0,0,.55))}
+.ripple{position:absolute;left:-18px;top:-18px;width:36px;height:36px;border-radius:50%;border:2px solid #d8c990;opacity:0}
+#fc{position:absolute;left:0;top:0;padding:7px 14px;border-radius:10px;background:rgba(32,32,38,.96);border:1px solid rgba(255,255,255,.18);font-size:12px;font-weight:500;opacity:0;z-index:40}
+#fin{position:absolute;inset:0;z-index:55;pointer-events:none}
+#logoWrap{position:absolute;left:50%;top:50%;transform:translate(-50%,-60%)}
+.lt{position:absolute;top:0;background:linear-gradient(180deg,#f7f1de 0%,#e3d6ae 100%);-webkit-mask-size:100% 100%;mask-size:100% 100%;opacity:0}
+#shine{position:absolute;left:0;top:0;opacity:0;-webkit-mask-image:url(logo_mask.png);mask-image:url(logo_mask.png);-webkit-mask-size:100% 100%;mask-size:100% 100%;background:linear-gradient(100deg,rgba(255,255,255,0) 40%,rgba(255,255,255,.95) 50%,rgba(255,255,255,0) 60%);background-size:260% 100%;background-repeat:no-repeat}
+#fx{position:absolute;left:0;top:0;pointer-events:none;z-index:60}
+#tag{position:absolute;left:0;right:0;top:57%;text-align:center;font-family:'Playfair Display',serif;font-size:28px;color:#e9e2cc;opacity:0}
+/* ---- feature specific ---- */
+.drop{height:420px;border:2px dashed rgba(216,201,144,.55);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:17px;color:#d8c990;gap:6px}
+.drop small{font-size:12px;opacity:.7}
+#cvA{position:absolute;left:24px;right:24px;top:52px}
+#jd{font-size:12.6px;line-height:1.6;min-height:96px;color:#e9e5d8}
+#jd .k{border-radius:4px;padding:0 3px}
+#jd .k.on{background:rgba(214,170,60,.4);color:#fff}
+#res{margin-top:12px;display:flex;gap:18px;align-items:flex-start}
+#ring{position:relative;width:104px;height:104px;flex:none}
+#ring svg{transform:rotate(-90deg)}
+#ring b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:31px}
+.note{font-size:11px;color:rgba(255,255,255,.5);margin-top:8px;line-height:1.45}
+.det{margin-top:14px;display:inline-flex;gap:8px;align-items:center;font-size:12.5px;padding:7px 14px;border-radius:99px;border:1px solid #c9b78a;color:#ece6d6;opacity:0}
+.cvl{display:flex;overflow:hidden;padding:0;min-height:372px}
+.cvl aside{width:150px;padding:22px 14px;background:#1b2a41;color:#eef1f5}
+.cvl main{flex:1;padding:22px 20px}
+.cvl .mono{width:62px;height:62px;border-radius:50%;margin:0 auto 10px;border:2px solid #d8c990;color:#d8c990;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:600}
+.cvl aside h1{font-size:15px;text-align:center;color:#d8c990;font-family:inherit;font-weight:600;line-height:1.25}
+.cvl aside .s{text-align:center;color:#dfe5ee;opacity:.85}
+.cvl aside h4{color:#d8c990;border-bottom:1px solid rgba(255,255,255,.2)}
+.cvl aside div.sk{font-size:10px;line-height:1.75;color:#e7ecf3}
+#strip{position:absolute;left:0;right:0;top:44px;bottom:0;padding:26px;opacity:0;background:#101013}
+#strip .chip{font-size:13px;padding:6px 14px}
+.row{padding:11px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.1);margin-bottom:9px;background:rgba(255,255,255,.03)}
+.row b{display:block;font-size:13.5px;font-weight:600}.row span{font-size:11px;color:rgba(255,255,255,.5)}
+.row.sel{border-color:#c9b78a;background:rgba(201,183,138,.12)}
+#sumTx{font-size:14px;line-height:1.65;color:#ece8da;min-height:140px}
+#prof{position:absolute;left:26px;right:26px;top:20px;opacity:0}
+.pbanner{height:78px;border-radius:12px 12px 0 0;background:linear-gradient(120deg,#1b2a41,#3d5a80)}
+.pbody{border:1px solid rgba(255,255,255,.12);border-top:0;border-radius:0 0 12px 12px;background:rgba(255,255,255,.04);padding:0 16px 14px}
+.pav{width:64px;height:64px;border-radius:50%;border:3px solid #101013;margin-top:-32px;object-fit:cover;display:block}
+
+.letter{background:#fbfaf6;color:#222;border-radius:6px;padding:20px 24px;font-family:Georgia,'Times New Roman',serif;font-size:12.4px;line-height:1.6;box-shadow:0 18px 50px rgba(0,0,0,.5)}
+.letter .ref{border-radius:3px;padding:0 2px}.letter .ref.on{background:rgba(214,170,60,.38)}
+.qc{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);border-radius:11px;padding:10px 13px;margin-bottom:9px;font-size:12.6px;line-height:1.45}
+.qc .tg{display:inline-block;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#d8c990;margin-bottom:3px}
+.qc.sel{border-color:#c9b78a;background:rgba(201,183,138,.1)}
+.edfocus{outline:2px solid #c9a84c;outline-offset:2px;border-radius:3px}
+.typo{border-bottom:2px wavy #e06a5a}
+.pill{display:inline-block;font-size:11.5px;padding:5px 12px;border-radius:99px;margin:0 8px 8px 0}
+.pill.ban{border:1px dashed #e08a7a;color:#f0b4a8;text-decoration:line-through}
+.pill.okp{border:1px solid #c9b78a;color:#ece6d6}
+.sheet{position:absolute;left:26px;right:26px;top:20px;border-radius:12px;background:#f3f2ee;color:#222;padding:14px 16px;box-shadow:0 20px 60px rgba(0,0,0,.6);opacity:0;font-size:12.5px}
+.ta{border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.35);border-radius:10px;padding:10px 12px;font-size:14px;line-height:1.5;min-height:86px}
+.sc{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);border-radius:12px;padding:10px 14px;margin-bottom:10px}
+body.p #win{left:16px;top:14px;width:768px;height:880px}
+body.p #A{width:100%;height:400px;bottom:auto;padding:16px 22px}
+body.p #B{left:0;top:450px;right:0;bottom:0;border-left:0;border-top:1px solid rgba(255,255,255,.08);padding:16px 22px}
+body.p #cap{top:916px}body.p #cap div{font-size:17px}
+body.p .drop{height:300px}
+body.p #jd{font-size:11.6px;min-height:78px}
+body.p #ring{width:86px;height:86px}body.p #ring b{font-size:26px}
+body.p .cvl{min-height:330px}
+body.p #sumTx{font-size:13px;min-height:120px}
+body.p #cvA{top:40px}
+</style></head>
+<body>
+<div id="stage"><div id="cam">
+  <div id="win"><div id="bar"><img src="logo.png"><span class="t">Illustrative sample</span></div><div id="A"></div><div id="B"></div></div>
+  <div id="fc">my-cv.pdf</div>
+  <div id="cursor"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M3 2l17 8-7.5 2L9 20z" fill="#fff" stroke="#111" stroke-width="1.6" stroke-linejoin="round"/></svg><i class="ripple" id="rip"></i></div>
+</div>
+<div id="cap"><div><b id="capN">1</b><span id="capT"></span></div></div>
+<canvas id="fx"></canvas>
+<div id="fin"><div id="logoWrap"></div><div id="tag">The art of professional CVs.</div></div></div>
+<script>
+var Q=new URLSearchParams(location.search), FEAT=Q.get('f')||'ats', P=Q.get('p')==='1'; if(P) document.body.classList.add('p');
+var CW=P?800:1280, CH=P?1000:720;
+document.documentElement.style.width=CW+'px'; document.documentElement.style.height=CH+'px';
+document.getElementById('cam').style.width=CW+'px'; document.getElementById('cam').style.height=CH+'px';
+var fx=document.getElementById('fx'); fx.width=CW; fx.height=CH; var g=fx.getContext('2d');
+var $=function(i){return document.getElementById(i)};
+var cl=function(x,a,b){a=a==null?0:a;b=b==null?1:b;return Math.min(b,Math.max(a,x))};
+var eo=function(x){x=cl(x);return 1-Math.pow(1-x,3)}, sm=function(x){x=cl(x);return x*x*(3-2*x)}, eb=function(x){x=cl(x);var c=1.70158;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
+var lerp=function(a,b,k){return a+(b-a)*k};
+var typed=function(s,t,a,b){return s.slice(0,Math.floor(cl((t-a)/(b-a))*s.length))};
+var TG={}, NOCAM=false, ZM=P?0.7:1;
+
+/* ---------- outro logo ---------- */
+var SEG=[{x:2,w:79},{x:82,w:85},{x:167,w:67},{x:234,w:63}];
+var LS=P?1.5:1.9, LW=297*LS, LH=76*LS, wrap=$('logoWrap'); wrap.style.width=LW+'px'; wrap.style.height=LH+'px';
+var LT=SEG.map(function(s,i){var e=document.createElement('div');e.className='lt';e.style.left=(s.x*LS)+'px';e.style.width=(s.w*LS)+'px';e.style.height=LH+'px';e.style.webkitMaskImage='url(seg'+i+'.png)';e.style.maskImage='url(seg'+i+'.png)';wrap.appendChild(e);return e});
+var shine=document.createElement('div');shine.id='shine';shine.style.width=LW+'px';shine.style.height=LH+'px';wrap.appendChild(shine);
+function outro(t,T0,D){
+  var FC={x:CW/2,y:CH/2-(P?30:20)};
+  g.clearRect(0,0,CW,CH); g.globalCompositeOperation='lighter';
+  if(t>T0&&t<T0+0.9){var u=(t-T0)/0.45,w=lerp(0,CW*0.8,eo(u)),al=1-sm((t-(T0+0.4))/0.5);var gr=g.createLinearGradient(FC.x-w/2,0,FC.x+w/2,0);gr.addColorStop(0,'rgba(255,220,140,0)');gr.addColorStop(.5,'rgba(255,236,190,'+(0.95*al)+')');gr.addColorStop(1,'rgba(255,220,140,0)');g.fillStyle=gr;g.fillRect(FC.x-w/2,FC.y-1.5,w,3);}
+  if(t>T0+0.4){var ga=sm((t-(T0+0.4))/0.9)*(0.6+0.12*Math.sin(t*3));var r=g.createRadialGradient(FC.x,FC.y,10,FC.x,FC.y,LW*0.8);r.addColorStop(0,'rgba(232,190,110,'+(0.26*ga)+')');r.addColorStop(1,'rgba(232,190,110,0)');g.fillStyle=r;g.fillRect(0,0,CW,CH);}
+  g.globalCompositeOperation='source-over';
+  LT.forEach(function(e,i){var st=T0+0.35+i*0.1,u=(t-st)/0.6,k=eb(u);e.style.opacity=cl(u*3)*(1-sm((t-(D-0.4))/0.4));e.style.transform='translateY('+((1-k)*60)+'px) rotate('+(i===2?-260*(1-eo(u)):0)+'deg) scale('+(0.92+0.08*k)+')';e.style.filter='blur('+(12*(1-cl(u*1.4)))+'px)';e.style.transformOrigin=(i===2?'50% 50%':'50% 100%');});
+  var sh=(t-(T0+1.15))/0.8; shine.style.opacity=(sh>0&&sh<1)?1:0; shine.style.backgroundPosition=(130-sh*160)+'% 0';
+  var tg=sm((t-(T0+1.5))/0.5)*(1-sm((t-(D-0.4))/0.4)); $('tag').style.opacity=tg; $('tag').style.transform='translateY('+(12*(1-tg))+'px)';
+}
+
+/* ---------- caption / cursor / camera helpers ---------- */
+function caption(t,list){
+  var on=null; list.forEach(function(c){if(t>=c[0]&&t<c[1]) on=c;});
+  var el=$('cap'); if(!on){el.style.opacity=0;return}
+  var a=Math.min(sm((t-on[0])/0.3),1-sm((t-(on[1]-0.3))/0.3));
+  $('capN').textContent=on[2]; $('capT').textContent=on[3]; el.style.opacity=a; el.style.transform='translateY('+(10*(1-a))+'px)';
+}
+function pathAt(keys,t){
+  for(var i=0;i<keys.length-1;i++){var a=keys[i],b=keys[i+1];if(t>=a[0]&&t<=b[0]){var k=sm((t-a[0])/(b[0]-a[0]||1));return {x:lerp(TG[a[1]].x,TG[b[1]].x,k),y:lerp(TG[a[1]].y,TG[b[1]].y,k)}}}
+  var l=keys[keys.length-1];return TG[l[1]];
+}
+function camAt(keys,t){
+  for(var i=0;i<keys.length-1;i++){var a=keys[i],b=keys[i+1];if(t>=a[0]&&t<=b[0]){var k=sm((t-a[0])/(b[0]-a[0]||1));return {s:1+(lerp(a[1],b[1],k)-1)*ZM,x:lerp(TG[a[2]].x,TG[b[2]].x,k),y:lerp(TG[a[2]].y,TG[b[2]].y,k)}}}
+  var l=keys[keys.length-1];return {s:1+(l[1]-1)*ZM,x:TG[l[2]].x,y:TG[l[2]].y};
+}
+function center(el){var r=el.getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2}}
+var F=null;
+function frame(t){
+  var D=F.D, win=$('win');
+  var wi=sm((t-0.05)/0.5), wo=1-sm((t-(F.T0-0.1))/0.45);
+  win.style.opacity=NOCAM?1:cl(Math.min(wi,wo)); win.style.filter=NOCAM?'none':'blur('+(6*(1-wi)+8*(1-wo))+'px)';
+  var cam=NOCAM?{s:1,x:CW/2,y:CH/2}:camAt(F.cam,t);
+  $('cam').style.transform=NOCAM?'none':'translate('+(CW/2-cam.x*cam.s)+'px,'+(CH/2-cam.y*cam.s)+'px) scale('+cam.s+')';
+  caption(t,F.caps);
+  var c=$('cursor'),cur=NOCAM?{x:0,y:0}:pathAt(F.cur,t); c.style.opacity=(NOCAM||F.noCursor)?0:sm((t-0.4)/0.4)*(1-sm((t-(F.T0-0.2))/0.3)); c.style.transform='translate('+cur.x+'px,'+cur.y+'px)';
+  var rp=0; F.clicks.forEach(function(ct){var k=(t-ct)/0.4;if(k>0&&k<1)rp=k}); $('rip').style.opacity=rp?(1-rp)*0.9:0; $('rip').style.transform='scale('+(0.4+1.6*rp)+')';
+  F.render(t,cur);
+  outro(t,F.T0,D);
+  $('stage').style.opacity=1-sm((t-(D-0.3))/0.3);
+}
+function measure(){
+  Object.keys(F.tg||{}).forEach(function(k){TG[k]={x:CW/2,y:CH/2}});
+  NOCAM=true; F.render(F.measureT||6,{x:0,y:0}); frame(F.measureT||6);
+  var m=F.tg; Object.keys(m).forEach(function(k){var e=typeof m[k]==='string'?document.querySelector(m[k]):null; if(e) TG[k]=center(e);});
+  if(F.post) F.post(); NOCAM=false;
+}
+
+/* ================= FEATURE: ATS ================= */
+var JDK=['roadmap','stakeholders','KPIs','cross-functional','agile','SQL','budget'];
+var JDT=[['Senior Product Manager. Own the ',0],['roadmap',1],[', align ',0],['stakeholders',1],[' and track ',0],['KPIs',1],[' across ',0],['cross-functional',1],[' teams. Lead an ',0],['agile',1],[' team, with ',0],['SQL',1],[' skills and ',0],['budget',1],[' ownership.',0]];
+var JDKT={'roadmap':3.3,'stakeholders':3.65,'KPIs':4.0,'cross-functional':4.35,'agile':4.7,'SQL':5.0,'budget':5.3};
+var ATS={D:15.8,T0:14.1,measureT:6,
+  caps:[[0.3,2.7,1,'Upload your CV'],[2.7,5.7,2,'Paste the job description'],[5.7,9.9,3,'Get a real keyword-match score'],[9.9,12.4,4,'See exactly what is missing'],[12.4,14.0,5,'Add it, check again']],
+  clicks:[5.9,10.9,12.55],
+  tg:{win:'#win',drop:'#drop',btn:'#btnCheck',ring:'#ring',skills:'#skl',jd:'#jd',cvc:'#cvA',res:'#res',chipS:'#drop'},
+  cam:[[0,1,'win'],[5.6,1,'win'],[6.2,1.16,'res'],[9.6,1.16,'res'],[10.1,1.3,'skills'],[12.2,1.3,'skills'],[12.7,1.16,'res'],[13.8,1.16,'res'],[14.1,1,'win'],[16,1,'win']],
+  cur:[[0,'idle'],[0.3,'idle'],[1.0,'drop'],[3.0,'jd'],[5.4,'btn'],[6.4,'cvc'],[10.2,'skills'],[11.0,'skills'],[12.3,'btn'],[13.8,'btn']],
+  build:function(){
+    $('A').innerHTML='<div class="pt">Your CV</div><div class="drop" id="drop">Drop your CV here<small>PDF or Word</small></div>'+
+     '<div class="cv" id="cvA" style="opacity:0"><h1>Emily Carter</h1><div class="s">Product Manager</div><h4>Summary</h4><p><span class="w" data-k="cross-functional">Cross-functional</span> product manager with six years of experience in technology and business operations.</p><h4>Experience</h4><ul><li>Owned the product <span class="w" data-k="roadmap">roadmap</span> across three product lines.</li><li>Kept <span class="w" data-k="stakeholders">stakeholders</span> aligned with weekly reviews and clear updates.</li><li>Tracked <span class="w" data-k="KPIs">KPIs</span> for delivery and reported progress to leadership.</li></ul><h4>Skills</h4><p id="skl">Planning · Reporting · Jira<span id="addSk"></span></p></div>';
+    $('B').innerHTML='<div class="pt">Job description</div><div class="card"><div id="jd"></div></div><div style="margin-top:12px"><span class="btn" id="btnCheck">Check My Score</span></div>'+
+     '<div id="res" style="opacity:0"><div id="ring"><svg width="104" height="104" viewBox="0 0 104 104"><circle cx="52" cy="52" r="45" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="7"/><circle id="arc" cx="52" cy="52" r="45" fill="none" stroke="#c9b78a" stroke-width="7" stroke-linecap="round"/></svg><b id="num">0</b></div>'+
+     '<div style="flex:1"><div class="lab" style="margin-top:0">Keyword match</div><div id="okc"></div><div id="nol"></div><div class="note" id="nt">Calculated from the words in the job text, not an AI guess.</div></div></div>';
+  },
+  render:function(t){
+    // file drop
+    var fc=$('fc'),dr=sm((t-0.9)/1.0),drop=sm((t-1.9)/0.25);
+    fc.style.opacity=NOCAM?0:sm((t-0.35)/0.3)*(1-drop); var cu=pathAt(this.cur,t); fc.style.transform='translate('+(cu.x+14)+'px,'+(cu.y+12)+'px)';
+    $('drop').style.opacity=1-sm((t-2.0)/0.4); $('drop').style.display=t>2.5&&!NOCAM?'none':'flex';
+    $('cvA').style.opacity=NOCAM?1:sm((t-2.0)/0.5);
+    // JD typing + keywords
+    var full=JDT.map(function(x){return x[0]}).join(''), n=Math.floor(cl((t-2.9)/2.2)*full.length), used=0, h='';
+    JDT.forEach(function(s){var take=Math.max(0,Math.min(s[0].length,n-used));used+=s[0].length;var tx=s[0].slice(0,take);h+=s[1]?'<span class="k'+((t>=JDKT[s[0]])?' on':'')+'">'+tx+'</span>':tx});
+    $('jd').innerHTML=h;
+    $('btnCheck').style.transform='scale('+((t>5.85&&t<6.05)||(t>12.5&&t<12.7)?0.94:1)+')';
+    // results
+    $('res').style.opacity=sm((t-6.1)/0.4);
+    var base=Math.round(57*eo((t-6.3)/2.1)), up=Math.round(lerp(57,86,eo((t-12.7)/1.2))); var v=t<12.6?base:up; if(NOCAM) v=57;
+    $('num').textContent=v; var C=2*Math.PI*45,arc=$('arc'); arc.setAttribute('stroke-dasharray',C); arc.setAttribute('stroke-dashoffset',C*(1-v/100));
+    var okc=''; ['roadmap','stakeholders','KPIs','cross-functional'].forEach(function(k,i){var a=sm((t-(7.0+i*0.3))/0.3);if(a>0.01)okc+='<span class="chip ok" style="opacity:'+a+'">✓ '+k+'</span>'});
+    var added=t>=11.9?['agile','SQL']:[]; var nol=''; ['agile','SQL','budget'].forEach(function(k,i){var a=sm((t-(9.8+i*0.3))/0.3);var gone=added.indexOf(k)>-1&&t>=(k==='agile'?12.55:12.65); if(a>0.01&&!gone)nol+='<span class="chip no" style="opacity:'+a+'">'+k+' missing</span>'; if(gone) okc+='<span class="chip ok">✓ '+k+'</span>'});
+    $('okc').innerHTML=okc; $('nol').innerHTML=nol;
+    $('nt').style.opacity=sm((t-8.6)/0.4);
+    // keyword highlights in the CV + added skills
+    [].slice.call(document.querySelectorAll('#cvA .w')).forEach(function(w){var k=w.getAttribute('data-k'),i=['roadmap','stakeholders','KPIs','cross-functional'].indexOf(k);w.classList.toggle('on',t>=7.0+i*0.3)});
+    var s1=typed(' · Agile',t,11.05,11.5), s2=typed(' · SQL',t,11.6,12.0);
+    $('addSk').innerHTML=(s1?'<span class="w add">'+s1+'</span>':'')+(s2?'<span class="w add">'+s2+'</span>':'');
+  }
+};
+
+/* ================= FEATURE: LANGUAGES ================= */
+var LANGS=[
+ {code:'Arabic (right-to-left)',rtl:1,name:'سارة منصور',role:'مديرة تسويق',init:'س',h:['الملخص','الخبرة','المهارات'],sum:'مديرة تسويق بخبرة عشر سنوات في العلامات التجارية والحملات الرقمية.',b:['قادت استراتيجية العلامة لستة فنادق إقليمية.','ضاعفت الحجوزات المباشرة عبر الحملات والبحث.'],sk:['استراتيجية العلامة','الحملات الرقمية','التحليلات'],font:'NotoAr'},
+ {code:'German',name:'Lena Hoffmann',role:'Betriebsleiterin',init:'L',h:['Profil','Berufserfahrung','Kenntnisse'],sum:'Betriebsleiterin mit Erfahrung in Logistik und Lieferantenprozessen im Einzelhandel.',b:['Leitete die Logistik für zwei Lagerstandorte.','Senkte die Versandkosten durch neue Frachtverträge.'],sk:['Lieferkette','Prozessdesign','Kostenkontrolle'],font:'Inter'},
+ {code:'Spanish',name:'Sofía Alvarez',role:'Gerente de Éxito del Cliente',init:'S',h:['Perfil','Experiencia','Habilidades'],sum:'Gerente de éxito del cliente con siete años acompañando a clientes B2B de software.',b:['Gestionó 45 cuentas desde la incorporación hasta la renovación.','Creó una revisión que detecta cuentas en riesgo antes.'],sk:['Incorporación','Renovaciones','Planificación'],font:'Inter'},
+ {code:'Russian',name:'Анна Петрова',role:'Руководитель проектов',init:'А',h:['Резюме','Опыт работы','Навыки'],sum:'Руководитель проектов с шестилетним опытом в технологических компаниях.',b:['Руководила командой из шести специалистов.','Наладила еженедельные обзоры рисков и сроков.'],sk:['Планирование','Управление рисками','Отчётность'],font:'Inter'}];
+var LST=[1.0,5.1,7.7,10.3], LEND=12.6;
+var LANGNAMES=['Arabic','English','French','Spanish','German','Chinese','Japanese','Korean','Russian','Ukrainian','Persian','Urdu','Hindi','Portuguese','Italian','Turkish','Dutch','Swedish','Polish','Czech','Romanian','Indonesian','Malay','Thai','Vietnamese'];
+var LANG={D:17.3,T0:15.6,measureT:4,
+  caps:[[0.3,4.9,1,'Just type, in any language'],[4.9,10.2,2,'The whole CV is written in that language'],[10.2,12.5,3,'Section labels translate too'],[12.6,15.3,4,'25 languages, including right-to-left']],
+  clicks:[],
+  tg:{win:'#win',name:'#inName',det:'#det',paper:'#paperL',strip:'#strip'},
+  cam:[[0,1.0,'win'],[8.0,1.05,'win'],[15.0,1.0,'win'],[16,1,'win']],
+  noCursor:true,
+  cur:[[0,'win'],[16,'win']],
+  build:function(){
+    $('A').innerHTML='<div class="pt">Your details</div><div class="card"><div class="lab" style="margin-top:2px">Name</div><div class="field" id="inName"></div><div class="lab">Role</div><div class="field" id="inRole"></div></div><div class="det" id="det">Language detected: <b id="detL" style="font-weight:600"></b></div><div class="note" style="margin-top:16px;max-width:360px">No language picker. The CV follows the language you write in.</div>';
+    $('B').innerHTML='<div class="pt">Your CV</div><div class="cv cvl" id="paperL"></div><div id="strip"><div class="pt">25 languages</div><div id="chips"></div></div>';
+    $('chips').innerHTML=LANGNAMES.map(function(n){return '<span class="chip">'+n+'</span>'}).join('');
+  },
+  render:function(t){
+    var idx=-1; LST.forEach(function(s,i){if(t>=s)idx=i}); if(NOCAM) idx=0; var L=LANGS[Math.max(0,idx)], st=LST[Math.max(0,idx)]; if(NOCAM) st=0.2;
+    var local=t-st;
+    $('inName').textContent=idx<0?'':typed(L.name,local,0.1,0.9); $('inName').style.direction=L.rtl?'rtl':'ltr'; $('inName').style.fontFamily=L.font+',Inter,sans-serif';
+    $('inRole').textContent=idx<0?'':typed(L.role,local,0.8,1.6); $('inRole').style.direction=L.rtl?'rtl':'ltr'; $('inRole').style.fontFamily=L.font+',Inter,sans-serif';
+    $('det').style.opacity=NOCAM?1:sm((local-1.5)/0.3)*(idx<0?0:1); $('detL').textContent=L.code;
+    var pp=$('paperL');
+    var pIdx=(local>=1.9)?idx:idx-1, show;
+    if(NOCAM){pIdx=0;show=1}
+    else if(idx<0) show=0;
+    else if(idx===0) show=sm((local-1.9)/0.35);
+    else if(local<1.75) show=1; else if(local<1.9) show=1-sm((local-1.75)/0.15); else show=sm((local-1.9)/0.3);
+    if(pIdx<0) pIdx=0; var PL=LANGS[pIdx];
+    pp.style.opacity=show; pp.style.transform='translateY('+(10*(1-show))+'px)'; pp.style.direction=PL.rtl?'rtl':'ltr'; pp.style.fontFamily=PL.font+',Inter,sans-serif'; pp.style.flexDirection='row';
+    var bl='';PL.b.forEach(function(x,i){var a=(pIdx===idx&&!NOCAM)?sm((local-(2.3+i*0.35))/0.3):1;bl+='<li dir="'+(PL.rtl?'rtl':'ltr')+'" style="opacity:'+a+';padding-'+(PL.rtl?'right':'left')+':12px;padding-'+(PL.rtl?'left':'right')+':0">'+x+'</li>'});
+    pp.innerHTML='<aside><div class="mono">'+PL.init+'</div><h1>'+PL.name+'</h1><div class="s">'+PL.role+'</div><h4>'+PL.h[2]+'</h4><div class="sk">'+PL.sk.join('<br>')+'</div></aside><main><h4>'+PL.h[0]+'</h4><p>'+PL.sum+'</p><h4>'+PL.h[1]+'</h4><ul>'+bl+'</ul></main>';
+    if(PL.rtl) pp.querySelectorAll('li').forEach(function(li){li.style.paddingRight='12px';li.style.paddingLeft='0'});
+    // strip with all languages
+    var sp=sm((t-12.6)/0.5)*(1-sm((t-(LANG.T0-0.4))/0.3)); $('strip').style.opacity=NOCAM?0:sp;
+    [].slice.call($('chips').children).forEach(function(c,i){var a=sm((t-(12.8+i*0.07))/0.25);c.style.opacity=a;c.style.transform='translateY('+(8*(1-a))+'px)'});
+  }
+};
+
+/* ================= FEATURE: LINKEDIN ================= */
+var SUMTX='Product manager with six years of experience coordinating cross-functional initiatives across technology and business operations. I turn complex roadmaps into clear priorities, keep stakeholders aligned and deliver on schedule. Currently leading delivery at Northbridge Digital, where I manage release plans across product and engineering.';
+var LIN={D:15.2,T0:13.5,measureT:6,
+  caps:[[0.3,3.2,1,'Pick a saved CV'],[3.2,5.0,2,'Generate your summary'],[5.0,10.0,3,'Written from your real experience'],[10.0,13.1,4,'Copy it into your About box']],
+  clicks:[1.75,3.55,10.05],
+  tg:{win:'#win',row2:'#row2',gen:'#btnGen',sum:'#sumTx',copy:'#btnCopy',prof:'#prof'},
+  cam:[[0,1,'win'],[4.8,1,'win'],[5.4,1.16,'sum'],[9.6,1.16,'sum'],[10.2,1.0,'win'],[10.8,1.12,'prof'],[13.0,1.12,'prof'],[13.4,1,'win'],[16,1,'win']],
+  cur:[[0,'win'],[0.5,'win'],[1.5,'row2'],[2.4,'row2'],[3.4,'gen'],[4.5,'gen'],[6.0,'sum'],[9.5,'sum'],[9.95,'copy'],[10.6,'copy'],[11.6,'prof'],[13.0,'prof']],
+  build:function(){
+    $('A').innerHTML='<div class="pt">My saved CVs</div><div class="row" id="row1"><b>Emily Carter · Project Lead</b><span>Saved 3 weeks ago</span></div><div class="row" id="row2"><b>Emily Carter · Product Manager</b><span>Saved 2 days ago</span></div><div class="row" id="row3"><b>Marketing CV · draft</b><span>Saved last month</span></div><div class="note" style="margin-top:12px">Or upload a PDF, or paste your CV text.</div>';
+    $('B').innerHTML='<div><span class="btn" id="btnGen">Generate LinkedIn Summary</span></div><div id="sumWrap" class="card" style="margin-top:14px;position:relative"><div class="lab" style="margin-top:0">Your LinkedIn summary</div><div id="sumTx"></div><div style="margin-top:10px;text-align:right"><span class="btn" id="btnCopy" style="padding:7px 16px;font-size:12px">Copy Text</span></div></div>'+
+     '<div id="prof"><div class="lab" style="margin-top:0">Your LinkedIn profile</div><div class="pbanner"></div><div class="pbody"><img class="pav" src="photo.jpg"><div style="font-size:16px;font-weight:600;margin-top:6px">Emily Carter</div><div style="font-size:12px;color:rgba(255,255,255,.6)">Product Manager · Northbridge Digital</div><div class="lab" style="margin-top:14px">About</div><div id="aboutTx" style="font-size:12.2px;line-height:1.6;color:#ece8da"></div></div></div><div id="toast" style="position:absolute;right:26px;top:16px;font-size:12px;padding:7px 14px;border-radius:99px;background:#c9b78a;color:#0a0a0c;font-weight:600;opacity:0">Copied</div>';
+  },
+  render:function(t){
+    $('row2').classList.toggle('sel',t>=1.75); $('row1').style.opacity=t>=1.75?0.45:1; $('row3').style.opacity=t>=1.75?0.45:1;
+    $('btnGen').style.transform='scale('+((t>3.5&&t<3.7)?0.95:1)+')'; $('btnGen').textContent=(t>=3.6&&t<4.9)?'Generating…':'Generate LinkedIn Summary';
+    var sw=$('sumWrap'), swo=sm((t-4.8)/0.4)*(1-sm((t-10.3)/0.4)); sw.style.opacity=NOCAM?1:swo; sw.style.display=(!NOCAM&&t>10.8)?'none':'block';
+    $('sumTx').textContent=NOCAM?SUMTX.slice(0,200):typed(SUMTX,t,5.0,9.2);
+    $('btnCopy').style.transform='scale('+((t>10.0&&t<10.2)?0.93:1)+')';
+    var ta=sm((t-10.1)/0.2)*(1-sm((t-11.4)/0.4)); $('toast').style.opacity=NOCAM?0:ta;
+    var pf=NOCAM?0:sm((t-10.55)/0.45); $('prof').style.opacity=pf; $('prof').style.transform='translateY('+(14*(1-pf))+'px)';
+    $('aboutTx').textContent=t>=11.3?SUMTX:''; $('aboutTx').style.background=(t>=11.3&&t<12.4)?'rgba(201,183,138,'+(0.22*(1-sm((t-11.3)/1.1)))+')':'none';
+  }
+};
+
+
+/* ================= COVER LETTER ================= */
+var CL1='Dear Hiring Manager,\n\nI am a product manager with six years of experience coordinating cross-functional initiatives. At Northbridge Digital I owned the product roadmap across three product lines and kept stakeholders aligned with weekly reviews. I would welcome the chance to bring that approach to your team.\n\nKind regards,\nEmily Carter';
+var CL2='Dear Acme hiring team,\n\nI am applying for the Senior Product Manager role. At Northbridge Digital I owned the product roadmap across three product lines and tracked KPIs for delivery. I would welcome the chance to bring that approach to Acme.\n\nKind regards,\nEmily Carter';
+function refHTML(txt){return txt.replace(/\n/g,'<br>')}
+var COVER={D:16.4,T0:14.7,measureT:5,
+  caps:[[0.3,3.0,1,'Your CV is ready'],[3.0,6.6,2,'A cover letter is already written'],[6.6,9.4,3,'Built from your real details'],[9.4,12.6,4,'Or aim it at one job'],[12.6,14.4,5,'No clichés, no invented numbers']],
+  clicks:[10.5],
+  tg:{win:'#win',letter:'#lt',form:'#jform',tail:'#btnTail',refs:'#refRow',cvc:'#cvC',bans:'#bans'},
+  cam:[[0,1,'win'],[3.0,1,'win'],[3.6,1.14,'letter'],[9.2,1.14,'letter'],[9.8,1.08,'form'],[12.4,1.08,'letter'],[12.9,1.12,'bans'],[14.2,1.12,'bans'],[14.7,1,'win'],[17,1,'win']],
+  cur:[[0,'idle'],[9.6,'idle'],[10.2,'tail'],[11.0,'tail'],[12.4,'letter'],[14.2,'letter']],
+  build:function(){
+    $('A').innerHTML='<div class="pt">Your CV</div><div class="cv" id="cvC"><h1>Emily Carter</h1><div class="s">Product Manager</div><h4>Summary</h4><p>Product manager with six years of experience in technology and business operations.</p><h4>Experience</h4><ul><li>Owned the product roadmap across three product lines.</li><li>Kept stakeholders aligned with weekly reviews.</li><li>Tracked KPIs for delivery.</li></ul></div>';
+    $('B').innerHTML='<div class="pt" id="lh">Cover letter</div><div class="letter" id="lt" style="min-height:250px"></div><div id="refRow" style="margin-top:10px;min-height:30px"></div><div class="sheet" id="jform"><div class="lab" style="margin-top:0;color:#6b6b70">Job title · Company</div><div style="font-weight:600;font-size:13px">Senior Product Manager · Acme</div><div class="lab" style="color:#6b6b70">Job description</div><div style="font-size:11.5px;line-height:1.5;color:#444">Own the roadmap, track KPIs and lead an agile team across cross-functional groups.</div><div style="margin-top:10px"><span class="btn" id="btnTail" style="padding:7px 16px;font-size:12px">Tailor cover letter</span></div></div><div id="bans" style="position:absolute;left:26px;right:26px;bottom:18px;opacity:0"><span class="pill ban">results-driven professional</span><span class="pill ban">+25% growth</span><div class="note" style="margin-top:2px">Blocked: stock phrases, and numbers that are not in your CV.</div></div>';
+  },
+  render:function(t){
+    var tail=t>=11.2, txt=tail?CL2:CL1, a=tail?11.3:3.4, b=tail?13.0:6.2;
+    var shown=NOCAM?CL1.slice(0,170):typed(txt,t,a,b); var h=refHTML(shown);
+    var on1=(!tail&&t>=6.7)||tail, on2=(!tail&&t>=7.2)||tail;
+    h=h.replace('Northbridge Digital','<span class="ref'+(on1?' on':'')+'">Northbridge Digital</span>').replace('product roadmap','<span class="ref'+(on2?' on':'')+'">product roadmap</span>');
+    $('lt').innerHTML=h+((t>=a&&t<b+0.3&&!NOCAM&&Math.floor(t*2.6)%2===0)?'<span class="caret" style="background:#8a7a52"></span>':'');
+    $('lt').style.opacity=NOCAM?1:sm((t-3.0)/0.4);
+    var rr=''; if(t>=7.0&&t<9.6) rr+='<span class="pill okp">from your CV: Northbridge Digital</span><span class="pill okp">from your CV: roadmap</span>'; $('refRow').innerHTML=rr;
+    $('lh').textContent=tail?'Cover letter · tailored to Acme':'Cover letter';
+    var fa=NOCAM?0:sm((t-9.5)/0.4)*(1-sm((t-11.4)/0.4)); $('jform').style.opacity=fa; $('jform').style.transform='translateY('+(14*(1-fa))+'px)';
+    $('btnTail').style.transform='scale('+((t>10.45&&t<10.65)?0.94:1)+')';
+    $('bans').style.opacity=NOCAM?0:sm((t-12.7)/0.4)*(1-sm((t-14.3)/0.3));
+    $('cvC').style.opacity=NOCAM?1:sm((t-0.1)/0.5); $('cvC').style.transform='translateY('+(10*(1-sm((t-0.1)/0.5)))+'px)';
+  }};
+
+/* ================= CLICK TO EDIT ================= */
+var EDIT={D:14.6,T0:12.9,measureT:4,
+  caps:[[0.3,3.3,1,'Click any line'],[3.3,6.2,2,'Type your change'],[6.2,8.8,3,'Saved instantly'],[8.8,10.8,4,'Your download includes it'],[10.8,12.6,5,'Works on every template']],
+  clicks:[2.0,4.6,9.4],
+  tg:{win:'#win',typo:'#li1',date:'#dt',btn:'#bPdf',paper:'#edP'},
+  cam:[[0,1,'win'],[1.4,1,'win'],[2.0,1.28,'typo'],[6.0,1.28,'typo'],[6.6,1,'win'],[16,1,'win']],
+  cur:[[0,'idle'],[1.2,'idle'],[1.9,'typo'],[4.0,'typo'],[4.5,'date'],[6.0,'date'],[9.2,'btn'],[10.4,'btn']],
+  build:function(){
+    $('A').innerHTML='<div class="pt">Your result</div><div class="cv" id="edP" style="min-height:360px"><h1>Emily Carter</h1><div class="s">Product Manager</div><h4>Experience</h4><div style="font-weight:600;font-size:11.5px">Product Manager <span id="dt" style="font-weight:400;color:#6b6b70"></span></div><ul><li id="li1"></li><li>Coordinated stakeholder updates and milestone reporting.</li><li>Improved delivery tracking across concurrent workstreams.</li></ul><h4>Education</h4><p>B.Com in Management · Toronto Metropolitan University</p></div>';
+    $('B').innerHTML='<div class="pt">Result page</div><div class="card"><div style="font-size:13px;line-height:1.5">Click any text on your CV to edit it directly.</div><div class="note" id="svd" style="margin-top:10px;opacity:0;color:#c9b78a">✓ Saved</div></div><div style="margin-top:18px"><span class="btn" id="bPdf">Download PDF</span> <span class="btn" style="margin-left:8px;background:none;border:1px solid rgba(255,255,255,.25);color:#f5f2ea">Download Word</span></div><div id="dl" style="margin-top:20px;opacity:0"><div class="sc"><div class="lab" style="margin-top:0">CV.pdf</div><div style="font-size:12.5px;line-height:1.5"><span class="w add">Managed</span> a team of six, 2019 – <span class="w add">2023</span></div><div class="note">Includes your latest edits.</div></div></div>';
+  },
+  render:function(t){
+    var P1='Manged a team of six developers on release delivery.';
+    var li=$('li1'), fix=t>=3.9;
+    var wordOK=t<3.6?'Manged':(t<4.4?typed('Managed',t,3.6,4.3):'Managed');
+    var rest=' a team of six developers on release delivery.';
+    li.innerHTML=(t<3.6?'<span class="typo">Manged</span>':wordOK+((t<4.4&&Math.floor(t*3)%2===0)?'<span class="caret" style="background:#b8963a"></span>':''))+rest;
+    li.className=(t>=2.0&&t<4.5)?'edfocus':'';
+    if(NOCAM) li.innerHTML='Managed'+rest;
+    var dt=$('dt'), d1='· 2022 – Present'; var yr=t<4.7?'2022':(t<5.5?typed('2023',t,4.8,5.4):'2023');
+    dt.innerHTML=(t<4.7?'· 2022 – Present':'· 2023 – Present'); if(t>=4.7&&t<5.5) dt.innerHTML='· '+yr+' – Present<span class="caret" style="background:#b8963a"></span>';
+    dt.className=(t>=4.6&&t<5.6)?'edfocus':'';
+    $('svd').style.opacity=NOCAM?0:sm((t-6.2)/0.3)*(1-sm((t-8.6)/0.3));
+    $('bPdf').style.transform='scale('+((t>9.35&&t<9.55)?0.94:1)+')';
+    $('dl').style.opacity=NOCAM?0:sm((t-9.5)/0.4); $('dl').style.transform='translateY('+(12*(1-sm((t-9.5)/0.4)))+'px)';
+    var th=sm((t-10.8)/0.5); var P=$('edP'); P.style.filter=th>0.01?'hue-rotate('+(th*250)+'deg) saturate('+(1+th*0.3)+')':'none'; P.style.boxShadow='0 18px 50px rgba(0,0,0,.5)';
+  }};
+
+/* ================= EXPORT ================= */
+var EXP={D:13.6,T0:11.9,measureT:5,
+  caps:[[0.3,3.0,1,'Your CV is ready'],[3.0,6.6,2,'One click: PDF'],[6.6,9.4,3,'One click: Word'],[9.4,11.6,4,'No re-generating']],
+  clicks:[3.4,7.0],
+  tg:{win:'#win',pdf:'#xPdf',doc:'#xDoc',sh:'#xSheet',dw:'#xDocW'},
+  cam:[[0,1,'win'],[3.0,1,'win'],[3.5,1.1,'sh'],[6.4,1.1,'sh'],[7.0,1.1,'dw'],[9.2,1.1,'dw'],[9.8,1,'win'],[16,1,'win']],
+  cur:[[0,'idle'],[2.6,'idle'],[3.3,'pdf'],[4.4,'pdf'],[6.6,'doc'],[7.4,'doc'],[9.2,'idle']],
+  build:function(){
+    $('A').innerHTML='<div class="pt">Your CV</div><div class="cv" style="min-height:360px"><h1>Emily Carter</h1><div class="s">Product Manager</div><h4>Summary</h4><p>Product manager with six years of experience in technology and business operations.</p><h4>Experience</h4><ul><li>Owned the product roadmap across three product lines.</li><li>Kept stakeholders aligned with weekly reviews.</li><li>Tracked KPIs for delivery.</li></ul></div>';
+    $('B').innerHTML='<div class="pt">Download</div><div><span class="btn" id="xPdf">PDF</span> <span class="btn" id="xDoc" style="margin-left:8px;background:none;border:1px solid rgba(255,255,255,.3);color:#f5f2ea">Word (.docx)</span></div><div class="note" style="margin-top:10px">Both come from the same CV you reviewed. Nothing is generated again.</div>'+
+     '<div class="sheet" id="xSheet" style="top:96px"><div style="font-weight:600;font-size:13px;margin-bottom:8px">Print · Save as PDF</div><div style="display:flex;gap:14px"><div style="flex:none;width:90px;height:116px;background:#fff;border:1px solid #ccc;border-radius:3px;padding:8px"><div style="height:7px;width:60%;background:#222;margin-bottom:5px"></div><div style="height:4px;background:#ccc;margin-bottom:4px"></div><div style="height:4px;width:80%;background:#ccc;margin-bottom:4px"></div><div style="height:4px;background:#ccc"></div></div><div style="flex:1;font-size:12px;line-height:1.7">Destination: <b>Save as PDF</b><br>Layout: Portrait · A4<br><div style="margin-top:8px"><span style="background:#222;color:#fff;border-radius:6px;padding:5px 14px" id="xSave">Save</span></div><div id="xOk" style="margin-top:8px;color:#2c7a4b;font-weight:600;opacity:0">✓ CV.pdf saved</div></div></div></div>'+
+     '<div class="sheet" id="xDocW" style="top:96px"><div style="font-weight:600;font-size:13px;margin-bottom:6px">CV.docx · opens in Word</div><div style="border:1px solid #ccc;background:#fff;border-radius:4px;padding:10px 12px;line-height:1.6"><b>Emily Carter</b><br>Product Manager<br>Owned the product roadmap across three product lines.<span class="caret" id="xCar" style="background:#222"></span></div><div style="margin-top:8px;color:#2c7a4b;font-weight:600">✓ Editable. Keep working on it.</div></div>';
+  },
+  render:function(t){
+    $('xPdf').style.transform='scale('+((t>3.35&&t<3.55)?0.94:1)+')'; $('xDoc').style.transform='scale('+((t>6.95&&t<7.15)?0.94:1)+')';
+    var s1=NOCAM?0:sm((t-3.5)/0.35)*(1-sm((t-6.4)/0.3)); $('xSheet').style.opacity=s1; $('xSheet').style.transform='translateY('+(14*(1-s1))+'px)';
+    $('xOk').style.opacity=sm((t-5.0)/0.3); $('xSave').style.transform='scale('+((t>4.6&&t<4.8)?0.92:1)+')';
+    var s2=NOCAM?0:sm((t-7.1)/0.35)*(1-sm((t-9.6)/0.3)); $('xDocW').style.opacity=s2; $('xDocW').style.transform='translateY('+(14*(1-s2))+'px)';
+    $('xCar').style.opacity=(Math.floor(t*2.6)%2===0)?1:0;
+  }};
+
+/* ================= INTERVIEW ================= */
+var QS=[['Behavioral','Tell me about a time you led a product from concept to launch.'],['Role-specific','How do you prioritise a roadmap when stakeholders disagree?'],['Role-specific','Which KPIs would you track for a new feature, and why?'],['Behavioral','How do you keep an agile team aligned under tight deadlines?'],['Behavioral','Tell me about a time you had to reduce scope.']];
+var ANS='At Northbridge Digital, I managed release plans across product, engineering and operations teams, coordinating stakeholder updates and milestone reporting from first concept through launch.';
+var INT={D:18.0,T0:16.3,measureT:8,
+  caps:[[0.3,3.0,1,'Tailor your CV to a job'],[3.0,5.4,2,'Ask for interview questions'],[5.4,9.4,3,'Five questions, grounded in the job'],[9.4,15.8,4,'Answers built from your real CV']],
+  clicks:[4.3,9.9],
+  tg:{win:'#win',btn:'#btnQ',q1:'#q1',ans:'#B',qs:'#B'},
+  cam:[[0,1,'win'],[5.2,1,'win'],[5.8,1.08,'qs'],[9.0,1.08,'qs'],[9.8,1.14,'ans'],[15.5,1.14,'ans'],[16.2,1,'win'],[19,1,'win']],
+  cur:[[0,'idle'],[3.0,'idle'],[4.1,'btn'],[5.0,'btn'],[9.6,'q1'],[10.4,'q1'],[13.0,'ans'],[15.5,'ans']],
+  build:function(){
+    $('A').innerHTML='<div class="pt">Tailored to this job</div><div class="card"><div style="font-weight:600;font-size:14px">Senior Product Manager · Acme</div><div class="note" style="margin-top:6px">Own the roadmap, track KPIs and lead an agile team.</div><div style="margin-top:12px"><span class="chip ok">Match score 86</span><span class="chip ok">Cover letter ready</span></div></div><div style="margin-top:16px"><span class="btn" id="btnQ">Interview questions</span></div>';
+    var qh=QS.map(function(q,i){return '<div class="qc" id="q'+i+'" style="opacity:0"><span class="tg">'+q[0]+'</span><br>'+q[1]+'</div>'}).join('');
+    $('B').innerHTML='<div class="pt">Likely questions</div><div id="qlist" style="position:relative"><div class="sc" id="ansB" style="opacity:0;border-color:#c9b78a;position:absolute;left:26px;right:26px"><div class="lab" style="margin-top:0">Suggested answer, from your CV</div><div id="ansT" style="font-size:12.6px;line-height:1.6;color:#ece8da"></div></div>'+qh+'</div>';
+  },
+  render:function(t){
+    $('btnQ').style.transform='scale('+((t>4.25&&t<4.45)?0.94:1)+')';
+    var sel=t>=9.9;
+    QS.forEach(function(q,i){var e=$('q'+i),a=NOCAM?1:sm((t-(5.6+i*0.5))/0.35);e.style.opacity=sel&&i>0?a*0.35:a;e.style.transform='translateY('+(12*(1-a))+'px)';e.className='qc'+(sel&&i===0?' sel':'')});
+    var aa=NOCAM?0:sm((t-10.2)/0.4); $('ansB').style.opacity=aa;
+    var a=typed(ANS,t,10.6,14.4); a=a.replace('Northbridge Digital','<span class="w on">Northbridge Digital</span>'); $('ansT').innerHTML=NOCAM?'x':a;
+    $('q0').style.display=(!NOCAM&&t>=10.2)?'none':'block'; $('ansB').style.position=(!NOCAM&&t>=10.2)?'static':'absolute'; $('ansB').style.marginBottom='9px';
+  }};
+
+/* ================= TAILOR ================= */
+var TJD='Own the roadmap, align stakeholders and track KPIs across cross-functional teams. Lead an agile team, with SQL skills and budget ownership.';
+var TAI={D:19.0,T0:17.3,measureT:12,
+  caps:[[0.3,3.8,1,'Paste one job description'],[3.8,5.8,2,'Tailor My CV'],[5.8,9.8,3,'A real, calculated match score'],[9.8,13.0,4,'A cover letter for that role'],[13.0,16.9,5,'And interview questions']],
+  clicks:[4.6],
+  tg:{win:'#win',btn:'#btnT',score:'#sc1',letter:'#sc2',qs:'#sc3',form:'#tfm'},
+  cam:[[0,1,'win'],[5.6,1,'win'],[6.2,1.14,'score'],[9.6,1.14,'score'],[10.2,1.14,'letter'],[12.8,1.14,'letter'],[13.4,1.14,'qs'],[16.6,1.14,'qs'],[17.2,1,'win'],[20,1,'win']],
+  cur:[[0,'idle'],[3.3,'idle'],[4.4,'btn'],[5.6,'btn'],[6.4,'score'],[16.4,'score']],
+  build:function(){
+    $('A').innerHTML='<div class="pt">One job description</div><div class="card" id="tfm"><div class="lab" style="margin-top:0">Job title · Company</div><div class="field" style="font-size:13px" id="tf1"></div><div class="lab">Job description</div><div class="ta" id="tf2" style="min-height:120px;font-size:12.8px"></div></div><div style="margin-top:14px"><span class="btn" id="btnT">Tailor My CV</span></div>';
+    $('B').innerHTML='<div class="pt">Three outputs</div><div class="sc" id="sc1" style="opacity:0"><div style="display:flex;gap:12px;align-items:center"><div style="font-family:\'Playfair Display\',serif;font-size:30px;width:56px" id="tn">0</div><div style="flex:1"><div class="lab" style="margin:0 0 4px">Match score, calculated</div><span class="chip ok">roadmap</span><span class="chip ok">KPIs</span><span class="chip no">SQL missing</span><span class="chip no">budget missing</span></div></div></div>'+
+     '<div class="sc" id="sc2" style="opacity:0"><div class="lab" style="margin:0 0 4px">Cover letter for this role</div><div id="ctx" style="font-size:12px;line-height:1.5;color:#ece8da;min-height:54px"></div></div>'+
+     '<div class="sc" id="sc3" style="opacity:0"><div class="lab" style="margin:0 0 4px">Interview questions</div><div style="font-size:12px;line-height:1.55;color:#ece8da" id="qtx"></div></div>';
+  },
+  render:function(t){
+    $('tf1').textContent=typed('Senior Product Manager · Acme',t,0.6,1.8); $('tf2').textContent=typed(TJD,t,1.8,3.6);
+    $('btnT').style.transform='scale('+((t>4.55&&t<4.75)?0.94:1)+')'; $('btnT').textContent=(t>=4.7&&t<5.8)?'Tailoring…':'Tailor My CV';
+    var a1=NOCAM?1:sm((t-5.9)/0.4); $('sc1').style.opacity=a1; $('sc1').style.transform='translateY('+(12*(1-a1))+'px)';
+    $('tn').textContent=NOCAM?57:Math.round(57*eo((t-6.2)/1.8));
+    var a2=NOCAM?1:sm((t-9.9)/0.4); $('sc2').style.opacity=a2; $('ctx').textContent=NOCAM?'Dear Acme':typed('Dear Acme hiring team, I am applying for the Senior Product Manager role. At Northbridge Digital I owned the product roadmap and tracked KPIs for delivery.',t,10.2,12.6);
+    var a3=NOCAM?1:sm((t-13.1)/0.4); $('sc3').style.opacity=a3; $('qtx').innerHTML=NOCAM?'x':(t>=13.4?'1. Tell me about a time you led a product from concept to launch.<br>':'')+(t>=14.2?'2. How do you prioritise a roadmap when stakeholders disagree?<br>':'')+(t>=15.0?'3. Which KPIs would you track for a new feature?':'');
+  }};
+
+/* ================= AI WRITING ================= */
+var WR=[['helped the sales team do better with the new tool we made','Led adoption of a new sales tool across the team, improving day-to-day workflow efficiency.'],['helped increase sales a bit','Contributed to increased sales across the team.']];
+var WRI={D:16.2,T0:14.5,measureT:5,
+  caps:[[0.3,3.6,1,'Write it in your own words'],[3.6,7.2,2,'The AI turns it into CV language'],[7.2,11.0,3,'No invented numbers'],[11.0,13.8,4,'No clichés']],
+  clicks:[],
+  tg:{win:'#win',yin:'#wIn',yout:'#wOut',nums:'#wNum',bans:'#wBan'},
+  cam:[[0,1,'win'],[1.0,1.05,'win'],[6.0,1.05,'win'],[6.6,1.1,'yout'],[13.6,1.1,'yout'],[14.2,1,'win'],[17,1,'win']],
+  noCursor:true,cur:[[0,'win'],[17,'win']],
+  build:function(){
+    $('A').innerHTML='<div class="pt">What you type</div><div class="ta" id="wIn"></div><div class="note" style="margin-top:10px">Your own words, rough is fine.</div>';
+    $('B').innerHTML='<div class="pt">What you get</div><div class="ta" id="wOut" style="border-color:#c9b78a;background:rgba(201,183,138,.08)"></div><div id="wNum" style="margin-top:14px;opacity:0"><span class="pill ban">+25% sales</span><span class="pill okp">no number, so none written</span></div><div id="wBan" style="margin-top:6px;opacity:0"><span class="pill ban">results-driven professional</span><span class="pill ban">proven track record</span><div class="note">Blocked in cover letters and LinkedIn summaries.</div></div>';
+  },
+  render:function(t){
+    var i=t<7.3?0:1; var inp=WR[i][0], out=WR[i][1];
+    var tin=i===0?typed(inp,t,0.6,3.4):typed(inp,t,7.4,8.5), tout=i===0?typed(out,t,4.0,6.2):typed(out,t,8.8,10.2);
+    $('wIn').textContent=NOCAM?inp:tin; $('wOut').textContent=NOCAM?out:tout;
+    $('wNum').style.opacity=NOCAM?0:sm((t-9.4)/0.4)*(1-sm((t-11.0)/0.3)); $('wBan').style.opacity=NOCAM?0:sm((t-11.2)/0.4)*(1-sm((t-14.2)/0.3));
+  }};
+
+var FEATS={ats:ATS,languages:LANG,linkedin:LIN,cover:COVER,edit:EDIT,export:EXP,interview:INT,tailor:TAI,writing:WRI};
+F=FEATS[FEAT]; F.build();
+window.render=frame;
+window.initClip=function(){ TG.idle={x:CW*0.72,y:CH*0.75}; measure(); frame(0); };
+window.CLIP_D=F.D;
+</script></body></html>

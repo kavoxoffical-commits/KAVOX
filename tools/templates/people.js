@@ -1,0 +1,52 @@
+window.PEOPLE = [
+ { name:'Emily Carter', title:'Project Manager', email:'emily.carter@email.com', phone:'+1 416 555 2847', location:'Toronto, Canada', linkedin:'linkedin.com/in/emily-carter',
+   summary:'Project Manager with six years of experience coordinating cross-functional initiatives in technology and business operations. Skilled in stakeholder communication, project planning, risk tracking, and delivery governance across complex environments.',
+   skills:['Project Planning','Risk Management','Stakeholder Management','Agile Delivery','Budget Tracking','Process Improvement','Jira','Microsoft Project'],
+   languages:['English (Native)','French (Professional)'],
+   experience:[
+    {title:'Project Manager',company:'Northbridge Digital',dates:'2022 – Present',bullets:['Managed release plans across product, engineering, and operations teams.','Coordinated stakeholder updates, risk reviews, and milestone reporting.','Improved delivery tracking, reducing gaps across concurrent workstreams.']},
+    {title:'Project Coordinator',company:'MapleWorks Solutions',dates:'2019 – 2022',bullets:['Supported schedules, budgets, and documentation for transformation initiatives.','Facilitated team meetings and maintained cross-department action logs.','Escalated risks before blockers affected delivery timelines.']},
+    {title:'Operations Analyst',company:'BrightPath Services',dates:'2017 – 2019',bullets:['Analyzed workflow data to identify service delivery delays.','Prepared reports supporting resource planning and prioritization.']}],
+   education:[{degree:'Bachelor of Commerce in Management',institution:'Toronto Metropolitan University',dates:'2013 – 2017'},{degree:'Diploma in Business Administration',institution:'Algonquin College',dates:'2011 – 2013'}] },
+ { name:'Daniel Mercer', title:'Vice President of Sales', email:'daniel.mercer@email.com', phone:'+1 312 555 0193', location:'Chicago, USA', linkedin:'linkedin.com/in/daniel-mercer',
+   summary:'Revenue leader with 12 years of experience building and scaling enterprise sales teams across SaaS and professional services. Known for disciplined forecasting, strategic account planning, and developing high-performing managers.',
+   skills:['Enterprise Sales','Revenue Forecasting','Account Strategy','Team Leadership','Negotiation','CRM Management','Pipeline Analytics'],
+   languages:['English (Native)','Spanish (Conversational)'],
+   experience:[
+    {title:'VP of Sales',company:'Lattice Cloud',dates:'2020 – Present',bullets:['Led a 40-person sales organisation across three regions.','Grew annual recurring revenue through structured account planning.','Introduced a forecasting cadence that tightened quarterly accuracy.']},
+    {title:'Director of Enterprise Sales',company:'Ardent Software',dates:'2016 – 2020',bullets:['Built the enterprise segment from the ground up.','Coached managers on pipeline reviews and deal strategy.']},
+    {title:'Senior Account Executive',company:'Corvid Systems',dates:'2012 – 2016',bullets:['Closed multi-year agreements with national accounts.','Partnered with solutions engineers on complex evaluations.']}],
+   education:[{degree:'MBA, Marketing & Strategy',institution:'Kellogg School of Management',dates:'2010 – 2012'},{degree:'BA in Economics',institution:'University of Illinois',dates:'2006 – 2010'}] },
+ { name:'Lena Hoffmann', title:'Operations Manager', email:'lena.hoffmann@email.com', phone:'+49 30 5550 142', location:'Berlin, Germany', linkedin:'linkedin.com/in/lena-hoffmann',
+   summary:'Operations manager with a record of streamlining logistics and supplier processes in fast-growing retail and e-commerce companies. Comfortable owning budgets, vendor relationships, and cross-site coordination.',
+   skills:['Supply Chain','Vendor Management','Process Design','Cost Control','SAP','Lean Methods','Team Coaching'],
+   languages:['German (Native)','English (Fluent)','French (Basic)'],
+   experience:[
+    {title:'Operations Manager',company:'Nordhaus Retail',dates:'2021 – Present',bullets:['Oversaw fulfilment across two warehouses and a returns centre.','Renegotiated carrier contracts and lowered per-parcel costs.','Standardised onboarding for seasonal operations staff.']},
+    {title:'Logistics Coordinator',company:'Spreeline Commerce',dates:'2017 – 2021',bullets:['Planned inbound schedules and supplier deliveries.','Built weekly dashboards for stock and service levels.']}],
+   education:[{degree:'MSc in Supply Chain Management',institution:'Technical University of Berlin',dates:'2014 – 2017'},{degree:'BSc in Business Administration',institution:'Humboldt University',dates:'2011 – 2014'}] },
+ { name:'Rohan Patel', title:'Software Engineer', email:'rohan.patel@email.com', phone:'+91 98765 43210', location:'Ahmedabad, India', linkedin:'linkedin.com/in/rohan-patel',
+   summary:'Software engineer focused on dependable backend services and clean APIs. Experienced in cloud infrastructure, testing culture, and mentoring junior developers through code review and pairing.',
+   skills:['Python','TypeScript','PostgreSQL','AWS','Docker','REST APIs','CI/CD','System Design'],
+   languages:['English (Fluent)','Hindi (Native)','Gujarati (Native)'],
+   experience:[
+    {title:'Software Engineer II',company:'Quanta Labs',dates:'2022 – Present',bullets:['Designed and shipped payment-reconciliation services used by finance teams.','Cut average API response time by profiling and caching hot queries.','Mentored four junior engineers through code review.']},
+    {title:'Software Engineer',company:'Finwave Technologies',dates:'2019 – 2022',bullets:['Built internal tooling that automated monthly reporting.','Raised test coverage and removed flaky pipeline stages.']}],
+   education:[{degree:'B.Tech in Computer Engineering',institution:'Gujarat Technological University',dates:'2015 – 2019'}] },
+ { name:'Amira Haddad', title:'Marketing Director', email:'amira.haddad@email.com', phone:'+971 50 555 0147', location:'Dubai, UAE', linkedin:'linkedin.com/in/amira-haddad',
+   summary:'Marketing director with ten years of experience across consumer brands and digital agencies. Combines brand storytelling with performance discipline to grow audiences and revenue across the Gulf region.',
+   skills:['Brand Strategy','Digital Campaigns','Content Planning','Analytics','Team Leadership','Budget Ownership','Media Planning'],
+   languages:['Arabic (Native)','English (Fluent)','French (Intermediate)'],
+   experience:[
+    {title:'Marketing Director',company:'Almas Hospitality Group',dates:'2020 – Present',bullets:['Led regional brand strategy for six hotel properties.','Doubled direct bookings through lifecycle and search campaigns.','Managed a team of twelve across content, social, and CRM.']},
+    {title:'Senior Marketing Manager',company:'Oasis Retail',dates:'2016 – 2020',bullets:['Launched omnichannel campaigns for seasonal collections.','Introduced monthly performance reviews with finance.']}],
+   education:[{degree:'MBA, Marketing',institution:'American University of Sharjah',dates:'2012 – 2014'},{degree:'BA in Communication',institution:'Lebanese American University',dates:'2008 – 2012'}] },
+ { name:'Marcus Bell', title:'Financial Analyst', email:'marcus.bell@email.com', phone:'+44 20 7946 0321', location:'London, UK', linkedin:'linkedin.com/in/marcus-bell',
+   summary:'Financial analyst with five years of experience in corporate planning and investment reporting. Detail-oriented, strong in modelling, variance analysis, and presenting findings to senior stakeholders.',
+   skills:['Financial Modelling','Forecasting','Variance Analysis','Excel','Power BI','SQL','Board Reporting'],
+   languages:['English (Native)','German (Basic)'],
+   experience:[
+    {title:'Financial Analyst',company:'Harlow & Reed Capital',dates:'2021 – Present',bullets:['Built rolling forecasts covering a portfolio of eight business units.','Automated month-end variance reporting, saving analyst hours each cycle.','Presented quarterly findings to the investment committee.']},
+    {title:'Junior Analyst',company:'Kingsbridge Partners',dates:'2019 – 2021',bullets:['Supported budgeting and ad-hoc modelling requests.','Reconciled data sources for audit preparation.']}],
+   education:[{degree:'BSc in Finance',institution:'University of Manchester',dates:'2016 – 2019'}] }
+];

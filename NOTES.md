@@ -22,6 +22,9 @@ Owner: solo developer (Arabic speaker). Wants: direct step-by-step work, act aut
 - Check the Refiner path (uploaded CV) for the same language-detection gap.
 - Last: real licensed portrait photos for the previews (owner must supply licensed photos).
 
+## Sources of the generated assets
+`tools/` holds the video recorder (`demo2.html`, `clip.html`), the template renderer and the tests. See `tools/README.md`. It is skipped by `build.js`, so it is not deployed.
+
 ## Gotchas
 - No GitHub tool in chat: pushing needs a short-lived fine-grained token from the owner (Contents: read/write on this repo). Revoke it afterwards.
 - AI generation cannot be run from the sandbox, so full end-to-end generation was never tested there.
