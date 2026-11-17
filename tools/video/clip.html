@@ -197,7 +197,7 @@ var ATS={D:15.8,T0:14.1,measureT:6,
      '<div class="cv" id="cvA" style="opacity:0"><h1>Emily Carter</h1><div class="s">Product Manager</div><h4>Summary</h4><p><span class="w" data-k="cross-functional">Cross-functional</span> product manager with six years of experience in technology and business operations.</p><h4>Experience</h4><ul><li>Owned the product <span class="w" data-k="roadmap">roadmap</span> across three product lines.</li><li>Kept <span class="w" data-k="stakeholders">stakeholders</span> aligned with weekly reviews and clear updates.</li><li>Tracked <span class="w" data-k="KPIs">KPIs</span> for delivery and reported progress to leadership.</li></ul><h4>Skills</h4><p id="skl">Planning · Reporting · Jira<span id="addSk"></span></p></div>';
     $('B').innerHTML='<div class="pt">Job description</div><div class="card"><div id="jd"></div></div><div style="margin-top:12px"><span class="btn" id="btnCheck">Check My Score</span></div>'+
      '<div id="res" style="opacity:0"><div id="ring"><svg width="104" height="104" viewBox="0 0 104 104"><circle cx="52" cy="52" r="45" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="7"/><circle id="arc" cx="52" cy="52" r="45" fill="none" stroke="#c9b78a" stroke-width="7" stroke-linecap="round"/></svg><b id="num">0</b></div>'+
-     '<div style="flex:1"><div class="lab" style="margin-top:0">Keyword match</div><div id="okc"></div><div id="nol"></div><div class="note" id="nt">Calculated from the words in the job text, not an AI guess.</div></div></div>';
+     '<div style="flex:1"><div class="lab" style="margin-top:0">Keyword match</div><div id="dlt" style="font-size:12.5px;color:#c9b78a;min-height:18px;margin-bottom:6px"></div><div class="lab" style="margin:4px 0 6px">Keywords missing from your CV</div><div id="nol"></div><div class="note" id="nt">Only add a keyword if it is genuinely part of your experience, then check again.</div></div></div>';
   },
   render:function(t){
     // file drop
@@ -214,12 +214,11 @@ var ATS={D:15.8,T0:14.1,measureT:6,
     $('res').style.opacity=sm((t-6.1)/0.4);
     var base=Math.round(57*eo((t-6.3)/2.1)), up=Math.round(lerp(57,86,eo((t-12.7)/1.2))); var v=t<12.6?base:up; if(NOCAM) v=57;
     $('num').textContent=v; var C=2*Math.PI*45,arc=$('arc'); arc.setAttribute('stroke-dasharray',C); arc.setAttribute('stroke-dashoffset',C*(1-v/100));
-    var okc=''; ['roadmap','stakeholders','KPIs','cross-functional'].forEach(function(k,i){var a=sm((t-(7.0+i*0.3))/0.3);if(a>0.01)okc+='<span class="chip ok" style="opacity:'+a+'">✓ '+k+'</span>'});
-    var added=t>=11.9?['agile','SQL']:[]; var nol=''; ['agile','SQL','budget'].forEach(function(k,i){var a=sm((t-(9.8+i*0.3))/0.3);var gone=added.indexOf(k)>-1&&t>=(k==='agile'?12.55:12.65); if(a>0.01&&!gone)nol+='<span class="chip no" style="opacity:'+a+'">'+k+' missing</span>'; if(gone) okc+='<span class="chip ok">✓ '+k+'</span>'});
-    $('okc').innerHTML=okc; $('nol').innerHTML=nol;
-    $('nt').style.opacity=sm((t-8.6)/0.4);
-    // keyword highlights in the CV + added skills
-    [].slice.call(document.querySelectorAll('#cvA .w')).forEach(function(w){var k=w.getAttribute('data-k'),i=['roadmap','stakeholders','KPIs','cross-functional'].indexOf(k);w.classList.toggle('on',t>=7.0+i*0.3)});
+    var nol=''; ['agile','SQL','budget'].forEach(function(k,i){var a=sm((t-(7.0+i*0.3))/0.3);var gone=(k==='agile'&&t>=12.55)||(k==='SQL'&&t>=12.65); if(a>0.01&&!gone)nol+='<span class="chip no" style="opacity:'+a+'">'+k+'</span>'});
+    $('nol').innerHTML=nol; $('nt').style.opacity=sm((t-9.9)/0.4);
+    $('dlt').textContent=t>=13.5?'▲ +29 points since your last check':'';
+    $('btnCheck').textContent=(t>=6.4&&t<12.4)||(t>=12.7)?'Check again':'Check My Score';
+    if(t>=12.5&&t<12.7) $('btnCheck').textContent='Check again';
     var s1=typed(' · Agile',t,11.05,11.5), s2=typed(' · SQL',t,11.6,12.0);
     $('addSk').innerHTML=(s1?'<span class="w add">'+s1+'</span>':'')+(s2?'<span class="w add">'+s2+'</span>':'');
   }
@@ -227,7 +226,7 @@ var ATS={D:15.8,T0:14.1,measureT:6,
 
 /* ================= FEATURE: LANGUAGES ================= */
 var LANGS=[
- {code:'Arabic (right-to-left)',rtl:1,name:'سارة منصور',role:'مديرة تسويق',init:'س',h:['الملخص','الخبرة','المهارات'],sum:'مديرة تسويق بخبرة عشر سنوات في العلامات التجارية والحملات الرقمية.',b:['قادت استراتيجية العلامة لستة فنادق إقليمية.','ضاعفت الحجوزات المباشرة عبر الحملات والبحث.'],sk:['استراتيجية العلامة','الحملات الرقمية','التحليلات'],font:'NotoAr'},
+ {code:'Arabic (right-to-left layout)',rtl:1,name:'سارة منصور',role:'مديرة تسويق',init:'س',h:['الملخص','الخبرة','المهارات'],sum:'مديرة تسويق بخبرة عشر سنوات في العلامات التجارية والحملات الرقمية.',b:['قادت استراتيجية العلامة لستة فنادق إقليمية.','ضاعفت الحجوزات المباشرة عبر الحملات والبحث.'],sk:['استراتيجية العلامة','الحملات الرقمية','التحليلات'],font:'NotoAr'},
  {code:'German',name:'Lena Hoffmann',role:'Betriebsleiterin',init:'L',h:['Profil','Berufserfahrung','Kenntnisse'],sum:'Betriebsleiterin mit Erfahrung in Logistik und Lieferantenprozessen im Einzelhandel.',b:['Leitete die Logistik für zwei Lagerstandorte.','Senkte die Versandkosten durch neue Frachtverträge.'],sk:['Lieferkette','Prozessdesign','Kostenkontrolle'],font:'Inter'},
  {code:'Spanish',name:'Sofía Alvarez',role:'Gerente de Éxito del Cliente',init:'S',h:['Perfil','Experiencia','Habilidades'],sum:'Gerente de éxito del cliente con siete años acompañando a clientes B2B de software.',b:['Gestionó 45 cuentas desde la incorporación hasta la renovación.','Creó una revisión que detecta cuentas en riesgo antes.'],sk:['Incorporación','Renovaciones','Planificación'],font:'Inter'},
  {code:'Russian',name:'Анна Петрова',role:'Руководитель проектов',init:'А',h:['Резюме','Опыт работы','Навыки'],sum:'Руководитель проектов с шестилетним опытом в технологических компаниях.',b:['Руководила командой из шести специалистов.','Наладила еженедельные обзоры рисков и сроков.'],sk:['Планирование','Управление рисками','Отчётность'],font:'Inter'}];
@@ -241,7 +240,7 @@ var LANG={D:17.3,T0:15.6,measureT:4,
   noCursor:true,
   cur:[[0,'win'],[16,'win']],
   build:function(){
-    $('A').innerHTML='<div class="pt">Your details</div><div class="card"><div class="lab" style="margin-top:2px">Name</div><div class="field" id="inName"></div><div class="lab">Role</div><div class="field" id="inRole"></div></div><div class="det" id="det">Language detected: <b id="detL" style="font-weight:600"></b></div><div class="note" style="margin-top:16px;max-width:360px">No language picker. The CV follows the language you write in.</div>';
+    $('A').innerHTML='<div class="pt">Your details</div><div class="card"><div class="lab" style="margin-top:2px">Name</div><div class="field" id="inName"></div><div class="lab">Role</div><div class="field" id="inRole"></div></div><div class="det" id="det">Detected from what you wrote: <b id="detL" style="font-weight:600"></b></div><div class="note" style="margin-top:16px;max-width:380px">CV Language is on Auto-detect. If it ever guesses wrong, pick the language from the list.</div>';
     $('B').innerHTML='<div class="pt">Your CV</div><div class="cv cvl" id="paperL"></div><div id="strip"><div class="pt">25 languages</div><div id="chips"></div></div>';
     $('chips').innerHTML=LANGNAMES.map(function(n){return '<span class="chip">'+n+'</span>'}).join('');
   },
@@ -360,9 +359,9 @@ var EXP={D:13.6,T0:11.9,measureT:5,
   cur:[[0,'idle'],[2.6,'idle'],[3.3,'pdf'],[4.4,'pdf'],[6.6,'doc'],[7.4,'doc'],[9.2,'idle']],
   build:function(){
     $('A').innerHTML='<div class="pt">Your CV</div><div class="cv" style="min-height:360px"><h1>Emily Carter</h1><div class="s">Product Manager</div><h4>Summary</h4><p>Product manager with six years of experience in technology and business operations.</p><h4>Experience</h4><ul><li>Owned the product roadmap across three product lines.</li><li>Kept stakeholders aligned with weekly reviews.</li><li>Tracked KPIs for delivery.</li></ul></div>';
-    $('B').innerHTML='<div class="pt">Download</div><div><span class="btn" id="xPdf">PDF</span> <span class="btn" id="xDoc" style="margin-left:8px;background:none;border:1px solid rgba(255,255,255,.3);color:#f5f2ea">Word (.docx)</span></div><div class="note" style="margin-top:10px">Both come from the same CV you reviewed. Nothing is generated again.</div>'+
+    $('B').innerHTML='<div class="pt">Download</div><div><span class="btn" id="xPdf">PDF</span> <span class="btn" id="xDoc" style="margin-left:8px;background:none;border:1px solid rgba(255,255,255,.3);color:#f5f2ea">Word (.doc)</span></div><div class="note" style="margin-top:10px">Both come from the same CV you reviewed. Nothing is generated again.</div>'+
      '<div class="sheet" id="xSheet" style="top:96px"><div style="font-weight:600;font-size:13px;margin-bottom:8px">Print · Save as PDF</div><div style="display:flex;gap:14px"><div style="flex:none;width:90px;height:116px;background:#fff;border:1px solid #ccc;border-radius:3px;padding:8px"><div style="height:7px;width:60%;background:#222;margin-bottom:5px"></div><div style="height:4px;background:#ccc;margin-bottom:4px"></div><div style="height:4px;width:80%;background:#ccc;margin-bottom:4px"></div><div style="height:4px;background:#ccc"></div></div><div style="flex:1;font-size:12px;line-height:1.7">Destination: <b>Save as PDF</b><br>Layout: Portrait · A4<br><div style="margin-top:8px"><span style="background:#222;color:#fff;border-radius:6px;padding:5px 14px" id="xSave">Save</span></div><div id="xOk" style="margin-top:8px;color:#2c7a4b;font-weight:600;opacity:0">✓ CV.pdf saved</div></div></div></div>'+
-     '<div class="sheet" id="xDocW" style="top:96px"><div style="font-weight:600;font-size:13px;margin-bottom:6px">CV.docx · opens in Word</div><div style="border:1px solid #ccc;background:#fff;border-radius:4px;padding:10px 12px;line-height:1.6"><b>Emily Carter</b><br>Product Manager<br>Owned the product roadmap across three product lines.<span class="caret" id="xCar" style="background:#222"></span></div><div style="margin-top:8px;color:#2c7a4b;font-weight:600">✓ Editable. Keep working on it.</div></div>';
+     '<div class="sheet" id="xDocW" style="top:96px"><div style="font-weight:600;font-size:13px;margin-bottom:6px">CV.doc · opens in Word</div><div style="border:1px solid #ccc;background:#fff;border-radius:4px;padding:10px 12px;line-height:1.6"><b>Emily Carter</b><br>Product Manager<br>Owned the product roadmap across three product lines.<span class="caret" id="xCar" style="background:#222"></span></div><div style="margin-top:8px;color:#2c7a4b;font-weight:600">✓ Editable. Keep working on it.</div></div>';
   },
   render:function(t){
     $('xPdf').style.transform='scale('+((t>3.35&&t<3.55)?0.94:1)+')'; $('xDoc').style.transform='scale('+((t>6.95&&t<7.15)?0.94:1)+')';

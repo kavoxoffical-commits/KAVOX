@@ -14,13 +14,16 @@ Owner: solo developer (Arabic speaker). Wants: direct step-by-step work, act aut
 1. Day mode now covers `build.html` (script tag added) and protects user content: `<img>`, `<video>`, `<canvas>`, `<iframe>`, any element whose inline style has `url(` (account avatar is a div with `background-image`), and `#cv-output`. Printing and PDF export disable the filter. Media undo filter was re-derived so photos keep their true colours (pure white tops out ~230).
 2. `viewSavedCV(id)` was called by `build.html?view=ID` (the account page "View" button) but never defined, so the link only opened the empty form. Added: loads the row from `cvs` (RLS + `user_id`), hides the form steps, renders the result. Tested with a mocked Supabase client only.
 
+## Done since the last notes
+- Day mode, saved-CV "View" fix and the video/template sources (tools/) are on `main`.
+- ATS checker (`feature-ats.html`): button becomes "Check again", shows the point change, warns to add a keyword only if it is genuinely true. The score was already client-side keyword matching, and the CV text box was already editable.
+- Refiner (uploaded CV) shares the same form + generation path, so the language-detection fix covers it too.
+- ATS, Languages and Export clips re-recorded to match the real product (Word is `.doc`, "Detected from what you wrote" chip, missing-keyword list only). Notes under all nine videos now say the screens are simplified.
+
 ## Still to do
-- Test 1 and 2 with a real account, then merge.
-- ATS: honest "re-check" after the user adds a missing keyword (read the scoring code first; add a note "only add skills you really have").
-- Export video says `.docx` but the site downloads `.doc`: fix the video.
-- Re-check every feature video against the real UI and re-record the wrong ones (language chip, ATS re-check, extras cards).
-- Check the Refiner path (uploaded CV) for the same language-detection gap.
-- Last: real licensed portrait photos for the previews (owner must supply licensed photos).
+- Test the saved-CV "View" button and the day mode with a real login (only mocked so far).
+- The other six clips (cover letter, edit, interview, tailor, linkedin, writing) use simplified screens: the real product shows these as extra cards after generation. Re-record only if a more exact copy is wanted.
+- Last: real licensed portrait photos for the previews (the owner must supply licensed photos).
 
 ## Sources of the generated assets
 `tools/` holds the video recorder (`demo2.html`, `clip.html`), the template renderer and the tests. See `tools/README.md`. It is skipped by `build.js`, so it is not deployed.
