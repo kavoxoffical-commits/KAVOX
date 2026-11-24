@@ -333,21 +333,30 @@ window.addEventListener('resize', () => {
     'هو','هي','هم','نحن','أنت','انت','لا','لم','لن','قد','كان','تكون','يكون','ما','لديك','لدينا','نحو','ضمن','خلال',
     'الشركة','الوظيفة','المرشح','الفريق','سنوات','خبرة','دور','منصب','يبحث','نبحث','مطلوب']);
 
+  // words that appear in almost every job ad and say nothing about the candidate: never reported as "missing"
+  const ATS_GENERIC = new Set(['senior','junior','strong','excellent','ability','able','proven','track','record','responsible','responsibilities','required','requirements','preferred','qualifications','qualified','seeking','join','opportunity','dynamic','highly','well','good','great','ownership','own','align','knowledge','understanding','skills','skill','based','level','related','relevant','various','multiple','within','between','while','through','using','ensure','ensuring','help','helping','new','full','part','time']);
+  const ATS_GENERIC_COMPOUNDS = new Set(['fast paced','detail oriented','results driven','self motivated','self starter','well organized','full time','part time','hands on','day to day','high performing','results oriented']);
+
   function normalizeWord(w) {
     return w.length > 4 && w.endsWith('s') && !w.endsWith('ss') ? w.slice(0, -1) : w;
   }
 
   function extractKeywords(text) {
     if (!text) return [];
-    const raw = text.toLowerCase().match(/[\p{L}][\p{L}\p{N}+#]*(?:\.[\p{L}\p{N}+#]+)*/gu) || [];
-    const words = raw.filter(w => w.length > 2 && !ATS_STOPWORDS.has(w) && !ATS_STOPWORDS_AR.has(w));
-    return [...new Set(words.map(normalizeWord))];
+    // hyphenated compounds ("cross-functional") are one keyword, matched with or without the hyphen
+    const compounds = [];
+    const flat = text.toLowerCase().replace(/(?<![\p{L}\p{N}])([\p{L}]{2,})-([\p{L}]{2,})(?![\p{L}\p{N}])/gu, (m, a, b) => {
+      const c = a + ' ' + b; if (!ATS_GENERIC_COMPOUNDS.has(c)) compounds.push(c); return ' ';
+    });
+    const raw = flat.match(/[\p{L}][\p{L}\p{N}+#]*(?:\.[\p{L}\p{N}+#]+)*/gu) || [];
+    const words = raw.map(normalizeWord).filter(w => w.length > 2 && !ATS_STOPWORDS.has(w) && !ATS_STOPWORDS_AR.has(w) && !ATS_GENERIC.has(w));
+    return [...new Set([...compounds, ...words])];
   }
 
   function scoreCvAgainstJob(cvText, jobDescription) {
     const keywords = extractKeywords(jobDescription);
     if (keywords.length === 0) return null;
-    const normalizedCv = normalizeWord(cvText.toLowerCase());
+    const normalizedCv = normalizeWord(cvText.toLowerCase()).replace(/-/g, ' ');
     const matched = keywords.filter(k => normalizedCv.includes(k));
     const missing = keywords.filter(k => !normalizedCv.includes(k));
     const score = Math.round((matched.length / keywords.length) * 100);

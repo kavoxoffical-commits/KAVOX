@@ -86,6 +86,21 @@
   .fe-video-note { margin-top:14px; font-size:12px; color:rgba(255,255,255,.4); }
   @media (max-width:700px) { .fe-video { padding:0 16px 50px; } .fe-video-frame { aspect-ratio:4/5; border-radius:14px; } }
 </style>
+<style>
+  /* mobile menu (same as the other pages) */
+  .nav-toggle { display:none; background:none; border:none; cursor:pointer; padding:8px; flex-direction:column; gap:5px; z-index:70; }
+  .nav-toggle span { display:block; width:22px; height:2px; background:#f5f2ea; border-radius:2px; transition:transform .25s ease, opacity .25s ease; }
+  .nav-toggle.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+  .nav-toggle.open span:nth-child(2) { opacity:0; }
+  .nav-toggle.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+  .nav-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:55; opacity:0; pointer-events:none; transition:opacity .35s ease; }
+  .nav-overlay.open { opacity:1; pointer-events:auto; }
+  .nav-mobile-menu { display:flex; position:fixed; top:0; right:0; bottom:0; width:78%; max-width:320px; background:#0a0a0c; border-left:1px solid rgba(255,255,255,.08); padding:100px 28px 28px; flex-direction:column; gap:2px; z-index:60; transform:translateX(100%); transition:transform .4s cubic-bezier(.22,.9,.3,1); box-shadow:-20px 0 50px rgba(0,0,0,.4); }
+  .nav-mobile-menu.open { transform:translateX(0); }
+  .nav-mobile-menu a { padding:17px 4px; font-size:15.5px; color:rgba(255,255,255,.75); text-decoration:none; border-bottom:1px solid rgba(255,255,255,.06); transition:color .2s ease, padding-left .2s ease; }
+  .nav-mobile-menu a:hover, .nav-mobile-menu a.active { color:#f5f2ea; padding-left:8px; }
+  @media (max-width:768px){ .nav-toggle{ display:flex; } .nav-links{ display:none; } }
+</style>
 </head>
 <body>
 
@@ -94,7 +109,13 @@
   <div class="nav-links">
     <a href="index.html#platform" class="nav-link">Platform</a><a href="templates.html" class="nav-link">Templates</a><a href="pricing.html" class="nav-link">Pricing</a><a href="login.html" id="nav-auth-link" class="nav-link">Sign in</a>
   </div>
+ <button class="nav-toggle" id="navToggle" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
+<div class="nav-overlay" id="navOverlay"></div>
+<div class="nav-mobile-menu" id="navMobileMenu">
+ <a href="index.html#platform" class="nav-link">Platform</a><a href="templates.html" class="nav-link">Templates</a><a href="pricing.html" class="nav-link">Pricing</a><a href="login.html" class="nav-link">Sign in</a>
+ </div>
+
 
 <div class="hero">
   <div class="eyebrow">Feature</div>
@@ -414,6 +435,23 @@ document.addEventListener('DOMContentLoaded', loadSavedCVs);
   function load(){ if(loaded) return; loaded=true; var mp4=v.canPlayType('video/mp4; codecs="avc1.42E01E"'); v.src=v.getAttribute((mp4?'data-mp4':'data-webm')+(phone?'-m':'')); }
   if(!('IntersectionObserver' in window)){ load(); if(!reduce&&v.play) v.play().catch(function(){}); return; }
   new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ load(); if(!reduce){ var p=v.play(); if(p&&p.catch) p.catch(function(){}); } } else { v.pause(); } }); },{threshold:0.35,rootMargin:'200px 0px'}).observe(v);
+})();
+</script>
+<script>
+(function(){
+  var btn = document.getElementById('navToggle');
+  var menu = document.getElementById('navMobileMenu');
+  var overlay = document.getElementById('navOverlay');
+  if (!btn || !menu) return;
+  function closeMenu(){ menu.classList.remove('open'); btn.classList.remove('open'); if (overlay) overlay.classList.remove('open'); }
+  function openMenu(){ menu.classList.add('open'); btn.classList.add('open'); if (overlay) overlay.classList.add('open'); }
+  btn.addEventListener('click', function(){
+    if (menu.classList.contains('open')) closeMenu(); else openMenu();
+  });
+  if (overlay) overlay.addEventListener('click', closeMenu);
+  menu.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', closeMenu);
+  });
 })();
 </script>
 </body>
